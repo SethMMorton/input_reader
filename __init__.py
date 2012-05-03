@@ -11,7 +11,7 @@ __all__ = [
            'range_check',
           ]
 
-def range_check(low, high, expand=True):
+def range_check(low, high, expand=False):
     '''\
     :py:func:`range_check` will verify that that given range has a
     *low* lower than the *high*.  If both numbers are integers, it
