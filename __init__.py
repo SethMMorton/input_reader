@@ -1,5 +1,5 @@
 from input_reader import InputReader, ReaderError, SUPPRESS, Namespace
-from files import *
+from files import file_safety_check, abs_file_path
 
 __all__ = [
            'InputReader',
