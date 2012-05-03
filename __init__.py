@@ -11,7 +11,7 @@ __all__ = [
            'range_check',
           ]
 
-def range_check(low, high, expand=False):
+def range_check(low, high, expand=False, asint=False):
     '''\
     :py:func:`range_check` will verify that that given range has a
     *low* lower than the *high*.  If both numbers are integers, it
@@ -32,6 +32,10 @@ def range_check(low, high, expand=False):
         *low* and *high*, inclusive. Otherwise, :py:func:`range_check`
         just returns *low* and *high*.
     :type expand: bool, optional
+    :keyword asint:
+        If *expand* is :py:const:`False`, this will attempt to return the
+        *low* and *high* as integers instead of floats.
+    :type expand: bool, optional
     :rtype:
         See the explanation of *expand*.
     :exception:
@@ -39,20 +43,18 @@ def range_check(low, high, expand=False):
         * :py:exc:`ValueError`: *low* or *high* cannot be converted to a
           :py:func:`float`.
     '''
-    if isinstance(low, int) and isinstance(high, int):
-        if low >= high:
-            raise ValueError('low >= high')
-        return range(low, high+1) if expand else (low, high)
-    try:
-        if low.isdigit() and high.isdigit():
-            low = int(low)
-            high = int(high)
-            if low >= high:
-                raise ValueError('low >= high')
-            return range(low, high+1) if expand else (low, high)
-    except AttributeError:
-        low = float(low)
-        high = float(high)
-        if low >= high:
-            raise ValueError('low >= high')
+    # Convert to float first.  A ValueError is raised if not possible
+    low = float(low)
+    high = float(high)
+    # Raise a value error if the range is invalid
+    if low >= high:
+        raise ValueError('low >= high')
+    # If we need special integer handling, check that we have integers
+    if (expand or asint) and int(low) == low and int(high) == high:
+        if expand:
+            return range(int(low), int(high)+1)
+        else:
+            return int(low), int(high)
+    # Otherwise return the floats
+    else:
         return low, high
