@@ -1,6 +1,6 @@
 from input_reader import InputReader, ReaderError, SUPPRESS, Namespace
 from files import file_safety_check, abs_file_path
-from _version import __version__, __version_info__
+from _version import __version__
 
 __all__ = [
            'InputReader',
