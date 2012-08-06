@@ -1,0 +1,4 @@
+include input_reader/*
+include README
+include MANIFEST.in
+include setup.py
