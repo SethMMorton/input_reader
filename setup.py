@@ -1,14 +1,30 @@
-from distutils.core import setup
+#! /usr/bin/env python
+
+# In case setuptools is not installed
+import ez_setup
+ez_setup.use_setuptools()
+from setuptools import setup
+
+# Read the _version.py file for the module version number
+import re
 from os.path import join
+VERSIONFILE = join('input_reader', '_version.py')
+with open(VERSIONFILE, "rt") as fl:
+    versionstring = fl.readline().strip()
+m = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", versionstring)
+if m:
+    version = m.group(1)
+else:
+    s = "Unable to locate version string in {0}"
+    raise RuntimeError (s.format(VERSIONFILE))
 
 setup(name='input_reader',
-      version='1.0',
+      version=version,
       author='Seth M. Morton',
       author_email='drtuba78@gmail.com',
       url='https://github.com/SethMMorton/input_reader',
       #download_url='',
-      py_modules=['input_reader'],
-      scripts=[join('scripts', 'natsort')],
-      description='Easily read in block- and keyword-type input files',
+      packages=['input_reader'],
+      description='An easy interface for reading block- and keyword-type input files',
       #long_description='',
      )
