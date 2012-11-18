@@ -49,8 +49,7 @@ def file_safety_check(filename):
     :type filename: str
     :rtype: None
     :exception:
-        :py:exc:`IOError`: Raised when a file is not safe (and abort is
-        :py:const:`False`).
+        :py:exc:`IOError`: Raised when a file is not safe
     '''
     with open(filename) as f:
         pass
