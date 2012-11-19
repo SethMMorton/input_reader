@@ -26,4 +26,5 @@ setup(name='input_reader',
       packages=['input_reader'],
       description='An easy interface for reading block- and keyword-type input files',
       #long_description='',
+      test_suite='tests.loadAllTests',
      )
