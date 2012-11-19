@@ -80,7 +80,6 @@ class _KeyLevel(object):
             the input file are added.
         :type overwritedefault: bool
         '''
-        from otherkeys import BooleanKey
 
         # Lower keyname if not case sensitive
         if not self._case:
@@ -226,7 +225,6 @@ class _KeyLevel(object):
             the input file are added.
         :type overwritedefault: bool
         '''
-        from linekey import LineKey
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -315,8 +313,6 @@ class _KeyLevel(object):
             the input file are added.
         :type overwritedefault: bool
         '''
-        from otherkeys import BlockKey
-
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -409,8 +405,6 @@ class _KeyLevel(object):
             the input file are added.
         :type overwritedefault: bool
         '''
-        from otherkeys import Regex
-
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -462,7 +456,6 @@ class _KeyLevel(object):
             in fact is no error.
         :type required: bool
         '''
-        from otherkeys import MutExGroup
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -494,10 +487,10 @@ class _KeyLevel(object):
 
         # If this class defines a default dest attribute, use that instead
         self._dest = getattr(self, 'dest', None)
-        if self._dest is not None and not isinstance(self._dest, str):
-            raise ReaderError ('dest value '+str(dest)+' must be a string')
-        elif self._dest is None:
+        if self._dest is None:
             self._dest = kwargs.pop('dest', None)
+        if self._dest is not None and not isinstance(self._dest, str):
+            raise ValueError ('dest value '+str(self._dest)+' must be a str')
 
         # Depends
         self._depends = kwargs.pop('depends', None)
@@ -505,7 +498,7 @@ class _KeyLevel(object):
         # Make sure nothing extra was given
         if kwargs:
             msg = ': Unknown arguments given: '+','.join(kwargs.keys())
-            raise ReaderError (self.name+msg)
+            raise TypeError (self.name+msg)
 
     def _return_val(self, i, val, namespace):
         '''Returns the result properly, depending on the key type
