@@ -44,12 +44,23 @@ class InputReader(_KeyLevel):
         self.name = 'main'
 
         # What constitutes a comment?
-        if not isinstance(comment, list):
+        if isinstance(comment, str):
             comment = [comment]
         self._comment = comment
+        try:
+            for x in self._comment:
+                if not isinstance(x, str):
+                    raise ValueError ('comment value must be a bool, '
+                                      'given '+repr(x))
+        except TypeError:
+            raise ValueError ('comment value must be a bool, '
+                              'given '+repr(self._comment))
 
         # Ignore unknown keys?
         self._ignoreunknown = ignoreunknown
+        if not isinstance(self._ignoreunknown, bool):
+            raise ValueError ('ignoreunknown value must be a bool, '
+                              'given '+repr(self._ignoreunknown))
 
         # The default default
         self._default = default
@@ -59,7 +70,8 @@ class InputReader(_KeyLevel):
         Reads in the input from a given file using the supplied rules.
 
         :argument filename:
-            The name of the file to read in.
+            The name of the file to read in, or a StringIO or list of strings
+            containing the input itself.
         :type filename: str
         :rtype: :py:class:`Namespace`: This class contains the read-in data
             each key is stored as members of the class.
@@ -80,20 +92,32 @@ class InputReader(_KeyLevel):
     def _read_in_file(self, filename):
         '''Store the filename as a list'''
 
-        # Read in the file into a list
         f = []
+        # Assume a filename was given
         try:
-            with open(filename) as fl:
-                for line in fl:
-                    # Remove comments
-                    for com in self._comment:
-                        if com in line:
-                            line = line.partition(com)[0]
-                    # Add this to the list
-                    f.append(line.strip())
-
+            fl = [x.rstrip() for x in open(filename)]
         except (IOError, OSError) as e:
             raise ReaderError ('Cannot read in file '+filename+':'+str(e))
+        except TypeError:
+            # Assume a StringIO object was given
+            try:
+                fl = filename.getvalue().split('\n')
+            except AttributeError:
+                # Assume an iterable of strings was given
+                try:
+                    fl = [x.rstrip() for x in filename]
+                except AttributeError:
+                    raise ValueError ('Unknown object passed to '
+                                      'read_input: '+repr(filename))
+
+        # Read in the data
+        for line in fl:
+            # Remove comments
+            for com in self._comment:
+                if com in line:
+                    line = line.partition(com)[0]
+            # Add this to the list
+            f.append(line.strip())
 
         return f
 

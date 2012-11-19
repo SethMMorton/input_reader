@@ -9,6 +9,9 @@ class _KeyLevel(object):
         '''Initiallizes the key holders in this class'''
         # Are the keys case-sensitive by default?
         self._case = case
+        if not isinstance(case, bool):
+            raise ValueError ('case value must be a bool, '
+                              'given '+repr(self._case))
 
         # Default the key dictionary
         self._keys  = {}
@@ -27,8 +30,8 @@ class _KeyLevel(object):
             :py:const:`True`.
         :argument required:
             Indicates that not inlcuding `keyname` is an error.
-            It makes no sense to give a `default` and mark it `required`
-            as well.
+            It makes no sense to include this for a boolean key.
+            The default is :py:const:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -43,6 +46,7 @@ class _KeyLevel(object):
             If the class :py:class:`SUPPRESS` is given instead of 
             :py:const:`None`, then this key will be removed from the 
             namespace if it is not given.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -52,6 +56,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
+            A  value of :py:const:`None` is equivalent to no dest.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -62,6 +68,8 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
+            A  value of :py:const:`None` is equivalent to no depends.
+            The default is :py:const:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
@@ -70,6 +78,7 @@ class _KeyLevel(object):
             error will be raised.  If `repeat` is :py:const:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
+            The default is :py:const:`False`.
         :type repeat: bool
         :argument overwritedefault:
             `overwritedefault` can only be used if `repeat` is also given.
@@ -78,6 +87,7 @@ class _KeyLevel(object):
             (if default is not :py:const:`None`).  If :py:const:`True`,
             then the default value will be discarded before those found in
             the input file are added.
+            The default is :py:const:`False`.
         :type overwritedefault: bool
         '''
 
@@ -89,6 +99,7 @@ class _KeyLevel(object):
             kwargs['default'] = self._default
         # Store this key
         self._keys[keyname] = BooleanKey(keyname, action, **kwargs)
+        return self._keys[keyname]
 
     def add_line_key(self, keyname, type=str, glob={}, keywords={},
                      case=None, **kwargs):
@@ -127,6 +138,8 @@ class _KeyLevel(object):
             NOTE: Is is very important that type choices for each argument are
             given as tuples, and that the list passed to type is an actual list
             (as opposed to tuple) because these are treated differently.
+
+            The default value is :py:class:`str`.
         :argument glob:
             `glob` is a dictionary giving information on how to read in a
             glob of arguments.  Globs are read in after the positional 
@@ -153,6 +166,7 @@ class _KeyLevel(object):
                 be put into the `glob`. If there is no default,
                 nothing is put into the `glob`.
 
+            By default this is an empty :py:class:`dict`.
         :type glob: dict
         :argument keywords:
             `keywords` is a nested dictionary indicating key-value
@@ -163,17 +177,22 @@ class _KeyLevel(object):
             :py:class:`str` and :py:class:`SUPPRESS` will be chosen,
             respectively.  Like positional arguments, you may give as 
             many types as you wish per keyword.
+
+            By default this is an empty :py:class:`dict`.
         :type keywords: nested dict
         :argument case:
             States if this particular key is case-sensitive. Note that
             this applies only to the arguments of `keyname`; `keyname`
             itself uses the case-sensitivity default of the current
             level.
+            By default, case is determined by the global value set when
+            initiallizing the class.
         :type case: bool
         :argument required:
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
+            The default is :py:const:`False`
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -188,6 +207,7 @@ class _KeyLevel(object):
             If the class :py:class:`SUPPRESS` is given instead of 
             :py:const:`None`, then this key will be removed from the 
             namespace if it is not given.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -197,6 +217,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
+            A  value of :py:const:`None` is equivalent to no dest.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -207,6 +229,8 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
+            A  value of :py:const:`None` is equivalent to no depends.
+            The default is :py:const:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
@@ -215,6 +239,7 @@ class _KeyLevel(object):
             error will be raised.  If `repeat` is :py:const:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
+            The default is :py:const:`False`.
         :type repeat: bool
         :argument overwritedefault:
             `overwritedefault` can only be used if `repeat` is also given.
@@ -223,6 +248,7 @@ class _KeyLevel(object):
             (if default is not :py:const:`None`).  If :py:const:`True`,
             then the default value will be discarded before those found in
             the input file are added.
+            The default is :py:const:`False`.
         :type overwritedefault: bool
         '''
         # Use default case if no case is given here
@@ -237,6 +263,7 @@ class _KeyLevel(object):
         # Store this key
         self._keys[keyname] = LineKey(keyname, type, glob, keywords, case,
                                       **kwargs)
+        return self._keys[keyname]
 
     def add_block_key(self, keyname, end='end', case=None,
                       ignoreunknown=None, **kwargs):
@@ -247,21 +274,27 @@ class _KeyLevel(object):
         :type keyname: str
         :argument end:
             The string used to signify the end of this block.
+            The default is 'end'.
         :type end: str
         :argument case:
             States if this particular key is case-sensitive. Note that
             this applies only to the subkeys of `keyname`; `keyname`
             itself uses the case-sensitivity default of the current
             level.
+            By default, case is determined by the global value set when
+            initiallizing the class.
         :type case: bool
         :argument ignoreunknown:
             Suppresses raising the :py:exc:`ReaderError` when an unknown
             key is found.
+            By default, ignoreunknown is determined by the global value set when
+            initiallizing the class.
         :type ignoreunknown: bool
         :argument required:
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
+            The default is :py:const:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -276,6 +309,7 @@ class _KeyLevel(object):
             If the class :py:class:`SUPPRESS` is given instead of 
             :py:const:`None`, then this key will be removed from the 
             namespace if it is not given.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -285,6 +319,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
+            A  value of :py:const:`None` is equivalent to no dest.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -295,6 +331,8 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
+            A  value of :py:const:`None` is equivalent to no depends.
+            The default is :py:const:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
@@ -303,6 +341,7 @@ class _KeyLevel(object):
             error will be raised.  If `repeat` is :py:const:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
+            The default is :py:const:`False`.
         :type repeat: bool
         :argument overwritedefault:
             `overwritedefault` can only be used if `repeat` is also given.
@@ -311,6 +350,7 @@ class _KeyLevel(object):
             (if default is not :py:const:`None`).  If :py:const:`True`,
             then the default value will be discarded before those found in
             the input file are added.
+            The default is :py:const:`False`.
         :type overwritedefault: bool
         '''
         # Use default case if no case is given here
@@ -348,12 +388,16 @@ class _KeyLevel(object):
         :type regex: str, compiled re object
         :argument case:
             Determines if the if the search of this line is case-sensitive.
-            This only applies if a string is given as `regex`.
+            This only applies if a string is given as `regex`; you determine
+            if the regex is case-sensitive or not if you compile it yourself.
+            By default, case is determined by the global value set when
+            initiallizing the class.
         :type case: bool
         :argument required:
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
+            The default is :py:const:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -368,6 +412,7 @@ class _KeyLevel(object):
             If the class :py:class:`SUPPRESS` is given instead of 
             :py:const:`None`, then this key will be removed from the 
             namespace if it is not given.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -377,6 +422,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
+            A  value of :py:const:`None` is equivalent to no dest.
+            The default is :py:const:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -387,6 +434,8 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
+            A  value of :py:const:`None` is equivalent to no depends.
+            The default is :py:const:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
@@ -395,6 +444,7 @@ class _KeyLevel(object):
             error will be raised.  If `repeat` is :py:const:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
+            The default is :py:const:`False`.
         :type repeat: bool
         :argument overwritedefault:
             `overwritedefault` can only be used if `repeat` is also given.
@@ -403,6 +453,7 @@ class _KeyLevel(object):
             (if default is not :py:const:`None`).  If :py:const:`True`,
             then the default value will be discarded before those found in
             the input file are added.
+            The default is :py:const:`False`.
         :type overwritedefault: bool
         '''
         # Use default case if no case is given here
@@ -423,6 +474,7 @@ class _KeyLevel(object):
 
         # Store this key
         self._keys[handle] = Regex(handle, regex, **kwargs)
+        return self._keys[handle]
 
     def add_mutually_exclusive_group(self, case=None, dest=None, default=None,
                                      required=False):
@@ -475,15 +527,24 @@ class _KeyLevel(object):
             self._default = kwargs.pop('default', None)
 
         # Repeat
-        self._repeat = kwargs.pop('repeat', None)
+        self._repeat = kwargs.pop('repeat', False)
+        if not isinstance(self._repeat, bool):
+            raise ValueError ('repeat value must be a bool, '
+                              'given '+repr(self._repeat))
 
         # Overwrite default only valid when repeat is True
-        self._overwritedefault = kwargs.pop('overwritedefault', None)
+        self._overwritedefault = kwargs.pop('overwritedefault', False)
         if not self._repeat and self._overwritedefault:
             self._overwritedefault = False
+        if not isinstance(self._overwritedefault, bool):
+            raise ValueError ('overwritedefault value must be a bool, '
+                              'given '+repr(self._overwritedefault))
 
         # Required
-        self._required = kwargs.pop('required', None)
+        self._required = kwargs.pop('required', False)
+        if not isinstance(self._required, bool):
+            raise ValueError ('required value must be a bool, '
+                              'given '+repr(self._required))
 
         # If this class defines a default dest attribute, use that instead
         self._dest = getattr(self, 'dest', None)
