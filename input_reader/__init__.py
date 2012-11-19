@@ -6,7 +6,6 @@ __all__ = [
            'InputReader',
            'ReaderError',
            'SUPPRESS',
-           'Namespace', 
            'abs_file_path',
            'file_safety_check',
            'range_check',
