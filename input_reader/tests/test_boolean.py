@@ -13,13 +13,21 @@ class TestAddBoolean(TestCase):
             self.reader.add_boolean_key(action=True)
 
     def test_correct_call(self):
-        self.reader.add_boolean_key('RED')
-        self.reader.add_boolean_key('BLUE', action=False)
+        r = self.reader.add_boolean_key('red')
+        self.assertEqual(r.name, 'red')
+        self.assertTrue(r._action)
+        b = self.reader.add_boolean_key('blue', action=False)
+        self.assertEqual(b.name, 'blue')
+        self.assertFalse(b._action)
+
+class TestReadBoolean(TestCase):
+    pass
 
 # Function to export the tests in a controlled manner
 def suite():
     suite = TestSuite()
     suite.addTest(TestLoader().loadTestsFromTestCase(TestAddBoolean))
+    suite.addTest(TestLoader().loadTestsFromTestCase(TestReadBoolean))
     return suite
 
 if __name__ == '__main__':
