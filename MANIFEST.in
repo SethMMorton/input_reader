@@ -1,4 +1,6 @@
 include input_reader/*
+include input_reader/docs/*
+include input_reader/tests/*
 include README.md
 include MANIFEST.in
 include setup.py
