@@ -80,17 +80,11 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:const:`False`.
         :type repeat: bool
-        :argument overwritedefault:
-            `overwritedefault` can only be used if `repeat` is also given.
-            If :py:const:`False`, on the first appearance of `keyname`
-            the new value will be appended to what was given as default
-            (if default is not :py:const:`None`).  If :py:const:`True`,
-            then the default value will be discarded before those found in
-            the input file are added.
-            The default is :py:const:`False`.
-        :type overwritedefault: bool
         '''
 
+        # Cannot repeat keys
+        if keyname in self._keys:
+            raise ReaderError ('The key '+keyname+' has been defined twice')
         # Lower keyname if not case sensitive
         if not self._case:
             keyname = keyname.lower()
@@ -241,16 +235,10 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:const:`False`.
         :type repeat: bool
-        :argument overwritedefault:
-            `overwritedefault` can only be used if `repeat` is also given.
-            If :py:const:`False`, on the first appearance of `keyname`
-            the new value will be appended to what was given as default
-            (if default is not :py:const:`None`).  If :py:const:`True`,
-            then the default value will be discarded before those found in
-            the input file are added.
-            The default is :py:const:`False`.
-        :type overwritedefault: bool
         '''
+        # Cannot repeat keys
+        if keyname in self._keys:
+            raise ReaderError ('The key '+keyname+' has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -343,16 +331,10 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:const:`False`.
         :type repeat: bool
-        :argument overwritedefault:
-            `overwritedefault` can only be used if `repeat` is also given.
-            If :py:const:`False`, on the first appearance of `keyname`
-            the new value will be appended to what was given as default
-            (if default is not :py:const:`None`).  If :py:const:`True`,
-            then the default value will be discarded before those found in
-            the input file are added.
-            The default is :py:const:`False`.
-        :type overwritedefault: bool
         '''
+        # Cannot repeat keys
+        if keyname in self._keys:
+            raise ReaderError ('The key '+keyname+' has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -446,16 +428,10 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:const:`False`.
         :type repeat: bool
-        :argument overwritedefault:
-            `overwritedefault` can only be used if `repeat` is also given.
-            If :py:const:`False`, on the first appearance of `keyname`
-            the new value will be appended to what was given as default
-            (if default is not :py:const:`None`).  If :py:const:`True`,
-            then the default value will be discarded before those found in
-            the input file are added.
-            The default is :py:const:`False`.
-        :type overwritedefault: bool
         '''
+        # Cannot repeat keys
+        if handle in self._keys:
+            raise ReaderError ('The key '+handle+' has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -532,14 +508,6 @@ class _KeyLevel(object):
             raise ValueError ('repeat value must be a bool, '
                               'given '+repr(self._repeat))
 
-        # Overwrite default only valid when repeat is True
-        self._overwritedefault = kwargs.pop('overwritedefault', False)
-        if not self._repeat and self._overwritedefault:
-            self._overwritedefault = False
-        if not isinstance(self._overwritedefault, bool):
-            raise ValueError ('overwritedefault value must be a bool, '
-                              'given '+repr(self._overwritedefault))
-
         # Required
         self._required = kwargs.pop('required', False)
         if not isinstance(self._required, bool):
@@ -574,13 +542,8 @@ class _KeyLevel(object):
             # If the name exists, check if we need to append the value
             # to an already generated list, or replace the default value.
             if name in namespace:
-                if getattr(namespace, name) is None:
+                if getattr(namespace, name) in (None, self._default):
                     return i, name, (val,)
-                elif self._overwritedefault:
-                    if getattr(namespace, name) == self._default:
-                        return i, name, (val,)
-                    else:
-                        return i, name, getattr(namespace, name)+(val,)
                 else:
                     return i, name, getattr(namespace, name)+(val,)
             # If the keyname does not exist, simply return (as a tuple)
@@ -780,8 +743,8 @@ class _KeyLevel(object):
                 depends = None
             # Raise an error if the depending key is not found
             if depends and depends not in namespace._order:
-                msg = ': The key '+key+' requires that '+depends
-                msg = ' is also present, but it is not'
+                msg = ': The key "'+key+'" requires that "'+depends
+                msg += '" is also present, but it is not'
                 raise ReaderError (self.name+msg)
 
         # Last, tag on the defaults that were not found
@@ -818,6 +781,26 @@ class LineKey(_KeyLevel):
         else:
             self._type = [type]
             self._nolist = True
+        # Make sure type is legal.  Use a recursive function.
+        def check_type(typ):
+            for t in typ:
+                if isinstance(t, list):
+                    raise ReaderError ('Embedded lists not allowed in type ('+
+                                       keyname+')')
+                elif isinstance(t, tuple):
+                    if len(t) == 0:
+                        raise ReaderError ('Empty tuple in type for key "'+
+                                           keyname+'"')
+                    else:
+                        check_type(t)
+                elif not (isinstance(t, str) or isinstance(t, int) or
+                          isinstance(t, float) or t is None or
+                          hasattr(t, 'pattern') or t is str or t is int or
+                          t is float):
+                    raise ReaderError ('type must be one of None, str, float '
+                                       'int, or an instance of str, float, '
+                                       'int or regex ('+keyname+')')
+        check_type(self._type)
         # Validate glob
         if glob:
             if 'len' not in glob:
@@ -839,7 +822,7 @@ class LineKey(_KeyLevel):
             elif self._type and self._glob:
                 self._nolist = False
         else:
-            self._glob = dict([]) # In case glob = None
+            self._glob = {} # In case glob = None
         # Validate keywords
         if keywords:
             self._keywords = keywords
@@ -1070,7 +1053,12 @@ class BooleanKey(_KeyLevel):
     def _parse(self, f, i, namespace):
         '''Parses the current line for the key.  Returns the line that
         we read from and the value'''
-        return self._return_val(i, self._action, namespace)
+        n = len(f[i].split())
+        if n == 1:
+            return self._return_val(i, self._action, namespace)
+        else:
+            raise ReaderError ('The boolean "'+self.name+'" was given '
+                               'arguments, this is illegal')
 
 class Regex(_KeyLevel):
     '''A class to store data from a regex'''
