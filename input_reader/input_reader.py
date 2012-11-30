@@ -50,10 +50,10 @@ class InputReader(_KeyLevel):
         try:
             for x in self._comment:
                 if not isinstance(x, str):
-                    raise ValueError ('comment value must be a bool, '
+                    raise ValueError ('comment value must be a str, '
                                       'given '+repr(x))
         except TypeError:
-            raise ValueError ('comment value must be a bool, '
+            raise ValueError ('comment value must be a str, '
                               'given '+repr(self._comment))
 
         # Ignore unknown keys?
