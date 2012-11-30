@@ -3,6 +3,7 @@ import test_constructor
 import test_keywords
 import test_read_file
 import test_boolean
+import test_line
 
 def loadAllTests():
     suite = TestSuite()
@@ -10,6 +11,7 @@ def loadAllTests():
     suite.addTest(test_keywords.suite())
     suite.addTest(test_read_file.suite())
     suite.addTest(test_boolean.suite())
+    suite.addTest(test_line.suite())
     return suite
 
 def run_tests():
