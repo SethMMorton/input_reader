@@ -1,4 +1,4 @@
-from input_reader import InputReader, ReaderError, Namespace
+from input_reader import InputReader, ReaderError
 from unittest import TestCase, TestSuite, TestLoader
 
 class TestConstructor(TestCase):
