@@ -81,7 +81,9 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
-
+        # Keyname must be str
+        if not isinstance(keyname, str):
+            raise ReaderError (str(keyname)+'Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -236,6 +238,9 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
+        # Keyname must be str
+        if not isinstance(keyname, str):
+            raise ReaderError (str(keyname)+'Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -332,6 +337,9 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
+        # Keyname must be str
+        if not isinstance(keyname, str):
+            raise ReaderError (str(keyname)+'Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -781,28 +789,33 @@ class LineKey(_KeyLevel):
         else:
             self._type = [type]
             self._nolist = True
+
         # Make sure type is legal.  Use a recursive function.
         def check_type(typ):
             for t in typ:
                 if isinstance(t, list):
-                    raise ReaderError ('Embedded lists not allowed in type ('+
-                                       keyname+')')
+                    msg = ': Embedded lists not allowed in type'
+                    raise ReaderError (self.name+msg)
                 elif isinstance(t, tuple):
                     if len(t) == 0:
-                        raise ReaderError ('Empty tuple in type for key "'+
-                                           keyname+'"')
+                        msg = ': Empty tuple in type'
+                        raise ReaderError (self.name+msg)
                     else:
                         check_type(t)
                 elif not (isinstance(t, str) or isinstance(t, int) or
                           isinstance(t, float) or t is None or
                           hasattr(t, 'pattern') or t is str or t is int or
                           t is float):
-                    raise ReaderError ('type must be one of None, str, float '
-                                       'int, or an instance of str, float, '
-                                       'int or regex ('+keyname+')')
+                    msg = (': type must be one of None, str, float '
+                           'int, or an instance of str, float, '
+                           'int or regex')
+                    raise ReaderError (self.name+msg)
         check_type(self._type)
+
         # Validate glob
         if glob:
+            if not isinstance(glob, dict):
+                raise ReaderError (self.name+': glob must be a dict')
             if 'len' not in glob:
                 raise ReaderError (self.name+': "len" required for glob')
             elif glob['len'] not in ('*', '+', '?'):
@@ -816,16 +829,52 @@ class LineKey(_KeyLevel):
                 else:
                     glob['join'] = False
             self._glob = glob
+            if set(self._glob.keys()) != set(['len', 'type', 'join']):
+                raise ReaderError (self.name+': Unknown key in glob')
+            if not isinstance(self._glob['join'], bool):
+                raise ReaderError (self.name+': "join" must be a bool in glob')
             # Make the result only a string when there is no positionals
             if not self._type and self._glob['join']:
                 self._nolist = True
             elif self._type and self._glob:
                 self._nolist = False
+            # Check the type of the glob
+            if isinstance(self._glob['type'], list):
+                msg = ': list not allowed in type for glob or keywords'
+                raise ReaderError (self.name+msg)
+            else:
+                check_type([self._glob['type']])
         else:
             self._glob = {} # In case glob = None
+
         # Validate keywords
         if keywords:
+            if not isinstance(glob, dict):
+                raise ReaderError (self.name+': keywords must be a dict')
             self._keywords = keywords
+            for key in self._keywords:
+                if not isinstance(key, str):
+                    msg = ': keys in keywords must be of type str'
+                    raise ReaderError (self.name+msg)
+                if self._keywords[key] is None:
+                    self._keywords[key] = {}
+                elif not isinstance(self._keywords[key], dict):
+                    msg = ': Options for keyword "'+key+'" must be a dict'
+                    raise ReaderError (self.name+msg)
+                if 'default' not in self._keywords[key]:
+                    self._keywords[key]['default'] = SUPPRESS
+                if 'type' not in self._keywords[key]:
+                    self._keywords[key]['type'] = str
+                if set(self._keywords[key].keys()) != set(['default', 'type']):
+                    msg = ': Unknown key in keyword "'+key+'"'
+                    raise ReaderError (self.name+msg)
+                # Check the type of the keyword
+                if isinstance(self._keywords[key]['type'], list):
+                    msg = ': list not allowed in type for glob or keywords'
+                    raise ReaderError (self.name+msg)
+                else:
+                    check_type([self._keywords[key]['type']])
+                
             # Since we append this dict to the end, we must keep as a list
             if self._nolist:
                 self._nolist = False
@@ -851,6 +900,7 @@ class LineKey(_KeyLevel):
                 msg += ' arguments, got '+str(len(args))
                 raise ReaderError (self.name+msg)
             # Checking keywords will be done later
+
         # If the # args is less than the positional
         elif len(args) < len(self._type):
             n = len(self._type)
@@ -859,6 +909,7 @@ class LineKey(_KeyLevel):
             msg = ': expected at least '+str(n)
             msg += ' arguments, got '+str(len(args))
             raise ReaderError (self.name+msg)
+
         # If there are too many arguments
         elif len(args) > len(self._type):
             if not (self._keywords or self._glob):
