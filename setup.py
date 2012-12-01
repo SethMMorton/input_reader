@@ -1,9 +1,8 @@
 #! /usr/bin/env python
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from ez_setup import use_setuptools
+use_setuptools()
+from setuptools import setup
 
 # Read the _version.py file for the module version number
 import re
@@ -18,13 +17,34 @@ else:
     s = "Unable to locate version string in {0}"
     raise RuntimeError (s.format(VERSIONFILE))
 
+DESCRIPTION = 'Define and read input files with an API inspired by argparse'
+try:
+    with open('README.rst') as fl:
+        LONG_DESCRIPTION = fl.read()
+except IOError:
+    LONG_DESCRIPTION = DESCRIPTION
+
 setup(name='input_reader',
       version=VERSION,
       author='Seth M. Morton',
       author_email='drtuba78@gmail.com',
       url='https://github.com/SethMMorton/input_reader',
+      license='MIT',
       packages=['input_reader'],
-      description='An easy interface for reading block- and keyword-type input files',
-      #long_description='',
+      description=DESCRIPTION,
+      long_description=LONG_DESCRIPTION,
       test_suite='input_reader.tests.loadAllTests',
+      classifiers=(
+        'Development Status :: 4 - Beta',
+        #'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'Operating System :: OS Independent',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Utilities',
+      )
      )
