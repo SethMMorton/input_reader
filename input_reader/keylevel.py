@@ -83,7 +83,7 @@ class _KeyLevel(object):
         '''
         # Keyname must be str
         if not isinstance(keyname, str):
-            raise ReaderError (str(keyname)+'Keyname must be str')
+            raise ValueError (str(keyname)+': Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -240,7 +240,7 @@ class _KeyLevel(object):
         '''
         # Keyname must be str
         if not isinstance(keyname, str):
-            raise ReaderError (str(keyname)+'Keyname must be str')
+            raise ValueError (str(keyname)+'Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -339,7 +339,7 @@ class _KeyLevel(object):
         '''
         # Keyname must be str
         if not isinstance(keyname, str):
-            raise ReaderError (str(keyname)+'Keyname must be str')
+            raise ValueError (str(keyname)+'Keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -776,7 +776,7 @@ class LineKey(_KeyLevel):
         # Cannot have both glob and keywords defined
         if glob and keywords:
             msg = ': Cannot define both glob and keywords'
-            raise ReaderError (self.name+msg)
+            raise TypeError (self.name+msg)
         # Validate type
         # type given as a list
         if isinstance(type, list):
@@ -795,11 +795,11 @@ class LineKey(_KeyLevel):
             for t in typ:
                 if isinstance(t, list):
                     msg = ': Embedded lists not allowed in type'
-                    raise ReaderError (self.name+msg)
+                    raise ValueError (self.name+msg)
                 elif isinstance(t, tuple):
                     if len(t) == 0:
                         msg = ': Empty tuple in type'
-                        raise ReaderError (self.name+msg)
+                        raise ValueError (self.name+msg)
                     else:
                         check_type(t)
                 elif not (isinstance(t, str) or isinstance(t, int) or
@@ -809,18 +809,18 @@ class LineKey(_KeyLevel):
                     msg = (': type must be one of None, str, float '
                            'int, or an instance of str, float, '
                            'int or regex')
-                    raise ReaderError (self.name+msg)
+                    raise ValueError (self.name+msg)
         check_type(self._type)
 
         # Validate glob
         if glob:
             if not isinstance(glob, dict):
-                raise ReaderError (self.name+': glob must be a dict')
+                raise ValueError (self.name+': glob must be a dict')
             if 'len' not in glob:
-                raise ReaderError (self.name+': "len" required for glob')
+                raise ValueError (self.name+': "len" required for glob')
             elif glob['len'] not in ('*', '+', '?'):
                 msg = ': "len" must be one of "*", "+", or "?" in glob'
-                raise ReaderError (self.name+msg)
+                raise ValueError (self.name+msg)
             if 'type' not in glob:
                 glob['type'] = str
             if 'join' not in glob:
@@ -830,9 +830,9 @@ class LineKey(_KeyLevel):
                     glob['join'] = False
             self._glob = glob
             if set(self._glob.keys()) != set(['len', 'type', 'join']):
-                raise ReaderError (self.name+': Unknown key in glob')
+                raise TypeError (self.name+': Unknown key in glob')
             if not isinstance(self._glob['join'], bool):
-                raise ReaderError (self.name+': "join" must be a bool in glob')
+                raise ValueError (self.name+': "join" must be a bool in glob')
             # Make the result only a string when there is no positionals
             if not self._type and self._glob['join']:
                 self._nolist = True
@@ -841,7 +841,7 @@ class LineKey(_KeyLevel):
             # Check the type of the glob
             if isinstance(self._glob['type'], list):
                 msg = ': list not allowed in type for glob or keywords'
-                raise ReaderError (self.name+msg)
+                raise ValueError (self.name+msg)
             else:
                 check_type([self._glob['type']])
         else:
@@ -849,29 +849,29 @@ class LineKey(_KeyLevel):
 
         # Validate keywords
         if keywords:
-            if not isinstance(glob, dict):
-                raise ReaderError (self.name+': keywords must be a dict')
+            if not isinstance(keywords, dict):
+                raise ValueError (self.name+': keywords must be a dict')
             self._keywords = keywords
             for key in self._keywords:
                 if not isinstance(key, str):
                     msg = ': keys in keywords must be of type str'
-                    raise ReaderError (self.name+msg)
+                    raise ValueError (self.name+msg)
                 if self._keywords[key] is None:
                     self._keywords[key] = {}
                 elif not isinstance(self._keywords[key], dict):
                     msg = ': Options for keyword "'+key+'" must be a dict'
-                    raise ReaderError (self.name+msg)
+                    raise ValueError (self.name+msg)
                 if 'default' not in self._keywords[key]:
                     self._keywords[key]['default'] = SUPPRESS
                 if 'type' not in self._keywords[key]:
                     self._keywords[key]['type'] = str
                 if set(self._keywords[key].keys()) != set(['default', 'type']):
                     msg = ': Unknown key in keyword "'+key+'"'
-                    raise ReaderError (self.name+msg)
+                    raise TypeError (self.name+msg)
                 # Check the type of the keyword
                 if isinstance(self._keywords[key]['type'], list):
                     msg = ': list not allowed in type for glob or keywords'
-                    raise ReaderError (self.name+msg)
+                    raise ValueError (self.name+msg)
                 else:
                     check_type([self._keywords[key]['type']])
                 
@@ -880,6 +880,11 @@ class LineKey(_KeyLevel):
                 self._nolist = False
         else:
             self._keywords = {} # In case keywords = None
+
+        # Type, glob and keywords can't be empty
+        if not (self._type or self._glob or self._keywords):
+            msg = ': type, glob and keywords cannot all be empty'
+            raise ValueError (self.name+msg)
 
     def _parse(self, f, i, namespace):
         '''Parses the current line for the key.  Returns the line that
