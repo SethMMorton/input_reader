@@ -1,7 +1,7 @@
 include input_reader/*
 include input_reader/docs/*
 include input_reader/tests/*
-include ez_setup.py
+include distribute_setup.py
 include LICENCE
 include README.md
 include MANIFEST.in
