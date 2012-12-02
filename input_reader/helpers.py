@@ -67,7 +67,7 @@ class Namespace(object):
     def make_set(self):
         return set(self.__dict__.keys()) - set(['_order'])
 
-class ReaderError (ValueError):
+class ReaderError(Exception):
     '''\
     An exception for the :py:class:`InputReader` class.
     '''
