@@ -3,7 +3,7 @@
 #from ez_setup import use_setuptools
 from distribute_setup import use_setuptools
 use_setuptools()
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Read the _version.py file for the module version number
 import re
@@ -31,7 +31,7 @@ setup(name='input_reader',
       author_email='drtuba78@gmail.com',
       url='https://github.com/SethMMorton/input_reader',
       license='MIT',
-      packages=['input_reader'],
+      packages=find_packages(),
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       use_2to3=True,
