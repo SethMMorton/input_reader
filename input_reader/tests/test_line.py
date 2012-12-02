@@ -27,12 +27,12 @@ class TestAddLine(TestCase):
         self.assertEqual(r._keywords, {})
         self.assertFalse(r._case)
         regex = 'Cannot define both glob and keywords'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(TypeError, regex):
             self.reader.add_line_key('blue', glob={'len':'*'},
                                              keywords={'bird':{}})
 
     def test_name(self):
-        with self.assertRaisesRegexp(ReaderError, 'Keyname must be str'):
+        with self.assertRaisesRegexp(ValueError, 'Keyname must be str'):
             self.reader.add_line_key(23)
 
     def test_repeat(self):
@@ -50,8 +50,9 @@ class TestAddLine(TestCase):
         self.assertEqual(s._type, [int])
         t = self.reader.add_line_key('green', type=(str, 14, 2.8, None))
         self.assertEqual(t._type, [(str, 14, 2.8, None)])
-        u = self.reader.add_line_key('gray', type=None)
-        self.assertEqual(u._type, [])
+        regex = 'type, glob and keywords cannot all be empty'
+        with self.assertRaisesRegexp(ValueError, regex):
+            u = self.reader.add_line_key('gray', type=None)
         v = self.reader.add_line_key('cyan', type=[(int, float), str])
         self.assertEqual(v._type, [(int, float), str])
         import re
@@ -60,19 +61,19 @@ class TestAddLine(TestCase):
         self.assertEqual(w._type, [regex])
         # Make sure incorrect types are not OK
         regex = r'type must be one of'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', type=set([str, int]))
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', type=complex)
         regex = r'Embedded lists not allowed in type'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', type=[str, [str, int]])
         regex = r'Empty tuple in type'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', type=[str, ()])
 
     def test_glob(self):
-        # Test that glob ckecking is OK
+        # Test that glob checking is OK
         a = self.reader.add_line_key('red', glob={'len':'*'})
         self.assertEqual(a._glob, {'len':'*', 'type':str, 'join':False})
         b = self.reader.add_line_key('blue', glob={'len':'?'})
@@ -85,24 +86,24 @@ class TestAddLine(TestCase):
         self.assertEqual(e._glob, {'len':'?', 'type':int, 'join':True})
         f = self.reader.add_line_key('gray', glob={'len':'*', 'type':(int,str)})
         self.assertEqual(f._glob, {'len':'*', 'type':(int,str), 'join':False})
-        # Test that glob ckecking is not OK
-        with self.assertRaisesRegexp(ReaderError, 'glob must be a dict'):
+        # Test that glob checking is OK for bad input
+        with self.assertRaisesRegexp(ValueError, 'glob must be a dict'):
             self.reader.add_line_key('black', glob='wrong')
         regex = r'"len" must be one of "\*", "\+", or "\?" in glob'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', glob={'len':'1'})
-        with self.assertRaisesRegexp(ReaderError, r'"len" required for glob'):
+        with self.assertRaisesRegexp(ValueError, r'"len" required for glob'):
             self.reader.add_line_key('black', glob={'join':True})
         regex = r'"join" must be a bool in glob'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', glob={'len':'*', 'join':'True'})
         regex = r'type must be one of'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', glob={'len':'*', 'type':complex})
         regex = r'list not allowed in type for glob or keywords'
-        with self.assertRaisesRegexp(ReaderError, regex):
+        with self.assertRaisesRegexp(ValueError, regex):
             self.reader.add_line_key('black', glob={'len':'*', 'type':[str]})
-        with self.assertRaisesRegexp(ReaderError, 'Unknown key in glob'):
+        with self.assertRaisesRegexp(TypeError, 'Unknown key in glob'):
             self.reader.add_line_key('black', glob={'len':'*', 'dumb':True})
 
     def test_keyword(self):
@@ -111,38 +112,95 @@ class TestAddLine(TestCase):
         self.assertEqual(a._keywords, {'rose':{'default':SUPPRESS,'type':str}})
         b = self.reader.add_line_key('blue', keywords={'rose':None})
         self.assertEqual(b._keywords, {'rose':{'default':SUPPRESS,'type':str}})
+        c = self.reader.add_line_key('pink', keywords={
+                                        'elephant':{'default':'drunk'},
+                                        'cadillac':{'default':'bruce'}})
+        self.assertEqual(c._keywords, 
+                         {'elephant':{'default':'drunk','type':str},
+                          'cadillac':{'default':'bruce','type':str}})
+        # Test that keyword checking is OK for bad input
+        with self.assertRaisesRegexp(ValueError, 'keywords must be a dict'):
+            self.reader.add_line_key('cyan', keywords='wrong')
+        with self.assertRaisesRegexp(TypeError, 'Unknown key in keyword'):
+            self.reader.add_line_key('cyan', keywords={'p':{'wrong':None}})
+        with self.assertRaisesRegexp(ValueError, 'must be of type str'):
+            self.reader.add_line_key('cyan', keywords={23:None})
+        regex = 'Options for keyword "\w+" must be a dict'
+        with self.assertRaisesRegexp(ValueError, regex):
+            self.reader.add_line_key('cyan', keywords={'p':['things']})
+        with self.assertRaisesRegexp(ValueError, 'list not allowed in type'):
+            self.reader.add_line_key('cyan', keywords={'p':{'type':[str]}})
+        with self.assertRaisesRegexp(ValueError, 'type must be one of'):
+            self.reader.add_line_key('cyan', keywords={'p':{'type':complex}})
 
 class TestReadLine(TestCase):
 
     def setUp(self):
-        self.s1 = dedent('''\
-                  blue
-                  red # Comment
-                  ''').split('\n')
-        self.s2 = dedent('''\
-                  blue
-                  red color # This is illegal
-                  ''').split('\n')
         self.r = InputReader()
 
-    def test_boolean_arguments(self):
-        # Booleans cannot have arguments
-        self.r.add_boolean_key('blue')
-        self.r.add_boolean_key('red')
-        regex = 'The boolean "\w+" was given arguments, this is illegal'
+    def test_line_defaults(self):
+        self.r.add_line_key('blue')
+        inp = self.r.read_input(['blue bird'])[0]
+        self.assertEquals(inp.blue, 'bird')
+        regex = 'expected .*\d+ arguments, got \d+'
         with self.assertRaisesRegexp(ReaderError, regex):
-            inp = self.r.read_input(self.s2)[0]
+            inp = self.r.read_input(['blue'])[0]
+        with self.assertRaisesRegexp(ReaderError, regex):
+            inp = self.r.read_input(['blue bird egg'])[0]
 
-    def test_actions(self):
-        # Actions can be lists, not just bool, str, int or floats
-        self.r.add_boolean_key('blue', action=['something', 'odd'])
-        # An action can be a function, too!
-        self.r.add_boolean_key('red', 
-                               action=lambda x: "hello" if x else "goodbye")
-        inp = self.r.read_input(self.s1)[0]
-        self.assertEqual(inp.blue, ['something', 'odd'])
-        self.assertEqual(inp.red(True), "hello")
-        self.assertEqual(inp.red(0), "goodbye")
+    def test_line_types(self):
+        self.r.add_line_key('blue', type=int)
+        inp = self.r.read_input(['blue 23'])[0]
+        self.assertEqual(inp.blue, 23)
+        with self.assertRaisesRegexp(ReaderError, 'expected \w+, got \w+'):
+            inp = self.r.read_input(['blue bird'])[0]
+
+        self.r.add_line_key('red', type=(0, 1, 2, 3))
+        inp = self.r.read_input(['red 3'])[0]
+        self.assertEqual(inp.red, 3)
+        with self.assertRaisesRegexp(ReaderError, 'expected .+, got \w+'):
+            inp = self.r.read_input(['red 4'])[0]
+
+        self.r.add_line_key('green', type=(float, None))
+        inp = self.r.read_input(['green 3'])[0]
+        self.assertEqual(inp.green, 3)
+        inp = self.r.read_input(['green 3.5'])[0]
+        self.assertEqual(inp.green, 3.5)
+        inp = self.r.read_input(['green none'])[0]
+        self.assertIsNone(inp.green)
+        with self.assertRaisesRegexp(ReaderError, 'expected .+, got \w+'):
+            inp = self.r.read_input(['green bird'])[0]
+
+        self.r.add_line_key('cyan', type=[str, (None, str), float])
+        inp = self.r.read_input(['cyan cat dog 6'])[0]
+        self.assertEqual(inp.cyan, ('cat', 'dog', 6))
+        with self.assertRaisesRegexp(ReaderError, 'expected .+, got \w+'):
+            inp = self.r.read_input(['cyan cat dog 7 8'])[0]
+        with self.assertRaisesRegexp(ReaderError, 'expected \w+, got \w+'):
+            inp = self.r.read_input(['cyan cat none bird'])[0]
+        inp = self.r.read_input(['cyan cat none 7.8'])[0]
+        self.assertEqual(inp.cyan, ('cat', None, 7.8))
+
+        import re
+        self.r.add_line_key('pink', type=re.compile(r'neat\d+'))
+        inp = self.r.read_input(['pink neat68'])[0]
+        self.assertEqual(inp.pink, 'neat68')
+        with self.assertRaisesRegexp(ReaderError, 'expected regex\(.*\)'):
+            inp = self.r.read_input(['pink near68'])[0]
+
+    def test_line_case(self):
+        self.r.add_line_key('blue', type=str)
+        inp = self.r.read_input(['blue HeLLo'])[0]
+        self.assertEqual(inp.blue, 'hello')
+        self.r.add_line_key('red', type=str, case=True)
+        inp = self.r.read_input(['red HeLLo'])[0]
+        self.assertEqual(inp.red, 'HeLLo')
+        
+    def test_line_glob(self):
+        pass
+
+    def test_keyword_glob(self):
+        pass
 
 # Function to export the tests in a controlled manner
 def suite():

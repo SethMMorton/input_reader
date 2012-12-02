@@ -81,7 +81,7 @@ class TestParseFile(TestCase):
 
     def setUp(self):
         self.s = dedent('''\
-                 PATH this/is/a/pathName.txt // A comment
+                 PATH This/Is/A/pathName.txt // A comment
 
                  BLUE
                  RED''')
@@ -119,7 +119,7 @@ class TestParseFile(TestCase):
         inp = case_keys(reader, self.s)
         self.assertTrue(inp.RED)
         self.assertTrue(inp.BLUE)
-        self.assertEqual(inp.PATH, 'this/is/a/pathName.txt')
+        self.assertEqual(inp.PATH, 'This/Is/A/pathName.txt')
         del reader, inp
 
     def test_case_insensitive(self):

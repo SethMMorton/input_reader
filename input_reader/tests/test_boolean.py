@@ -26,7 +26,7 @@ class TestAddBoolean(TestCase):
         self.assertIs(c._action, fun)
 
     def test_name(self):
-        with self.assertRaisesRegexp(ReaderError, 'Keyname must be str'):
+        with self.assertRaisesRegexp(ValueError, 'Keyname must be str'):
             self.reader.add_boolean_key(23)
 
     def test_repeat(self):
