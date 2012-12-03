@@ -1,7 +1,6 @@
 from input_reader import InputReader, ReaderError, SUPPRESS
 from pytest import raises, fixture
 from re import search
-from textwrap import dedent
 
 def test_line_missing_keyname():
     r = InputReader()
@@ -33,11 +32,11 @@ def test_line_correct_call():
                                  glob=None, keywords=None)
     assert 'type, glob and keywords cannot all be empty' in str(e.value)
 
-def test_line_name():
+def test_line_name_definition():
     r = InputReader()
     with raises(ValueError) as e:
         r.add_line_key(23)
-    assert 'Keyname must be str' in str(e.value)
+    assert 'keyname must be str' in str(e.value)
 
 def test_line_repeat_in_definition():
     # You cannot repeat keys
@@ -46,6 +45,14 @@ def test_line_repeat_in_definition():
     with raises(ReaderError) as e:
         r.add_line_key('red')
     assert search(r'The key \w+ has been defined twice', str(e.value))
+
+def test_line_case_definition():
+    r = InputReader()
+    a = r.add_line_key('red', case=True)
+    assert a._case
+    with raises(ValueError) as e:
+        r.add_line_key('blue', case='True')
+    assert 'case must be bool' in str(e.value)
 
 def test_line_type_definitions():
     # Make sure that correct types are OK
