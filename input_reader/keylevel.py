@@ -823,27 +823,25 @@ class LineKey(_KeyLevel):
                 raise ValueError (self.name+msg)
             if 'type' not in glob:
                 glob['type'] = str
-            if 'join' not in glob:
-                if glob['len'] == '?':
-                    glob['join'] = True
-                else:
-                    glob['join'] = False
-            self._glob = glob
-            if set(self._glob.keys()) != set(['len', 'type', 'join']):
-                raise TypeError (self.name+': Unknown key in glob')
-            if not isinstance(self._glob['join'], bool):
-                raise ValueError (self.name+': "join" must be a bool in glob')
-            # Make the result only a string when there is no positionals
-            if not self._type and self._glob['join']:
-                self._nolist = True
-            elif self._type and self._glob:
-                self._nolist = False
-            # Check the type of the glob
-            if isinstance(self._glob['type'], list):
+            if isinstance(glob['type'], list):
                 msg = ': list not allowed in type for glob or keywords'
                 raise ValueError (self.name+msg)
+            check_type([glob['type']])
+            if 'join' not in glob:
+                glob['join'] = False
+            if glob['join'] and glob['len'] == '?':
+                msg = ': "join=True" makes no sense for "len=?"'
+                raise ValueError (self.name+msg)
+            if set(glob.keys()) != set(['len', 'type', 'join']):
+                raise TypeError (self.name+': Unknown key in glob')
+            if not isinstance(glob['join'], bool):
+                raise ValueError (self.name+': "join" must be a bool in glob')
+            # Make the result is only a string when there is no positionals
+            if not self._type and (glob['join'] or glob['len'] == '?'):
+                self._nolist = True
             else:
-                check_type([self._glob['type']])
+                self._nolist = False
+            self._glob = glob
         else:
             self._glob = {} # In case glob = None
 
@@ -851,33 +849,33 @@ class LineKey(_KeyLevel):
         if keywords:
             if not isinstance(keywords, dict):
                 raise ValueError (self.name+': keywords must be a dict')
-            self._keywords = keywords
-            for key in self._keywords:
+            for key in keywords:
                 if not isinstance(key, str):
                     msg = ': keys in keywords must be of type str'
                     raise ValueError (self.name+msg)
-                if self._keywords[key] is None:
-                    self._keywords[key] = {}
-                elif not isinstance(self._keywords[key], dict):
+                if keywords[key] is None:
+                    keywords[key] = {}
+                elif not isinstance(keywords[key], dict):
                     msg = ': Options for keyword "'+key+'" must be a dict'
                     raise ValueError (self.name+msg)
-                if 'default' not in self._keywords[key]:
-                    self._keywords[key]['default'] = SUPPRESS
-                if 'type' not in self._keywords[key]:
-                    self._keywords[key]['type'] = str
-                if set(self._keywords[key].keys()) != set(['default', 'type']):
+                if 'default' not in keywords[key]:
+                    keywords[key]['default'] = SUPPRESS
+                if 'type' not in keywords[key]:
+                    keywords[key]['type'] = str
+                if set(keywords[key].keys()) != set(['default', 'type']):
                     msg = ': Unknown key in keyword "'+key+'"'
                     raise TypeError (self.name+msg)
                 # Check the type of the keyword
-                if isinstance(self._keywords[key]['type'], list):
+                if isinstance(keywords[key]['type'], list):
                     msg = ': list not allowed in type for glob or keywords'
                     raise ValueError (self.name+msg)
                 else:
-                    check_type([self._keywords[key]['type']])
+                    check_type([keywords[key]['type']])
+            self._keywords = keywords
                 
             # Since we append this dict to the end, we must keep as a list
-            if self._nolist:
-                self._nolist = False
+            # unless only the keywords are being kept
+            self._nolist = True if not self._type else False
         else:
             self._keywords = {} # In case keywords = None
 
@@ -917,10 +915,20 @@ class LineKey(_KeyLevel):
 
         # If there are too many arguments
         elif len(args) > len(self._type):
-            if not (self._keywords or self._glob):
-                msg =': expected '+str(len(self._type))
-                msg += ' arguments, got '+str(len(args))
-                raise ReaderError (self.name+msg)
+            if self._keywords:
+                pass
+            elif self._glob and self._glob['len'] in ('*', '+'):
+                pass
+            else:
+                n = len(self._type)
+                if self._glob.get('len') == '?':
+                    n += 1
+                    msg =': expected at most '+str(n)
+                else:
+                    msg =': expected '+str(n)
+                if len(args) != n:
+                    msg += ' arguments, got '+str(len(args))
+                    raise ReaderError (self.name+msg)
 
         def validate(val, typ, case):
             '''Checks that the given value is valid by checking
@@ -1008,12 +1016,6 @@ class LineKey(_KeyLevel):
             t = self._glob['type']
             for a in args:
                 glob.append(check_type(a, t, self._case))
-            if len(glob) < 1 and self._glob['len'] == '+':
-                msg = ': at least one argument in glob required'
-                raise ReaderError (self.name+msg)
-            elif len(glob) > 1 and self._glob['len'] == '?':
-                msg = ': no greater than one argument in glob allowed'
-                raise ReaderError (self.name+msg)
             # Assign the default if there was nothing
             if self._glob['join']:
                 if not glob:
@@ -1033,7 +1035,16 @@ class LineKey(_KeyLevel):
                     pass
             # Tag onto the end of val and prep val
             if not val:
-                val = glob
+                if self._nolist:
+                    if isinstance(glob, str):
+                        val = glob
+                    else:
+                        try:
+                            val = glob[0]
+                        except IndexError:
+                            val = ''
+                else:
+                    val = tuple(glob)
             elif not glob:
                 if self._nolist:
                     val = val[0]
