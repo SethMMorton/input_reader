@@ -4,6 +4,7 @@
 from distribute_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
 
 # Read the _version.py file for the module version number
 import re
@@ -25,6 +26,19 @@ try:
 except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
+# Define how to use pytest to test the code
+import sys
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
+
 setup(name='input_reader',
       version=VERSION,
       author='Seth M. Morton',
@@ -35,7 +49,9 @@ setup(name='input_reader',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       use_2to3=True,
-      test_suite='input_reader.tests.loadAllTests',
+      tests_require=['pytest'],
+      cmdclass = {'test': PyTest},
+      #test_suite='input_reader.tests.loadAllTests',
       classifiers=(
         'Development Status :: 4 - Beta',
         #'Development Status :: 5 - Production/Stable',
