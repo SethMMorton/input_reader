@@ -10,7 +10,7 @@ class _KeyLevel(object):
         # Are the keys case-sensitive by default?
         self._case = case
         if not isinstance(case, bool):
-            raise ValueError ('case value must be a bool, '
+            raise ValueError ('case must be bool, '
                               'given '+repr(self._case))
 
         # Default the key dictionary
@@ -81,9 +81,9 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
-        # Keyname must be str
+        # : keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+': Keyname must be str')
+            raise ValueError (str(keyname)+': : keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -238,9 +238,9 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
-        # Keyname must be str
+        # : keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+'Keyname must be str')
+            raise ValueError (str(keyname)+': keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -337,9 +337,12 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
-        # Keyname must be str
+        # keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+'Keyname must be str')
+            raise ValueError (str(keyname)+': keyname must be str')
+        # end must be str
+        if not isinstance(end, str):
+            raise ValueError (self.name+': end must be str, given '+str(end))
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -352,12 +355,18 @@ class _KeyLevel(object):
         # Use parents's ignoreunknown if not given
         if ignoreunknown is None:
             ignoreunknown = self._ignoreunknown
+        # ignoreunknown must be bool
+        if not isinstance(ignoreunknown, bool):
+            raise ValueError (self.name+': ignoreunknown must be bool, '
+                                        'given '+str(ignoreunknown))
         # Lower keyname if not case sensitive
         if not case:
             keyname = keyname.lower()
         # Store this key
         self._keys[keyname] = BlockKey(keyname, end, case, ignoreunknown,
                                        **kwargs)
+        # Save the upper default
+        self._keys[keyname]._upper_case = self._case
         return self._keys[keyname]
 
     def add_regex_line(self, handle, regex, case=None, **kwargs):
@@ -437,12 +446,17 @@ class _KeyLevel(object):
             The default is :py:const:`False`.
         :type repeat: bool
         '''
+        # handle must be str
+        if not isinstance(handle, str):
+            raise ValueError (str(handle)+': handle must be str')
         # Cannot repeat keys
         if handle in self._keys:
             raise ReaderError ('The key '+handle+' has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
+        if not isinstance(case, bool):
+            raise ValueError ('case must be bool, given '+str(case))
         # Use global default if none was given
         if 'default' not in kwargs:
             kwargs['default'] = self._default
@@ -628,7 +642,7 @@ class _KeyLevel(object):
             try:
                 if self._case and f[i] == self._end:
                     notend = False
-                elif not self._case and f[i].lower() == self._end:
+                elif not self._case and f[i].lower() == self._end.lower():
                     notend = False
             except AttributeError:
                 pass # Not a block, no end attribute
@@ -672,6 +686,15 @@ class _KeyLevel(object):
                 inew, name, parsed = val._parse(f, i, namespace)
                 namespace.add(name, parsed)
                 return inew
+
+        # If this is a block key, check if this is the end of the block
+        try:
+            e = f[i] if self._upper_case else f[i].lower()
+        except AttributeError:
+            pass
+        else:
+            if e == self._end:
+                return i+1
 
         # If nothing was found, raise an error
         raise ReaderError (self.name+': Unrecognized key: '+f[i])
@@ -1155,11 +1178,11 @@ class BlockKey(_KeyLevel):
         _KeyLevel.__init__(self, case=case)
         '''Defines a block key.'''
         # Fill in the values
-        self.name     = keyname
+        self.name = keyname
         if self._case:
-            self._end  = end.lower()
+            self._end = end.lower()
         else:
-            self._end  = end
+            self._end = end
         self._ignoreunknown = ignoreunknown
         # Add the generic keyword arguments
         self._add_kwargs(**kwargs)
@@ -1169,8 +1192,13 @@ class BlockKey(_KeyLevel):
         we read from and the value'''
 
         # Parse this block
-        i, val = self._parse_key_level(f, i+1)
-        return self._return_val(i, val, namespace)
+        n = len(f[i].split())
+        if n == 1:
+            i, val = self._parse_key_level(f, i+1)
+            return self._return_val(i, val, namespace)
+        else:
+            raise ReaderError ('The block "'+self.name+'" was given '
+                               'arguments, this is illegal')
 
 class MutExGroup(_KeyLevel):
     '''A class to hold a mutually exclusive group'''
