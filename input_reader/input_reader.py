@@ -85,9 +85,11 @@ class InputReader(_KeyLevel):
 
         # Parse this key level, recursively reading lower levels
         i, namespace = self._parse_key_level(f, 0)
-        namespace.filename = filename
-        namespace._order.append('filename')
-        return namespace, f
+        namespace.__filename__ = filename
+        namespace._order.append('__filename__')
+        namespace.__input__ = f
+        namespace._order.append('__input__')
+        return namespace
 
     def _read_in_file(self, filename):
         '''Store the filename as a list'''
