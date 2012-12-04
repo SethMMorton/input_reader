@@ -83,7 +83,7 @@ class _KeyLevel(object):
         '''
         # : keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+': : keyname must be str')
+            raise ValueError (repr(keyname)+': : keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -240,7 +240,7 @@ class _KeyLevel(object):
         '''
         # : keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+': keyname must be str')
+            raise ValueError (repr(keyname)+': keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -339,10 +339,10 @@ class _KeyLevel(object):
         '''
         # keyname must be str
         if not isinstance(keyname, str):
-            raise ValueError (str(keyname)+': keyname must be str')
+            raise ValueError (repr(keyname)+': keyname must be str')
         # end must be str
         if not isinstance(end, str):
-            raise ValueError (self.name+': end must be str, given '+str(end))
+            raise ValueError (keyname+': end must be str, given '+repr(end))
         # Cannot repeat keys
         if keyname in self._keys:
             raise ReaderError ('The key '+keyname+' has been defined twice')
@@ -357,8 +357,8 @@ class _KeyLevel(object):
             ignoreunknown = self._ignoreunknown
         # ignoreunknown must be bool
         if not isinstance(ignoreunknown, bool):
-            raise ValueError (self.name+': ignoreunknown must be bool, '
-                                        'given '+str(ignoreunknown))
+            raise ValueError (keyname+': ignoreunknown must be bool, '
+                                        'given '+repr(ignoreunknown))
         # Lower keyname if not case sensitive
         if not case:
             keyname = keyname.lower()
@@ -448,7 +448,7 @@ class _KeyLevel(object):
         '''
         # handle must be str
         if not isinstance(handle, str):
-            raise ValueError (str(handle)+': handle must be str')
+            raise ValueError (repr(handle)+': handle must be str')
         # Cannot repeat keys
         if handle in self._keys:
             raise ReaderError ('The key '+handle+' has been defined twice')
@@ -456,7 +456,7 @@ class _KeyLevel(object):
         if case is None:
             case = self._case
         if not isinstance(case, bool):
-            raise ValueError ('case must be bool, given '+str(case))
+            raise ValueError (handle+': case must be bool, given '+repr(case))
         # Use global default if none was given
         if 'default' not in kwargs:
             kwargs['default'] = self._default
@@ -474,7 +474,7 @@ class _KeyLevel(object):
         self._keys[handle] = Regex(handle, regex, **kwargs)
         return self._keys[handle]
 
-    def add_mutually_exclusive_group(self, case=None, dest=None, default=None,
+    def add_mutually_exclusive_group(self, dest=None, default=None,
                                      required=False):
         '''Defines a mutually exclusive group.
 
@@ -506,13 +506,16 @@ class _KeyLevel(object):
             in fact is no error.
         :type required: bool
         '''
-        # Use default case if no case is given here
-        if case is None:
-            case = self._case
         if default is None:
             default = self._default
+        if dest is not None and not isinstance(dest, str):
+            raise ValueError ('dest must be a str, given '+repr(dest))
+        if not isinstance(required, bool):
+            raise ValueError ('required value must be a bool, '
+                              'given '+repr(required))
+
         # Add this group to the list, then return it
-        self._meg.append(MutExGroup(case, dest, default, required,
+        self._meg.append(MutExGroup(self._case, dest, default, required,
                                     self._ignoreunknown))
         return self._meg[-1]
 
@@ -541,7 +544,7 @@ class _KeyLevel(object):
         if self._dest is None:
             self._dest = kwargs.pop('dest', None)
         if self._dest is not None and not isinstance(self._dest, str):
-            raise ValueError ('dest value '+str(self._dest)+' must be a str')
+            raise ValueError ('dest value '+repr(self._dest)+' must be a str')
 
         # Depends
         self._depends = kwargs.pop('depends', None)
@@ -788,8 +791,7 @@ class _KeyLevel(object):
 class LineKey(_KeyLevel):
     '''A class to store data on a line key'''
 
-    def __init__(self, keyname, type=str, glob={}, keywords={}, case=False,
-                 **kwargs):
+    def __init__(self, keyname, type, glob, keywords, case, **kwargs):
         '''Defines a line key.'''
         _KeyLevel.__init__(self, case=case)
         # Fill in the values
@@ -1131,7 +1133,7 @@ class LineKey(_KeyLevel):
 class BooleanKey(_KeyLevel):
     '''A class to store data on a boolean key'''
 
-    def __init__(self, keyname, action=True, **kwargs):
+    def __init__(self, keyname, action, **kwargs):
         '''Defines a boolean key.'''
         _KeyLevel.__init__(self)
         # Fill in the non-generic values
@@ -1173,8 +1175,7 @@ class Regex(_KeyLevel):
 class BlockKey(_KeyLevel):
     '''A class to store data in a block key'''
 
-    def __init__(self, keyname, end='end', case=False, ignoreunknown=False,
-                 **kwargs):
+    def __init__(self, keyname, end, case, ignoreunknown, **kwargs):
         _KeyLevel.__init__(self, case=case)
         '''Defines a block key.'''
         # Fill in the values
@@ -1203,14 +1204,10 @@ class BlockKey(_KeyLevel):
 class MutExGroup(_KeyLevel):
     '''A class to hold a mutually exclusive group'''
 
-    def __init__(self, case=False, dest=None, default=None,
-                 required=False, _ignoreunknown=False):
+    def __init__(self, case, dest, default, required, _ignoreunknown):
         '''Initiallizes the mutually exclusive group.'''
         _KeyLevel.__init__(self, case=case)
         self._default  = default
-        if dest is not None and not isinstance(dest, str):
-            raise ReaderError ('dest value '+str(dest)+' must be a string')
-        else:
-            self._dest = dest
+        self._dest = dest
         self._required = required
         self._ignoreunknown = _ignoreunknown
