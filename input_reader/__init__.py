@@ -52,7 +52,7 @@ def range_check(low, high, expand=False, asint=False):
     # If we need special integer handling, check that we have integers
     if (expand or asint) and int(low) == low and int(high) == high:
         if expand:
-            return range(int(low), int(high)+1)
+            return tuple(range(int(low), int(high)+1))
         else:
             return int(low), int(high)
     # Otherwise return the floats
