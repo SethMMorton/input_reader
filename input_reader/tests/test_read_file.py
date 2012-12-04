@@ -161,7 +161,5 @@ def test_missing_key_is_suppressed(setup):
     reader = InputReader(comment='//', default=SUPPRESS)
     inp = default_keys(reader, parse_string)
     default_checks(inp)
-    with raises(AttributeError):
-        inp.green
-    with raises(AttributeError):
-        inp.line
+    assert 'green' not in inp
+    assert 'line' not in inp

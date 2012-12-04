@@ -102,8 +102,7 @@ def test_read_custom_default_values(setup):
     assert inp.red
     assert inp.green is None
     assert not inp.yellow
-    with raises(AttributeError):
-        inp.white
+    assert 'white' not in inp
 
 def test_read_required_works_correctly(setup):
     # A keyword that is not required does not appear... OK

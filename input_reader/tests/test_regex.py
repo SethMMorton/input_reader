@@ -1,7 +1,7 @@
 from input_reader import InputReader, ReaderError, SUPPRESS
 from pytest import raises, fixture
-import re
 from re import search
+import re
 
 def test_regex_missing_handle():
     r = InputReader()

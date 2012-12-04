@@ -93,12 +93,12 @@ def test_block_read_case_sensitive():
     a = r.add_block_key('red', case=True, end='END')
     a.add_boolean_key('ROSE')
     inp = r.read_input(['RED', 'ROSE', 'END'])
-    assert not hasattr(inp.red, 'rose')
+    assert 'rose' not in inp.red
     assert inp.red.ROSE
     b = r.add_block_key('pink', case=False)
     b.add_boolean_key('ROSE')
     inp = r.read_input(['PINK', 'ROSE', 'END'])
-    assert not hasattr(inp.pink, 'ROSE')
+    assert 'ROSE' not in inp.pink
     assert inp.pink.rose
     
 def test_block_read_ignoreunknown():
@@ -112,7 +112,7 @@ def test_block_read_ignoreunknown():
     b.add_boolean_key('rose')
     inp = r.read_input(['blue', 'rose', 'rider', 'end'])
     assert inp.blue.rose
-    assert not hasattr(inp.blue, 'rider')
+    assert 'rider' not in inp.blue
 
 def test_block_read_subblocks():
     r = InputReader()
