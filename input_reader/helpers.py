@@ -39,6 +39,9 @@ class Namespace(object):
         self._ix = 0
         return self
 
+    def __len__(self):
+        return len(self._order)
+
     def add(self, key, val):
         setattr(self, key, val)
         # Add this to the list of things found in the order found.
@@ -57,12 +60,20 @@ class Namespace(object):
         except ValueError:
             pass
 
-    def next(self):
-        if self._ix == len(self._order):
-            raise StopIteration
-        item = self.__dict__[self._order[self._ix]]
-        self._ix += 1
-        return item
+    def get(self, key, default=None):
+        try:
+            return self.__dict__[key]
+        except KeyError:
+            return default
+
+    def keys(self):
+        return tuple(self._order)
+
+    def values(self):
+        return tuple([self.__dict__[x] for x in self._order])
+
+    def items(self):
+        return tuple([(x, self.__dict__[x]) for x in self._order])
 
     def make_set(self):
         return set(self.__dict__.keys()) - set(['_order'])
