@@ -118,6 +118,8 @@ To define the above requirements, we would use the following code::
     mcourse.add_boolean_key('salmon')
     mcourse.add_line_key('pasta', type=('red', 'white'))
 
+You can read in and analyze the file in a manner given below::
+
     # Assuming the input file is in argv[1], read in the input file
     try:
         inp = reader.read_input(sys.argv[1])
@@ -129,11 +131,10 @@ To define the above requirements, we would use the following code::
         ...
 
     # Is lunch served?
-    if 'lunch' in inp:
+    if inp.lunch:
         # If so, what type of soup?
-        if 'soup' in inp.lunch:
-            if inp.lunch.soup == 'chili':
-                ...
+        if inp.lunch.soup == 'chili':
+            ...
 
     # Etc...
 

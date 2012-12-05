@@ -2,17 +2,22 @@ input_reader API
 ================
 
 .. py:currentmodule:: input_reader
+
+The ``input_reader``  Module
+----------------------------
+
+The ``InputReader`` Class
+-------------------------
+
 .. autoclass:: InputReader
-    :members:
-    :inherited-members:
 
-.. autoclass:: ReaderError
+..    :members:
+..    :inherited-members:
 
-.. autoclass:: SUPPRESS
+The ``Namespace`` Class
+-----------------------
 
-.. autofunction:: abs_file_path
+.. autoclass:: Namespace
 
-.. autofunction:: file_safety_check
-
-.. autofunction:: range_check
+..    :members:
 

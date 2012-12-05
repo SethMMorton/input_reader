@@ -11,10 +11,12 @@ Contents:
 =========
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+    :numbered:
 
-   intro.rst
-   API.rst
+    intro.rst
+    API.rst
+    helperfunctions.rst
 
 ******************
 Indices and tables
