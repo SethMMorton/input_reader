@@ -554,53 +554,69 @@ class _KeyLevel(object):
             msg = ': Unknown arguments given: '+','.join(kwargs.keys())
             raise TypeError (self.name+msg)
 
+    def _validate_string(self, string):
+        '''Make sure a string has no spaces'''
+        if hasattr(string, 'pattern'):
+            for s in (r'\s', r'.'):
+                if s in string.pattern:
+                    msg = ': Regex should not allow the possibility of spaces'
+                    msg += ', given "'+string.pattern+'"'
+                    raise ValueError (self.name+msg)
+        else:
+            if len(string.split()) == 0:
+                msg = ': String cannot be of zero length'
+                raise ValueError (self.name+msg)
+            elif len(string.split()) > 1:
+                msg = ': String cannot contain spaces, given "'+string+'"'
+                raise ValueError (self.name+msg)
+
     def _return_val(self, i, val, namespace):
         '''Returns the result properly, depending on the key type
         and how the user wants it.'''
 
         # Substitute the keyname for dest if required
         name = self._dest if self._dest is not None else self.name
+        # If the name above is in the namespace
+        in_namespace = getattr(namespace, name, self._default) != self._default
 
         # If multiple occurences of the keyname may appear, store
         # each of these in the namespace
         if self._repeat:
-            # If the name exists, check if we need to append the value
-            # to an already generated list, or replace the default value.
-            if name in namespace:
-                if getattr(namespace, name) in (None, self._default):
-                    return i, name, (val,)
-                else:
-                    return i, name, getattr(namespace, name)+(val,)
-            # If the keyname does not exist, simply return (as a tuple)
+            # If this key has been found, check if we need to append to
+            # the previous values or create the new value
+            if self._found or in_namespace:
+                return i, name, getattr(namespace, name)+(val,)
+            # If the key jas not been found, simply return (as a tuple)
             else:
                 return i, name, (val,)
         # In this case, only one instance of the keyname may appear
         # or it is an error.
         else:
             # If the keyname has already been found it is an error,
-            # however it is first checked it appears only because
-            # it is the default.
-            if name in namespace:
-                if getattr(namespace, name) != self._default:
-                    raise ReaderError (self.name+': This key appears twice')
-                else:
-                    return i, name, val
-            # If the keyname does not exist, simply return
+            if self._found or in_namespace:
+                raise ReaderError (self.name+': This key appears twice')
+            # If the key has not been found, simply return
             else:
                 return i, name, val
 
-    def _defaults(self):
-        '''Return the defaults for the keys as a dictionary.'''
+    def _defaults_and_unfind(self):
+        '''
+        Return the defaults for the keys as a dictionary.
+        Also unfind all keys in case this is the second time
+        we are reading a file with this class.
+        '''
         defaults = {}
         for key, val in self._keys.items():
             if val._default is not SUPPRESS:
                 name = val._dest if val._dest is not None else val.name
                 defaults[name] = val._default
+            val._found = False
         for meg in self._meg:
             for key, val in meg._keys.items():
                 if val._default is not SUPPRESS:
                     name = val._dest if val._dest is not None else val.name
                     defaults[name] = val._default
+                val._found = False
         return defaults
 
     def _parse_key_level(self, f, i):
@@ -609,7 +625,7 @@ class _KeyLevel(object):
         '''
 
         # Populate the namespace with the defaults
-        namespace = Namespace(**self._defaults())
+        namespace = Namespace(**self._defaults_and_unfind())
 
         # Populate the namespace with what was found in the input
         i, namespace = self._find_keys_in_input(f, i, namespace)
@@ -675,6 +691,7 @@ class _KeyLevel(object):
             inew, name, parsed = val._parse(f, i, namespace)
             # Add this to the namespace
             namespace.add(name, parsed)
+            val._found = True
             return inew
 
         # Look in the mutually exclusive groups if not in usual places
@@ -688,6 +705,7 @@ class _KeyLevel(object):
                         continue
                 inew, name, parsed = val._parse(f, i, namespace)
                 namespace.add(name, parsed)
+                val._found = True
                 return inew
 
         # If this is a block key, check if this is the end of the block
@@ -711,9 +729,11 @@ class _KeyLevel(object):
             # Loop over each key in this group and count the
             # number in the namespace
             for key, val in meg._keys.items():
-                name = val._dest if val._dest is not None else val.name
-                if getattr(namespace, name, val._default) != val._default:
+                #dest = val._dest if val._dest else '__None__'
+                #if val._found or getattr(namespace, dest, None):
+                if val._found:
                     nkeys += 1
+                    name = val._dest if val._dest is not None else val.name
                     thekey = [name, getattr(namespace, name)]
             # If none of the keys in the group were found
             if nkeys == 0:
@@ -758,14 +778,13 @@ class _KeyLevel(object):
         # Loop over the non-grouped keys and check key requirements
         for key, val in self._keys.items():
             # Identify missing required keys and raise error if not found
-            name = val._dest if val._dest is not None else val.name
-            if val._required and name not in namespace._order:
+            if val._required and not val._found:
                 msg = ': The key "'+key+'" is required but not found'
                 raise ReaderError (self.name+msg)
 
         # Loop over the keys that were found and see if there are any
         # dependencies that were not filled.
-        for key in namespace._order:
+        for key in namespace.keys():
             # Check if this key has any dependencies,
             # and if so, they are given as well.
             for k, val in self._keys.items():
@@ -781,13 +800,6 @@ class _KeyLevel(object):
                 msg += '" is also present, but it is not'
                 raise ReaderError (self.name+msg)
 
-        # Last, tag on the defaults that were not found
-        # in the input file to the end of the order.
-        order = set(namespace._order)
-        names = namespace.make_set()
-        for key in names - order:
-            namespace._order.append(key)
-
 class LineKey(_KeyLevel):
     '''A class to store data on a line key'''
 
@@ -798,6 +810,10 @@ class LineKey(_KeyLevel):
         self.name = keyname
         # Add the generic keyword arguments
         self._add_kwargs(**kwargs)
+        # Check strings
+        self._validate_string(self.name)
+        if self._dest is not None:
+            self._validate_string(self._dest)
         # Cannot have both glob and keywords defined
         if glob and keywords:
             msg = ': Cannot define both glob and keywords'
@@ -835,6 +851,8 @@ class LineKey(_KeyLevel):
                            'int, or an instance of str, float, '
                            'int or regex')
                     raise ValueError (self.name+msg)
+                if isinstance(t, str) or hasattr(t, 'pattern'):
+                    self._validate_string(t)
         check_type(self._type)
 
         # Validate glob
@@ -1141,6 +1159,10 @@ class BooleanKey(_KeyLevel):
         self._action  = action
         # Add the generic keyword arguments
         self._add_kwargs(**kwargs)
+        # Check strings
+        self._validate_string(self.name)
+        if self._dest is not None:
+            self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
         '''Parses the current line for the key.  Returns the line that
@@ -1163,6 +1185,10 @@ class Regex(_KeyLevel):
         self._regex  = regex
         # Add the generic keyword arguments
         self._add_kwargs(**kwargs)
+        # Check strings
+        self._validate_string(self.name)
+        if self._dest is not None:
+            self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
         '''Parses the current line for the regex.  Returns the match objext
@@ -1187,6 +1213,11 @@ class BlockKey(_KeyLevel):
         self._ignoreunknown = ignoreunknown
         # Add the generic keyword arguments
         self._add_kwargs(**kwargs)
+        # Check strings
+        self._validate_string(self.name)
+        if self._dest is not None:
+            self._validate_string(self._dest)
+        self._validate_string(self._end)
 
     def _parse(self, f, i, namespace):
         '''Parses the current line for the key.  Returns the line that
@@ -1209,5 +1240,8 @@ class MutExGroup(_KeyLevel):
         _KeyLevel.__init__(self, case=case)
         self._default  = default
         self._dest = dest
+        # Check strings
+        if self._dest is not None:
+            self._validate_string(self._dest)
         self._required = required
         self._ignoreunknown = _ignoreunknown
