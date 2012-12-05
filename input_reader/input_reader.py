@@ -11,7 +11,6 @@ class InputReader(_KeyLevel):
     supplied to the class using a syntax similar to what is used in 
     the :py:mod:`argparse` module in the Python standard library.
 
-
     :py:class:`InputReader` accepts blocks-type, line-type and
     boolean-type keys, mutually exclusive groups, required keys,
     defaults, and more.
@@ -85,10 +84,6 @@ class InputReader(_KeyLevel):
 
         # Parse this key level, recursively reading lower levels
         i, namespace = self._parse_key_level(f, 0)
-        namespace.__filename__ = filename
-        namespace._order.append('__filename__')
-        namespace.__input__ = f
-        namespace._order.append('__input__')
         return namespace
 
     def _read_in_file(self, filename):
