@@ -7,8 +7,9 @@ A python module to facilitate reading input files
 ``input_reader`` is used to define and read a general input file for a program.
 This ``README`` only contains a *brief* synopsis of what ``input_reader`` can
 do.  For a more detailed description of the API, please see the documentation
-at [coming soon!  I promise!].  The API is inspired by that of the ``argparse``
-module from the python standard library, so hopefully it will be easy to learn.
+at http://packages.python.org/input_reader.  The API is inspired by that of the
+``argparse`` module from the python standard library, so hopefully it will be
+easy to learn.
 
 The Problem
 -----------
