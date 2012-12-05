@@ -37,6 +37,12 @@ def test_line_name_definition():
     with raises(ValueError) as e:
         r.add_line_key(23)
     assert 'keyname must be str' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_line_key('hello goodbye')
+    assert 'String cannot contain spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_line_key('')
+    assert 'String cannot be of zero length' in str(e.value)
 
 def test_line_repeat_in_definition():
     # You cannot repeat keys
@@ -69,10 +75,18 @@ def test_line_type_definitions():
     v = r.add_line_key('cyan', type=[(int, float), str])
     assert v._type, [(int, float), str]
     import re
-    regex = re.compile(r'(\s+|\w*)')
+    regex = re.compile(r'(\d+|\w*)')
     w = r.add_line_key('pink', type=regex)
     assert w._type == [regex]
     # Make sure incorrect types are not OK
+    regex = re.compile(r'hi\s+bye')
+    with raises(ValueError) as e:
+        r.add_line_key('black', type=regex)
+    assert 'Regex should not allow the possibility of spaces' in str(e.value)
+    regex = re.compile(r'hi.*bye')
+    with raises(ValueError) as e:
+        r.add_line_key('black', type=regex)
+    assert 'Regex should not allow the possibility of spaces' in str(e.value)
     with raises(ValueError) as e:
         r.add_line_key('black', type=set([str, int]))
     assert 'type must be one of' in str(e.value)

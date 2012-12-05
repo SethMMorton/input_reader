@@ -75,7 +75,7 @@ def test_read_string_fails_properly(setup):
     reader, s, io, l, r, parse_string = setup
     with raises(ReaderError) as e:
         reader._read_in_file(s)
-    assert 'Cannot read in file' in str(e) 
+    assert 'Cannot read in file' in str(e.value) 
 
 def test_read_stringio_properly(setup):
     reader, s, io, l, r, parse_string = setup
@@ -96,7 +96,7 @@ def test_comments_are_handled_correctly(setup):
     with raises(ReaderError) as e:
         reader.read_input(parse_string)
     regex = r'expected \d+ arguments, got \d+'
-    assert search(regex, str(e))
+    assert search(regex, str(e.value))
 
 def test_unknown_keys_cause_failure(setup):
     # Don't ignore unknown keys
@@ -106,7 +106,7 @@ def test_unknown_keys_cause_failure(setup):
     reader.add_line_key('path')
     with raises(ReaderError) as e:
         reader.read_input(parse_string)
-    assert 'Unrecognized key' in str(e)
+    assert 'Unrecognized key' in str(e.value)
 
 def test_ignoreunknown_actually_ignores_unknown(setup):
     # Ignore unknown keys

@@ -21,7 +21,6 @@ def test_namespace_lists():
     ns1.add('medium', True)
     ns1.add('huge', False)
     assert ns1.keys() == ('big', 'small', 'medium', 'huge')
-    assert ns1.make_set() == set(('big', 'small', 'medium', 'huge'))
     ns1.remove('small')
     assert ns1.keys() == ('big', 'medium', 'huge')
     assert ns1.values() == (True, True, False)
@@ -54,3 +53,9 @@ def test_namespace_string():
     ns1.add('huge', False)
     assert str(ns1) == \
             'Namespace(big=True, small=False, medium=True, huge=False)'
+
+    ns2 = Namespace(red=True, blue=False)
+    # Adding in the constructor does not preserve order, so the 
+    # option below is required
+    assert str(ns2) in ('Namespace(red=True, blue=False)',
+                        'Namespace(blue=False, red=True)')

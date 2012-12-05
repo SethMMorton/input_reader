@@ -115,3 +115,15 @@ def test_read_mutex_set_required():
     with raises(ReaderError) as e:
         inp = r.read_input([])
     assert search(r'One and only one of .* must be included', str(e.value))
+
+def test_read_mutex_set_dest_set_required():
+    r = InputReader()
+    meg = r.add_mutually_exclusive_group(required=True, dest='color')
+    meg.add_boolean_key('red')
+    meg.add_boolean_key('blue')
+    meg.add_boolean_key('green')
+    r.add_boolean_key('cyan')
+
+    with raises(ReaderError) as e:
+        inp = r.read_input(['cyan'])
+    assert search(r'One and only one of .* must be included', str(e.value))

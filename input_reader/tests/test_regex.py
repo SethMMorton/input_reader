@@ -47,6 +47,12 @@ def test_regex_handle_definition():
     with raises(ValueError) as e:
         r.add_regex_line(23, r'test')
     assert 'handle must be str' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_regex_line('hello goodbye', r'test')
+    assert 'String cannot contain spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_regex_line('', r'test')
+    assert 'String cannot be of zero length' in str(e.value)
 
 def test_regex_repeat_in_definition():
     # You cannot repeat keys

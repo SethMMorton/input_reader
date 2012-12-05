@@ -131,7 +131,7 @@ def test_read_keywords_cannot_repeat(setup):
     r.add_boolean_key('red', repeat=False)
     with raises(ReaderError) as e:
         inp = r.read_input(s2)
-    assert 'This key appears twice' in str(e)
+    assert 'This key appears twice' in str(e.value)
 
 def test_read_keywords_can_repeat(setup):
     # A keyword appears twice that can repeat... OK
@@ -159,18 +159,27 @@ def test_read_destination_is_same_and_done_incorrectly(setup):
     # They are both sent to other dest, repeat is needed
     with raises(ReaderError) as e:
         inp = r.read_input(s1)
-    assert 'This key appears twice' in str(e)
+    assert 'This key appears twice' in str(e.value)
 
 def test_read_destination_is_same_and_done_correctly(setup):
     # Try the above with repeat=True
     r, s1, s2 = setup
     r.add_boolean_key('blue', action='blue', dest='colors',
-                           repeat=True)
+                      repeat=True)
     r.add_boolean_key('red', action='red', dest='colors',
-                           repeat=True)
+                      repeat=True)
     inp = r.read_input(s1)
     # Set is used below so that order doesn't matter
     assert set(inp.colors) == set(('blue', 'red'))
+
+def test_read_destination_required(setup):
+    r, s1, s2 = setup
+    r.add_boolean_key('blue', action='blue', dest='rcolor', required=True)
+    r.add_boolean_key('red', action='red', dest='bcolor', required=True)
+    r.add_boolean_key('green', action='green', dest='gcolor', required=True)
+    with raises(ReaderError) as e:
+        inp = r.read_input(s1)
+    assert search('The key "\w+" is required but not found', str(e.value))
 
 def test_read_depends_dependee_present(setup):
     # Red depends on blue
@@ -189,4 +198,4 @@ def test_read_depends_dependee_missing(setup):
     with raises(ReaderError) as e:
         inp = r.read_input(s1)
     regex = r'The key "\w+" requires that "\w+" is also present'
-    assert search(regex, str(e))
+    assert search(regex, str(e.value))

@@ -26,6 +26,12 @@ def test_block_name_definition():
     with raises(ValueError) as e:
         r.add_block_key(23)
     assert 'keyname must be str' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_block_key('hello goodbye')
+    assert 'String cannot contain spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_block_key('')
+    assert 'String cannot be of zero length' in str(e.value)
 
 def test_block_repeat_in_definition():
     # You cannot repeat keys

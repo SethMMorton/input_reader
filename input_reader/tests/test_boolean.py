@@ -39,7 +39,13 @@ def test_boolean_name_definition(setup):
     s1, s2, r = setup
     with raises(ValueError) as e:
         r.add_boolean_key(23)
-    assert 'keyname must be str' in str(e)
+    assert 'keyname must be str' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_boolean_key('hello goodbye')
+    assert 'String cannot contain spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_boolean_key('')
+    assert 'String cannot be of zero length' in str(e.value)
 
 def test_boolean_repeat_in_definition(setup):
     # You cannot repeat keys
@@ -48,7 +54,7 @@ def test_boolean_repeat_in_definition(setup):
     with raises(ReaderError) as e:
         r.add_boolean_key('red')
     regex = r'The key \w+ has been defined twice'
-    assert search(regex, str(e))
+    assert search(regex, str(e.value))
 
 def test_boolean_read_arguments(setup):
     # Booleans cannot have arguments
@@ -58,7 +64,7 @@ def test_boolean_read_arguments(setup):
     with raises(ReaderError) as e:
         inp = r.read_input(s2)
     regex = 'The boolean "\w+" was given arguments, this is illegal'
-    assert search(regex, str(e))
+    assert search(regex, str(e.value))
 
 def test_boolean_read_actions(setup):
     # Actions can be lists, not just bool, str, int or floats
