@@ -55,7 +55,12 @@ def test_namespace_string():
             'Namespace(big=True, small=False, medium=True, huge=False)'
 
     ns2 = Namespace(red=True, blue=False)
-    # Adding in the constructor does not preserve order, so the 
+    # Defaults are given in the constructor and are not put into the namespace
+    # until population is complete
+    assert str(ns2) in 'Namespace()'
+    # After population is complete, we finalize to add defaults not found.
+    # Adding defaults does not preserve order, so the 
     # option below is required
+    ns2.finalize()
     assert str(ns2) in ('Namespace(red=True, blue=False)',
                         'Namespace(blue=False, red=True)')

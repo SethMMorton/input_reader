@@ -576,15 +576,13 @@ class _KeyLevel(object):
 
         # Substitute the keyname for dest if required
         name = self._dest if self._dest is not None else self.name
-        # If the name above is in the namespace
-        in_namespace = getattr(namespace, name, self._default) != self._default
 
         # If multiple occurences of the keyname may appear, store
         # each of these in the namespace
         if self._repeat:
             # If this key has been found, check if we need to append to
             # the previous values or create the new value
-            if self._found or in_namespace:
+            if name in namespace:
                 return i, name, getattr(namespace, name)+(val,)
             # If the key jas not been found, simply return (as a tuple)
             else:
@@ -593,7 +591,7 @@ class _KeyLevel(object):
         # or it is an error.
         else:
             # If the keyname has already been found it is an error,
-            if self._found or in_namespace:
+            if name in namespace:
                 raise ReaderError (self.name+': This key appears twice')
             # If the key has not been found, simply return
             else:
@@ -610,13 +608,11 @@ class _KeyLevel(object):
             if val._default is not SUPPRESS:
                 name = val._dest if val._dest is not None else val.name
                 defaults[name] = val._default
-            val._found = False
         for meg in self._meg:
             for key, val in meg._keys.items():
                 if val._default is not SUPPRESS:
                     name = val._dest if val._dest is not None else val.name
                     defaults[name] = val._default
-                val._found = False
         return defaults
 
     def _parse_key_level(self, f, i):
@@ -691,7 +687,6 @@ class _KeyLevel(object):
             inew, name, parsed = val._parse(f, i, namespace)
             # Add this to the namespace
             namespace.add(name, parsed)
-            val._found = True
             return inew
 
         # Look in the mutually exclusive groups if not in usual places
@@ -705,7 +700,6 @@ class _KeyLevel(object):
                         continue
                 inew, name, parsed = val._parse(f, i, namespace)
                 namespace.add(name, parsed)
-                val._found = True
                 return inew
 
         # If this is a block key, check if this is the end of the block
@@ -729,11 +723,9 @@ class _KeyLevel(object):
             # Loop over each key in this group and count the
             # number in the namespace
             for key, val in meg._keys.items():
-                #dest = val._dest if val._dest else '__None__'
-                #if val._found or getattr(namespace, dest, None):
-                if val._found:
+                name = val._dest if val._dest is not None else val.name
+                if name in namespace:
                     nkeys += 1
-                    name = val._dest if val._dest is not None else val.name
                     thekey = [name, getattr(namespace, name)]
             # If none of the keys in the group were found
             if nkeys == 0:
@@ -766,10 +758,15 @@ class _KeyLevel(object):
                     # Replace this name in the order list
                     indx = namespace._order.index(thekey[0])
                     namespace._order[indx] = meg._dest
-                    # Delete the keys in the group from the namespace
-                    for key, val in meg._keys.items():
+                    # Delete the keys in the group from the namespace defaults
+                    for val in meg._keys.values():
                         name = val._dest if val._dest is not None else val.name
                         namespace.remove(name)
+                        try:
+                            del namespace._defaults[name]
+                        except KeyError:
+                            pass
+                        #namespace.remove(name)
                     # Delete these keys from the found lists
                     klist = list(meg._keys)
                     for key in klist:
@@ -777,8 +774,9 @@ class _KeyLevel(object):
 
         # Loop over the non-grouped keys and check key requirements
         for key, val in self._keys.items():
+            name = val._dest if val._dest is not None else val.name
             # Identify missing required keys and raise error if not found
-            if val._required and not val._found:
+            if val._required and name not in namespace:
                 msg = ': The key "'+key+'" is required but not found'
                 raise ReaderError (self.name+msg)
 
@@ -787,7 +785,7 @@ class _KeyLevel(object):
         for key in namespace.keys():
             # Check if this key has any dependencies,
             # and if so, they are given as well.
-            for k, val in self._keys.items():
+            for val in self._keys.values():
                 name = val._dest if val._dest is not None else val.name
                 if key == name:
                     depends = getattr(val, '_depends', None)
@@ -795,10 +793,14 @@ class _KeyLevel(object):
             else:
                 depends = None
             # Raise an error if the depending key is not found
-            if depends and depends not in namespace._order:
+            if depends and depends not in namespace:
+            #if depends and depends not in namespace._order:
                 msg = ': The key "'+key+'" requires that "'+depends
                 msg += '" is also present, but it is not'
                 raise ReaderError (self.name+msg)
+            
+        # Finalize the namespace
+        namespace.finalize()
 
 class LineKey(_KeyLevel):
     '''A class to store data on a line key'''

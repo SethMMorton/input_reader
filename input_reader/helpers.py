@@ -9,12 +9,13 @@ class Namespace(object):
     of key-value pairs.
     '''
 
-    def __init__(self, **kwargs):
+    def __init__(self, **defaults):
         self._order = []
-        for name in kwargs:
-            setattr(self, name, kwargs[name])
-            if name not in self._order:
-                self._order.append(name)
+        self._defaults = defaults.copy()
+        #for name in kwargs:
+        #    setattr(self, name, kwargs[name])
+        #    if name not in self._order:
+        #        self._order.append(name)
 
     def __repr__(self):
         type_name = type(self).__name__
@@ -39,7 +40,7 @@ class Namespace(object):
         return not (self == other)
 
     def __contains__(self, key):
-        return key in self.__dict__
+        return key in self._order
 
     def __iter__(self):
         self._ix = 0
@@ -65,6 +66,11 @@ class Namespace(object):
         # allowed
         if key not in self._order:
             self._order.append(key)
+        # Remove this from the default dict
+        try:
+            del self._defaults[key]
+        except KeyError:
+            pass
 
     def remove(self, key):
         '''\
@@ -100,7 +106,7 @@ class Namespace(object):
 
     def keys(self):
         '''\
-        Just like the :py:meth:`keys` function for the python 
+        Just like the :py:meth:`dict.keys` function for the python 
         :py:class:`dict`.
 
         :returns: :py:class:`tuple` of all keys in the :py:class:`Namespace`.
@@ -109,7 +115,7 @@ class Namespace(object):
 
     def values(self):
         '''\
-        Just like the :py:meth:`values` function for the python 
+        Just like the :py:meth:`dict.values` function for the python 
         :py:class:`dict`.
 
         :returns: :py:class:`tuple` of all values in the 
@@ -119,13 +125,25 @@ class Namespace(object):
 
     def items(self):
         '''\
-        Just like the :py:meth:`items` function for the python 
+        Just like the :py:meth:`dict.items` function for the python 
         :py:class:`dict`.
 
-        :returns: :py:class:`tuple` of :py:class:`tuple`s of 
+        :returns: :py:class:`tuple` of :py:class:`tuple` s of 
                   all key, value pairs in the :py:class:`Namespace`.
         '''
         return tuple([(x, getattr(self, x)) for x in self._order])
+
+    def finalize(self):
+        '''\
+        Any defaults not yet added are added to the :py:class`Namespace`.
+        '''
+        while True:
+            try:
+                key, val = self._defaults.popitem()
+            except KeyError:
+                break
+            else:
+                self.add(key, val)
 
 class ReaderError(Exception):
     '''\
