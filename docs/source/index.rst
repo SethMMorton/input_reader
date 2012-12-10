@@ -17,6 +17,7 @@ Contents:
     intro.rst
     API.rst
     helperfunctions.rst
+    changelog.rst
 
 ******************
 Indices and tables

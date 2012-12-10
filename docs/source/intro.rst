@@ -1,4 +1,41 @@
-Introduction to input_reader
-============================
+The :py:mod:`input_reader` module
+=================================
 
-dd
+.. py:currentmodule:: input_reader
+
+.. py:module:: input_reader
+
+:py:mod:`input_reader` is a python module that provides tools to help read the
+contents of a block-type input file. If you have ever written a custom
+parser for an input file, you will know that there are many non-obvious
+challenges that must be overcome, mostly in the realm of error handling.
+The challenges include dealing with unknown or missing keys, incorrect
+input (:py:obj:`str` vs :py:obj:`float`), data storage, and parse ordering.
+Handling these issues can make a seemingly easy task become a complicated 
+mess that obscures the intent of your program.  
+
+The :py:mod:`input_reader` module was designed with a balance of conciseness
+and clarity in mind, as well as a strong resemblance to the :py:mod:`argparse`
+module in the python standard library.  With :py:mod:`intput_reader`, you can
+define how to read your input files in a relatively small number of lines
+(~1-2 per keyword) that are (for the most part) easy to read.  
+
+This documentation is written in a combination API/tutorial style.  You will
+be guided through creating a generic :py:mod:`input_reader` definition for a 
+generic input file while being introduced to the functionality of the 
+:py:class:`InputReader` one piece at a time.  
+
+Exported objects
+----------------
+
+:py:mod:`input_reader` exports the following objects by default
+(i.e. with ``from input_reader import *``):
+
+1. The class :py:class:`InputReader`
+2. The exception :py:exc:`ReaderError`
+3. The class :py:class:`SUPPRESS`
+4. The function :py:func:`abs_file_path`
+5. The function :py:func:`file_safety_check`
+6. The function :py:func:`range_check`
+
+Optionally, the class :py:class:`Namespace` may be imported by name.
