@@ -67,7 +67,9 @@ a medium steak with salad, and they want the dessert.  Here is the input::
 The ``input_reader`` Code
 -------------------------
 
-To define the above requirements, we would use the following code::
+To define the above requirements, we would use the following code:
+
+.. code:: python
 
     import sys
     from input_reader import InputReader, ReaderError
@@ -119,7 +121,9 @@ To define the above requirements, we would use the following code::
     mcourse.add_boolean_key('salmon')
     mcourse.add_line_key('pasta', type=('red', 'white'))
 
-You can read in and analyze the file in a manner given below::
+You can read in and analyze the file in a manner given below:
+
+.. code:: python
 
     # Assuming the input file is in argv[1], read in the input file
     try:
