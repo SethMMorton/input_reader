@@ -27,11 +27,11 @@ class _KeyLevel(object):
         :type keyname: str
         :argument action:
             What value to store if this key is found.  The default is
-            :py:const:`True`.
+            :py:obj:`True`.
         :argument required:
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to include this for a boolean key.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -40,13 +40,13 @@ class _KeyLevel(object):
         :type required: bool
         :argument default:
             The value stored for this key if it does not appear in
-            the input block.  A value of :py:const:`None` is equivalent
+            the input block.  A value of :py:obj:`None` is equivalent
             to no default. It makes no sense to give a default and mark
             it `required` as well.  
             If the class :py:class:`SUPPRESS` is given instead of 
-            :py:const:`None`, then this key will be removed from the 
+            :py:obj:`None`, then this key will be removed from the 
             namespace if it is not given.
-            The default is :py:const:`None`.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -56,8 +56,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
-            A  value of :py:const:`None` is equivalent to no dest.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no dest.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -68,17 +68,17 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
-            A  value of :py:const:`None` is equivalent to no depends.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no depends.
+            The default is :py:obj:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
-            file or several times.  The default is :py:const:`False`,
+            file or several times.  The default is :py:obj:`False`,
             which means this the `keyname` can only appear once or an
-            error will be raised.  If `repeat` is :py:const:`True`, the
+            error will be raised.  If `repeat` is :py:obj:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
         :type repeat: bool
         '''
         # : keyname must be str
@@ -106,75 +106,85 @@ class _KeyLevel(object):
         :type keyname: str
         :argument type:
             The data type that to be read in for each positional
-            argument, given as a list. The length of the list dictates how
-            many arguments to look for. If this is an empty list or 
-            :py:const:`None` no positional arguments will be read in.
+            argument, given as a :py:obj:`list`. The length of the list 
+            dictates how many arguments to look for. If this is an empty 
+            :py:obj:`list` or :py:obj:`None` no positional arguments will 
+            be read in.
 
             `type` may be one or more of:
 
-                - :py:class:`int`
-                - :py:class:`float`
-                - :py:class:`str`
-                - :py:const:`None`
-                - an explicit int (i.e. 4), float (i.e. 5.4) or str (i.e
-                  "hello")
+                - :py:obj:`int`
+                - :py:obj:`float`
+                - :py:obj:`str`
+                - :py:obj:`None`
+                - an explicit :py:obj:`int` (i.e. :py:const:`4`),
+                  :py:obj:`float` (i.e. :py:const:`5.4`) or :py:obj:`str` (i.e.
+                  :py:const:`"hello"`)
                 - a compiled regular expression object
 
-            If you give an explicit int, float or str, it is assumed that the 
-            value must equal what you gave.  None means that the word "none" is
-            what is expected.
+            If you give an explicit :py:obj:`int`, :py:obj:`float` or
+            :py:obj:`str`, it is assumed that the 
+            value must equal what you gave.  :py:obj:`None` means that the 
+            word :py:const:`"none"` is
+            what is expected.  NOTE: If the entirety of `type` is
+            :py:obj:`None`, (i.e. ``type=None``), then no types are expected,
+            and one of `glob` or `keywords` is required.
 
             If you only wish to read in one argument, you may give the type(s)
-            for that one argument directly (meaning not in a list).  This will
-            cause the returned value to be the value itself, not a 1-length
-            list.
+            for that one argument directly (meaning not in a :py:obj:`list`).  
+            This will cause the returned value to be the value itself, not a 
+            1-length :py:obj:`list`.
 
-            For each value, you may give a tuple of types to indicate more than
-            one type is valid for that argument position.
+            For each value, you may give a :py:obj:`tuple` of types to indicate
+            more than one type is valid for that argument position.
             NOTE: Is is very important that type choices for each argument are
-            given as tuples, and that the list passed to type is an actual list
-            (as opposed to tuple) because these are treated differently.
+            given as :py:obj:`tuple` s, and that the :py:obj:`list` passed to 
+            `type` is an actual :py:obj:`list` (as opposed to :py:obj:`tuple`)
+            because these are treated differently.
 
-            The default value is :py:class:`str`.
+            The default value is :py:obj:`str`.
         :argument glob:
-            `glob` is a dictionary giving information on how to read in a
+            `glob` is a :py:obj:`dict` giving information on how to read in a
             glob of arguments.  Globs are read in after the positional 
             arguments.  If there are no positional arguments, the whole 
             line is globbed.  `glob` is not valid with `keywords`.
-            The glob dictionary accepts only four keys:
+            The glob :py:obj:`dict` accepts only four keys:
 
             `len`
-                Must be one of '*', '+', or '?'.  '*' is a zero or more
-                glob, '+' is an at least one or more glob, and '?' is a 
-                zero or one glob.
+                Must be one of :py:const:`'*'`, :py:const:`'+'`, or
+                :py:const:`'?'`.  :py:const:`'*'` is a zero or more
+                glob, :py:const:`'+'` is an at least one or more glob, and
+                :py:const:`'?'` is a zero or one glob.
             `type`
                 Indicates the data type the glob must be.  This may be
                 any one of the types presented for positional arguments. 
-                If this is omitted, then :py:class:`str` is assumed.
+                If this is omitted, then :py:obj:`str` is assumed.
             `join`
                 `join` will join the globbed values as a space-separated
-                string and thus return a single string instead of a list.
+                :py:obj:`str` and thus return a single :py:obj:`str` 
+                instead of a :py:obj:`list`.
                 This is useful for reading in sentences or titles.  
-                The default is :py:const:`False` if `len` is '*' or '+'
-                and :py:const:`True` if `len` is '?'.
+                The default is :py:obj:`False` if `len` is :py:const:`'*'`
+                or :py:const:`'+'`
+                and :py:obj:`True` if `len` is :py:const:`'?'`.
             `default`
                 In the case that no glob is given this is what will
                 be put into the `glob`. If there is no default,
                 nothing is put into the `glob`.
 
-            By default this is an empty :py:class:`dict`.
+            By default this is an empty :py:obj:`dict`.
         :type glob: dict
         :argument keywords:
             `keywords` is a nested dictionary indicating key-value
             pairs that can be read in. Each key in the dictionary is a
             keyword to look for, and the value for that key is another
-            dictionary with the keys 'type' and 'default'.  If an empty
-            dictionary or :py:const:`None` is given, the defaults of 
+            dictionary with the keys `type` and `default`.  If an empty
+            dictionary or :py:obj:`None` is given, the defaults of 
             :py:class:`str` and :py:class:`SUPPRESS` will be chosen,
             respectively.  Like positional arguments, you may give as 
             many types as you wish per keyword.
 
-            By default this is an empty :py:class:`dict`.
+            By default this is an empty :py:obj:`dict`.
         :type keywords: nested dict
         :argument case:
             States if this particular key is case-sensitive. Note that
@@ -188,7 +198,7 @@ class _KeyLevel(object):
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
-            The default is :py:const:`False`
+            The default is :py:obj:`False`
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -197,13 +207,13 @@ class _KeyLevel(object):
         :type required: bool
         :argument default:
             The value stored for this key if it does not appear in
-            the input block.  A value of :py:const:`None` is equivalent
+            the input block.  A value of :py:obj:`None` is equivalent
             to no default. It makes no sense to give a default and mark
             it `required` as well.  
             If the class :py:class:`SUPPRESS` is given instead of 
-            :py:const:`None`, then this key will be removed from the 
+            :py:obj:`None`, then this key will be removed from the 
             namespace if it is not given.
-            The default is :py:const:`None`.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -213,8 +223,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
-            A  value of :py:const:`None` is equivalent to no dest.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no dest.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -225,17 +235,17 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
-            A  value of :py:const:`None` is equivalent to no depends.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no depends.
+            The default is :py:obj:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
-            file or several times.  The default is :py:const:`False`,
+            file or several times.  The default is :py:obj:`False`,
             which means this the `keyname` can only appear once or an
-            error will be raised.  If `repeat` is :py:const:`True`, the
+            error will be raised.  If `repeat` is :py:obj:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
         :type repeat: bool
         '''
         # : keyname must be str
@@ -266,8 +276,8 @@ class _KeyLevel(object):
             The name of the key to search for.
         :type keyname: str
         :argument end:
-            The string used to signify the end of this block.
-            The default is 'end'.
+            The :py:obj:`str` used to signify the end of this block.
+            The default is :py:const:`'end'`.
         :type end: str
         :argument case:
             States if this particular key is case-sensitive. Note that
@@ -287,7 +297,7 @@ class _KeyLevel(object):
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -296,13 +306,13 @@ class _KeyLevel(object):
         :type required: bool
         :argument default:
             The value stored for this key if it does not appear in
-            the input block.  A value of :py:const:`None` is equivalent
+            the input block.  A value of :py:obj:`None` is equivalent
             to no default. It makes no sense to give a default and mark
             it `required` as well.  
             If the class :py:class:`SUPPRESS` is given instead of 
-            :py:const:`None`, then this key will be removed from the 
+            :py:obj:`None`, then this key will be removed from the 
             namespace if it is not given.
-            The default is :py:const:`None`.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -312,8 +322,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
-            A  value of :py:const:`None` is equivalent to no dest.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no dest.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -324,17 +334,17 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
-            A  value of :py:const:`None` is equivalent to no depends.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no depends.
+            The default is :py:obj:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
-            file or several times.  The default is :py:const:`False`,
+            file or several times.  The default is :py:obj:`False`,
             which means this the `keyname` can only appear once or an
-            error will be raised.  If `repeat` is :py:const:`True`, the
+            error will be raised.  If `repeat` is :py:obj:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
         :type repeat: bool
         '''
         # keyname must be str
@@ -396,7 +406,7 @@ class _KeyLevel(object):
             Indicates that not inlcuding `keyname` is an error.
             It makes no sense to give a `default` and mark it `required`
             as well.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
 
             If `keyname` is part of a mutually exclusive group, it is best
             to set `required` for the group as a whole and not set it for 
@@ -405,13 +415,13 @@ class _KeyLevel(object):
         :type required: bool
         :argument default:
             The value stored for this key if it does not appear in
-            the input block.  A value of :py:const:`None` is equivalent
+            the input block.  A value of :py:obj:`None` is equivalent
             to no default. It makes no sense to give a default and mark
             it `required` as well.  
             If the class :py:class:`SUPPRESS` is given instead of 
-            :py:const:`None`, then this key will be removed from the 
+            :py:obj:`None`, then this key will be removed from the 
             namespace if it is not given.
-            The default is :py:const:`None`.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, it is best
@@ -421,8 +431,8 @@ class _KeyLevel(object):
         :argument dest:
             If `dest` is given, `keyname` will be stored in the returned
             :py:class:`Namespace` as `dest`, not `keyname`.  
-            A  value of :py:const:`None` is equivalent to no dest.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no dest.
+            The default is :py:obj:`None`.
 
             If `keyname` is part of a mutually exclusive group and the
             group has been given a `dest` value, do not set `dest`
@@ -433,17 +443,17 @@ class _KeyLevel(object):
             at the same input level (i.e. inside the same block or not
             in any block at all) that must also appear or a
             :py:exc:`ReaderError` will be raised.
-            A  value of :py:const:`None` is equivalent to no depends.
-            The default is :py:const:`None`.
+            A  value of :py:obj:`None` is equivalent to no depends.
+            The default is :py:obj:`None`.
         :type depends: str
         :argument repeat:
             Determines if `keyname` can appear only once in the input
-            file or several times.  The default is :py:const:`False`,
+            file or several times.  The default is :py:obj:`False`,
             which means this the `keyname` can only appear once or an
-            error will be raised.  If `repeat` is :py:const:`True`, the
+            error will be raised.  If `repeat` is :py:obj:`True`, the
             collected data will be returned in a list in the order in
             which it was read in.
-            The default is :py:const:`False`.
+            The default is :py:obj:`False`.
         :type repeat: bool
         '''
         # handle must be str
@@ -483,7 +493,7 @@ class _KeyLevel(object):
             than the keyname.  Useful if you you wish to access the data
             from the mutually exclusive group without having to search
             the names of all the keys in the group.  It also removes the
-            names of the keys in this group from the namespace.  
+            names of the keys in this group from the :py:class:`Namespace`.  
             NOTE: It is best not to set the `dest` value for members of 
             the group (just the group itself), as it may result in undetected
             errors.

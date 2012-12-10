@@ -18,20 +18,19 @@ class InputReader(_KeyLevel):
     :keyword comment:
         Defines what is a comment in the input block.
         This can be a single string or a list of strings.
-        The default is *['#']*.
-    :type comment: str or list, optional
+        The default is :py:const:`['#']`.  Optional.
+    :type comment: str or list
     :keyword case:
         Tells if the keys are case-sensitive or not.
-        The default is :py:const:`False`.
-    :type case: bool, optional
+        The default is :py:obj:`False`.  Optional.
+    :type case: bool
     :keyword ignoreunknown:
         Ignore keys that are not defined.  The default is
-        :py:const:`False`.
-    :type ignoreunknown: bool, optional
+        :py:obj:`False`.  Optional
+    :type ignoreunknown: bool
     :keyword default:
         The default default that will be given when a
-        key is created without a default.
-    :type default: optional
+        key is created without a default.  Optional
     '''
 
     def __init__(self, comment=['#'], case=False, ignoreunknown=False,
@@ -69,9 +68,8 @@ class InputReader(_KeyLevel):
         Reads in the input from a given file using the supplied rules.
 
         :argument filename:
-            The name of the file to read in, or a StringIO or list of strings
-            containing the input itself.
-        :type filename: str
+            The name of the file to read in, or :py:mod:`StringIO` or 
+            list of strings containing the input itself.
         :rtype: :py:class:`Namespace`: This class contains the read-in data
             each key is stored as members of the class.
         :exception:

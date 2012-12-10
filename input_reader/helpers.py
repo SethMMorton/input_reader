@@ -12,10 +12,6 @@ class Namespace(object):
     def __init__(self, **defaults):
         self._order = []
         self._defaults = defaults.copy()
-        #for name in kwargs:
-        #    setattr(self, name, kwargs[name])
-        #    if name not in self._order:
-        #        self._order.append(name)
 
     def __repr__(self):
         type_name = type(self).__name__
@@ -55,10 +51,10 @@ class Namespace(object):
 
         :argument key:
             The key to add
-        :type key: :py:class:`str`
+        :type key: str
         :argument val:
             The value of the key
-        :type val: :py:class:`any`
+        :type val: anything
         '''
         setattr(self, key, val)
         # Add this to the list of things found in the order found.
@@ -78,7 +74,7 @@ class Namespace(object):
 
         :argument key:
             The key to remove.  If it does not exist, it is ignored.
-        :type key: :py:class:`str`
+        :type key: str
         '''
         try:
             delattr(self, key)
@@ -97,9 +93,9 @@ class Namespace(object):
         when `key` does not exist.
 
         :argument key: The key whose value you wish to retrieve.
-        :type key: :py:const:`str`
+        :type key: str
         :argument default:
-        :type default: :py:class:`any` (default is :py:const:`None`)
+        :type default: anything (default is :py:obj:`None`)
         :returns: The value associated with `key`
         '''
         return getattr(self, key, default)
@@ -157,8 +153,8 @@ class ReaderError(Exception):
 class SUPPRESS(object):
     '''
     Use this class to indicate that a key should be suppressed
-    if not present (i.e. it does not appear in the namespace).
+    if not present (i.e. it does not appear in the input file).
 
-    To use this, put :py:class:`SUPRESS` for the default of a key.
+    To use this, put :py:class:`SUPPRESS` for the default of a key.
     '''
     pass
