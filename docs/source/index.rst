@@ -15,7 +15,10 @@ Contents:
     :numbered:
 
     intro.rst
-    API.rst
+    InputReader.rst
+    Namespace.rst
+    SUPPRESS.rst
+    ReaderError.rst
     helperfunctions.rst
     changelog.rst
 

@@ -32,10 +32,26 @@ Exported objects
 (i.e. with ``from input_reader import *``):
 
 1. The class :py:class:`InputReader`
-2. The exception :py:exc:`ReaderError`
-3. The class :py:class:`SUPPRESS`
-4. The function :py:func:`abs_file_path`
-5. The function :py:func:`file_safety_check`
-6. The function :py:func:`range_check`
+    This is the workhorse of the :py:mod:`input_reader` module.  It is used to
+    define what is to be read in and also read the input file.
 
-Optionally, the class :py:class:`Namespace` may be imported by name.
+2. The exception :py:exc:`ReaderError`
+    This exception is raised when an error occurs reading in the file.
+
+3. The class :py:class:`SUPPRESS`
+    This is an empty class that is used to specify that a key not included in
+    the input file should not be included in the :py:class:`Namespace`.
+
+4. The function :py:func:`abs_file_path`
+    This function returns the absolute path of a file, substituting any
+    environment variables or the ``~`` character correctly.
+
+5. The function :py:func:`file_safety_check`
+    Checks that a file is "safe", i.e. it exists and can be opened.
+
+6. The function :py:func:`range_check`
+    Checks that a given range is valied, i.e. the low value is lower than the
+    high value.
+
+Optionally, the class :py:class:`Namespace` may be imported by name.  This
+class contains all the data read into the input file.
