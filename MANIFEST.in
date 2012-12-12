@@ -1,5 +1,8 @@
 include input_reader/*
-include input_reader/docs/*
+include docs/source/*
+include docs/solar/*
+include docs/Makefile
+include docs/make.bat
 include input_reader/tests/*
 include distribute_setup.py
 include LICENSE
