@@ -5,8 +5,8 @@ class Namespace(object):
     input file.  This is a copy-and-paste job from the argparse module
     with some minor additions.
 
-    You can populate the Namespace when initiallization with a series
-    of key-value pairs.
+    You can populate the :py:class:`Namespace` at initiallization with
+    a series of key-value pairs.  These are considered the defaults.
     '''
 
     def __init__(self, **defaults):
@@ -37,10 +37,6 @@ class Namespace(object):
 
     def __contains__(self, key):
         return key in self._order
-
-    def __iter__(self):
-        self._ix = 0
-        return self
 
     def __len__(self):
         return len(self._order)
@@ -131,7 +127,8 @@ class Namespace(object):
 
     def finalize(self):
         '''\
-        Any defaults not yet added are added to the :py:class`Namespace`.
+        Any defaults not yet added with the :py:meth:`add` are added
+        to the :py:class:`Namespace`.
         '''
         while True:
             try:

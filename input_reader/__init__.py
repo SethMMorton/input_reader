@@ -27,13 +27,13 @@ def range_check(low, high, expand=False, asint=False):
        The high value if the range to check.
     :type high: float, int
     :keyword expand:
-        If :py:const:`True` and both *low* or *high* are integers, then
+        If :py:obj:`True` and both *low* or *high* are integers, then
         :py:func:`range_check` will return the range of integers between
         *low* and *high*, inclusive. Otherwise, :py:func:`range_check`
         just returns *low* and *high*.
     :type expand: bool, optional
     :keyword asint:
-        If *expand* is :py:const:`False`, this will attempt to return the
+        If *expand* is :py:obj:`False`, this will attempt to return the
         *low* and *high* as integers instead of floats.
     :type expand: bool, optional
     :rtype:
@@ -41,7 +41,7 @@ def range_check(low, high, expand=False, asint=False):
     :exception:
         * :py:exc:`ValueError`: *low* > *high*.
         * :py:exc:`ValueError`: *low* or *high* cannot be converted to a
-          :py:func:`float`.
+          :py:obj:`float`.
     '''
     # Convert to float first.  A ValueError is raised if not possible
     low = float(low)
