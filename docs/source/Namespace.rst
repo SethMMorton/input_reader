@@ -1,16 +1,17 @@
+.. default-domain:: py
 .. currentmodule:: input_reader
 
-The :py:class:`Namespace` class
+The :class:`Namespace` class
 ===============================
 
 .. autoclass:: Namespace
    :members:
 
 In general, it is unlikely you need to use many of these methods unless you
-have to manually modify the :py:class:`Namespace`.  In general you will likely
+have to manually modify the :class:`Namespace`.  In general you will likely
 be using the namespace as given below:
 
-.. code:: python
+.. code::
 
     # Typically, you won't populate the Namespace yourself.  It will be done
     # for you with the read_input method.  Don't worry about the next three

@@ -65,7 +65,7 @@ release = '0.9.1'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['solar/*']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -83,6 +83,7 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+highlight_language = 'python'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -102,7 +103,7 @@ html_theme = 'solar'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['..']
+html_theme_path = ['.']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

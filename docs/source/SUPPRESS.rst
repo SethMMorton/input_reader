@@ -1,6 +1,7 @@
+.. default-domain:: py
 .. currentmodule:: input_reader
 
-The :py:class:`SUPPRESS` class
+The :class:`SUPPRESS` class
 ==============================
 
 .. autoclass:: SUPPRESS
