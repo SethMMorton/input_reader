@@ -29,10 +29,12 @@ def abs_file_path(filename, env=False):
 
     # Now replace front with $HOME if requested
     if env:
-        if os.environ['HOME'] in absfile:
-            i = len(os.environ['HOME']) + 1
+        from os import environ
+        from os.path import join
+        if environ['HOME'] in absfile:
+            i = len(environ['HOME']) + 1
             # Assemble absolute path, using the $HOME variable
-            absfile = os.path.join('$HOME', absfile[i:])
+            absfile = join('$HOME', absfile[i:])
 
     return absfile
 
