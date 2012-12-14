@@ -68,8 +68,8 @@ class InputReader(_KeyLevel):
         Reads in the input from a given file using the supplied rules.
 
         :argument filename:
-            The name of the file to read in, or :py:mod:`StringIO` or 
-            list of strings containing the input itself.
+            The name of the file to read in, :py:mod:`StringIO` of input,
+            or list of strings containing the input itself.
         :rtype: :py:class:`Namespace`: This class contains the read-in data
             each key is stored as members of the class.
         :exception:
