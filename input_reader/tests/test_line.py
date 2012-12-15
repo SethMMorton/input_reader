@@ -245,36 +245,42 @@ def test_line_read_using_globs():
     r.add_line_key('blue', type=[int, int],
                         glob={'len':'*', 'type':int})
     inp = r.read_input(['blue 1 2 3 4 5 6 7'])
-    assert inp.blue, (1, 2, 3, 4, 5, 6, 7)
+    assert inp.blue == (1, 2, 3, 4, 5, 6, 7)
     inp = r.read_input(['blue 1 2'])
-    assert inp.blue, (1, 2)
+    assert inp.blue == (1, 2)
 
     r.add_line_key('red', type=[int, int],
                         glob={'len':'*', 'type':int, 'join':True})
     inp = r.read_input(['red 1 2 3 4 5 6 7'])
-    assert inp.red, (1, 2, '3 4 5 6 7')
+    assert inp.red == (1, 2, '3 4 5 6 7')
     inp = r.read_input(['red 1 2'])
-    assert inp.red, (1, 2)
+    assert inp.red == (1, 2)
 
     r.add_line_key('pink', type=[int, int],
                         glob={'len':'+', 'type':float, 'join':True})
     inp = r.read_input(['pink 1 2 3 4 5 6 7'])
-    assert inp.pink, (1, 2, '3.0 4.0 5.0 6.0 7.0')
+    assert inp.pink == (1, 2, '3.0 4.0 5.0 6.0 7.0')
     inp = r.read_input(['pink 1 2 3'])
-    assert inp.pink, (1, 2, '3.0')
+    assert inp.pink == (1, 2, '3.0')
 
     r.add_line_key('cyan', type=[int, int],
                         glob={'len':'?', 'type':int})
     inp = r.read_input(['cyan 1 2 3'])
-    assert inp.cyan, (1, 2, 3)
+    assert inp.cyan == (1, 2, 3)
     inp = r.read_input(['cyan 1 2'])
-    assert inp.cyan, (1, 2)
+    assert inp.cyan == (1, 2)
 
     r.add_line_key('yellow', type=int, glob={'len':'?', 'type':int})
     inp = r.read_input(['yellow 1 2'])
-    assert inp.yellow, (1, 2)
+    assert inp.yellow == (1, 2)
     inp = r.read_input(['yellow 1'])
     assert inp.yellow == (1,)
+
+    r.add_line_key('teal', type=int, glob={'len':'?', 'type':int, 'default':3})
+    inp = r.read_input(['teal 1 2'])
+    assert inp.teal == (1, 2)
+    inp = r.read_input(['teal 1'])
+    assert inp.teal == (1, 3)
 
     r.add_line_key('gray', type=None, glob={'len':'?'})
     inp = r.read_input(['gray bye'])
@@ -284,7 +290,7 @@ def test_line_read_using_globs():
 
     r.add_line_key('white', type=None, glob={'len':'*'})
     inp = r.read_input(['white hi lo'])
-    assert inp.white, ('hi' == 'lo')
+    assert inp.white == ('hi', 'lo')
     inp = r.read_input(['white'])
     assert inp.white == ()
 
