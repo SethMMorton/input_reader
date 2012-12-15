@@ -31,6 +31,9 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest',
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+# Doctest path
+doctest_path = [os.path.abspath(os.path.join(os.curdir, '..', '..'))]
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 
