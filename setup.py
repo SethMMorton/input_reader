@@ -7,8 +7,12 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 # Read the _version.py file for the module version number
+import sys
 import re
-from os.path import join
+from subprocess import call
+import os
+from os import chdir, curdir
+from os.path import join, abspath
 VERSIONFILE = join('input_reader', '_version.py')
 with open(VERSIONFILE, "rt") as fl:
     versionstring = fl.readline().strip()
@@ -27,7 +31,6 @@ except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
 # Define how to use pytest to test the code
-import sys
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -37,6 +40,21 @@ class PyTest(TestCommand):
         #import here, cause outside the eggs aren't loaded
         import pytest
         errno = pytest.main(self.test_args)
+        if errno: # exit now on error
+            sys.exit(errno)
+        # Otherwise continue with doctests
+        # Recall current directory
+        original_dir = abspath(curdir)
+        # Go to docs directort
+        chdir('docs')
+        # Get makefile name
+        if os.name == 'nt':
+            make = 'make.bat'
+        else:
+            make = 'make'
+        # Call the process
+        errno = call([make, 'doctest'])
+        chdir(original_dir)
         sys.exit(errno)
 
 setup(name='input_reader',
