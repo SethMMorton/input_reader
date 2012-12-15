@@ -888,7 +888,8 @@ class LineKey(_KeyLevel):
                 msg = ': "join=True" makes no sense for "len=?"'
                 raise ValueError (self.name+msg)
             if set(glob.keys()) != set(['len', 'type', 'join']):
-                raise TypeError (self.name+': Unknown key in glob')
+                if set(glob.keys()) != set(['len', 'type', 'join', 'default']):
+                    raise TypeError (self.name+': Unknown key in glob')
             if not isinstance(glob['join'], bool):
                 raise ValueError (self.name+': "join" must be a bool in glob')
             # Make the result is only a string when there is no positionals
