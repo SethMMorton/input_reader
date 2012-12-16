@@ -25,6 +25,36 @@ be guided through creating a generic :mod:`input_reader` definition for a
 generic input file while being introduced to the functionality of the 
 :class:`InputReader` one piece at a time.  
 
+Installation
+------------
+
+Installation of :mod:`input_reader` is ultra-easy.  Simply execute from the
+command line::
+
+    easy_install input_reader
+
+or, if you have ``pip`` (preferred over ``easy_install``)::
+
+    pip install input_reader
+
+Both of the above commands will download the source for you.
+
+You can also download the source from http://pypi.python.org/pypi/input_reader,
+or browse the git repository at https://github.com/SethMMorton/input_reader.
+
+If you choose to install from source, you can unzip the source archive and
+enter the directory, and type::
+
+    python setup.py install
+
+If you wish to run the unit tests, enter::
+
+    python setup.py test
+
+If you want to build this documentation, enter::
+
+    python setup.py build_sphinx
+
 Exported objects
 ----------------
 
