@@ -13,15 +13,28 @@
     reader.add_boolean_key('blue')
     reader.add_boolean_key('green')
 
-The :class:`InputReader` Class
+.. |False| replace:: :obj:`False`
+.. |True| replace:: :obj:`True`
+.. |None| replace:: :obj:`None`
+.. |tuple| replace:: :obj:`tuple`
+.. |list| replace:: :obj:`list`
+.. |dict| replace:: :obj:`dict`
+.. |str| replace:: :obj:`str`
+.. |int| replace:: :obj:`int`
+.. |float| replace:: :obj:`float`
+.. |InputReader| replace:: :class:`InputReader`
+.. |Namespace| replace:: :class:`Namespace`
+.. |ReaderError| replace:: :exc:`ReaderError`
+
+The |InputReader| Class
 ==============================
 
 .. autoclass:: InputReader
 
-The :class:`InputReader` class allows the user to define the keys to be read in
+The |InputReader| class allows the user to define the keys to be read in
 from the input file, and also reads the input file to parse the data.  
 
-In the simplest use case, you may simply instantiate :class:`InputReader`
+In the simplest use case, you may simply instantiate |InputReader|
 with no aruments, as in
 
 .. code::
@@ -32,16 +45,16 @@ with no aruments, as in
 The above instantiation assumes that the ``#`` character will be a comment in
 the input file, the input file is case-insensitive, unknown keys in the input
 file will cause the parsing to fail, and any key not found in the input file
-will be defaulted to :obj:`None`.  
+will be defaulted to |None|.  
 
-If an unknown parameter is passed to :class:`InputReader`, a
+If an unknown parameter is passed to |InputReader|, a
 :exc:`TypeError` will be raised.  If an inappropriate value is passed to a
 parameter a :exc:`ValueError` will be raised. 
 
-:class:`InputReader` options
+|InputReader| options
 ----------------------------
 
-There are four optional parameters to :class:`InputReader`: *case*,
+There are four optional parameters to |InputReader|: *case*,
 *comment*, *ignoreunknown*, and *default*.  The defaults for these are
 illustrated below:
 
@@ -59,7 +72,7 @@ comment
 '''''''
 
 The comment option specifies the characters that will be interpreted as a
-comment by :class:`InputReader`.  As mentioned above, the default is ``#``.
+comment by |InputReader|.  As mentioned above, the default is ``#``.
 You are free to choose as many characters as you wish.  If you choose one
 character, it may be given as a string or as a single element list of strings
 as shown below:
@@ -108,8 +121,8 @@ It is best not to assume your end-users will do everything correctly.  For
 example, it is common to accidentally misspell a keyword.  You would likey wish
 to alert the user of this error instead of continuing with the calculation and
 giving bad results.  For this reason, the *ignoreunknown* key is defaulted to
-:obj:`False`.  Any key that is not known to :class:`InputReader` causes
-a :exc:`ReaderError` to be raised.  If this is not desireable for your use-case,
+|False|.  Any key that is not known to |InputReader| causes
+a |ReaderError| to be raised.  If this is not desireable for your use-case,
 you can disable this with:
 
 .. testcode:: 
@@ -122,10 +135,10 @@ default
 '''''''
 
 If a key is defined, but does not appear in the input file,
-:class:`InputReader` will assign a default value to it.  By default this is
-:obj:`None`.  This is useful because one can check that the key appeared
+|InputReader| will assign a default value to it.  By default this is
+|None|.  This is useful because one can check that the key appeared
 in the input file with ``if inp.key is not None``.  However, it may be
-desireable to have a different default value, such as :obj:`False`,
+desireable to have a different default value, such as |False|,
 :obj:`0`, or :obj:`''`. To change the default value, use:
 
 .. testcode:: 
@@ -133,7 +146,7 @@ desireable to have a different default value, such as :obj:`False`,
     reader = InputReader(default=False)
 
 Alternatively, you can request that keys not appearring in the input file be
-ommited from the :class:`Namespace`.  This would raise a
+ommited from the |Namespace|.  This would raise a
 :exc:`AttributeError` when trying to access a non-existant key, or you can
 check that the key exists with ``if key in inp``.   To do this, use:
 
@@ -235,7 +248,7 @@ modes of parsing are provided for easy testing of your key definitions.
 
 A boolean key is a key in which the presence of the key triggers an action; 
 there are no arguments to a boolean key in the input file.  Typically, the 
-presence of a boolean key makes that key :obj:`True`, and the absence will 
+presence of a boolean key makes that key |True|, and the absence will 
 make it false.  
 
 Let's say that you are defining an input file for a plotting
@@ -333,7 +346,7 @@ action
 
 .. hint::
 
-    *action* defaults to :obj:`True`, so the following two lines are 
+    *action* defaults to |True|, so the following two lines are 
     equvalent:
 
         .. code::
@@ -342,7 +355,7 @@ action
             reader.add_boolean_key('key', action=True)
 
 The *action* option is what the key will be set to in the
-:class:`Namespace`.  By default it is :obj:`True`.  However, in some
+|Namespace|.  By default it is |True|.  However, in some
 scenarios it may be advantagous to set this to something other than a 
 :obj:`bool`.  You can even set it to a function.  For example, lets say that 
 the input to our plotting program is given in seconds and meters.  It would be
@@ -439,7 +452,7 @@ type
 
 .. hint::
 
-    *type* defaults to :obj:`str`, so the following two lines are 
+    *type* defaults to |str|, so the following two lines are 
     equvalent:
 
         .. code::
@@ -453,11 +466,11 @@ Specifying one type
 """""""""""""""""""
 
 The *type* key specifies the python types that are to be read in on the line
-key.  The allowed types are :obj:`int`, :obj:`float`, :obj:`str`
-:obj:`None`, an explicit :obj:`int` (i.e. :const:`4`), explicit 
-:obj:`float` (i.e. :const:`5.4`) explicit :obj:`str` 
+key.  The allowed types are |int|, |float|, |str|
+|None|, an explicit |int| (i.e. :const:`4`), explicit 
+|float| (i.e. :const:`5.4`) explicit |str| 
 (i.e. :const:`"hello"`), or a compiled regular expression object.  The
-default for *type* is :obj:`str`.
+default for *type* is |str|.
 
 Continuing with our plotting program, we need to specify
 the style of the lines on the plot (i.e.
@@ -492,7 +505,7 @@ This is great, but you may notice a huge flaw: nothing is preventing the user
 from giving something silly like ``lobster`` as the linestyle.  It would be
 better to limit what the user may give for the linestyle.  Also, we should
 provide a way to specify plotting of all given points. We can do this by
-providing a :obj:`tuple` of choices:
+providing a |tuple| of choices:
 
 .. testcode::
 
@@ -536,24 +549,24 @@ The above code would output
 
 .. attention::
 
-    It is important that you provide a :obj:`tuple` of choices, not a
-    :obj:`list`, as these two object types are interpreted differently by the
+    It is important that you provide a |tuple| of choices, not a
+    |list|, as these two object types are interpreted differently by the
     *type* option. This will be illustrated in the :ref:`multiple_types` 
     subsection.
 
 .. warning::
 
-    When giving a :obj:`tuple` of *type* choices and one of those choices is a
-    :obj:`str`, it is important that you give the :obj:`str` last.  This is
-    because :obj:`str` acts as a catch-all (i.e. :obj:`str` matches
+    When giving a |tuple| of *type* choices and one of those choices is a
+    |str|, it is important that you give the |str| last.  This is
+    because |str| acts as a catch-all (i.e. |str| matches
     everything). Given the line :const:`"key 4.5"`, 
-    ``type=(float, str)`` will return the :obj:`float` :const:`4.5`,
-    but ``type=(str, float)`` will return the :obj:`str` :const:`"4.5"`.
+    ``type=(float, str)`` will return the |float| :const:`4.5`,
+    but ``type=(str, float)`` will return the |str| :const:`"4.5"`.
 
 It is valid for a user to specify :const:`"none"`.  It makes sense that the
 user may not want an offset, and can give :const:`"none"` as a value (of 
 course one could just specify :const:`0` but that wouldn't teach us anything).
-The variable will be set to :obj:`None`:
+The variable will be set to |None|:
 
 .. testcode::
 
@@ -574,6 +587,8 @@ The variable will be set to :obj:`None`:
 There are always times when you may want more specificity than the native
 python types provide, but it is impractical to specify all possibilities.  For
 this purpose, you may also give a compiled regular expression object as a type.
+For details on how regular expressions see the
+documentation for the :mod:`re` module.
 (This doesn't really apply to our plotting program, so here is an arbitrary
 example):
 
@@ -609,7 +624,7 @@ Continuing with our plotting program, we need to specify the color and shape
 of the data point markers on our plot, as well as the size of the marker
 (an integer).  We should also be able to specify the color and size of the
 connecting lines.  To give multiple data entries for a single line key, you
-must provide a :obj:`list` to *type*.  Our definitions would be changed as
+must provide a |list| to *type*.  Our definitions would be changed as
 follows:
 
 .. testcode::
@@ -642,7 +657,7 @@ The above code would output
 
     Namespace(linestyle=('solid', 'black', 2), pointstyle=('squares', 'blue', 3))
     blue
-    ...expected at least 3 arguments, got 2
+    ...expected 3 arguments, got 2
     ...expected 3 arguments, got 4
 
 The parameters are read in the order in which they were defined.  For this
@@ -651,10 +666,10 @@ reason, parameters defined using the *type* option will be refered to as
 
 .. attention::
 
-    The :obj:`tuple` vs. :obj:`list` disctintion is very important for the
-    *type* option; a :obj:`tuple` is used to define parameter *choices*, and a
-    :obj:`list` is used to define *multiple parameters*.  It is not legal to 
-    have a :obj:`list` inside of a :obj:`list` for the *type* object. 
+    The |tuple| vs. |list| disctintion is very important for the
+    *type* option; a |tuple| is used to define parameter *choices*, and a
+    |list| is used to define *multiple parameters*.  It is not legal to 
+    have a |list| inside of a |list| for the *type* object. 
 
 .. warning::
 
@@ -666,9 +681,9 @@ reason, parameters defined using the *type* option will be refered to as
             reader.add_line_key('key1', type=str)
             reader.add_line_key('key2', type=[str])
 
-    The former will store a :obj:`str` in the *key* attribute of the
-    :class:`Namespace`, whereas the latter will store a single-element
-    :obj:`list` of a :obj:`str`.  Let's say that our input was ``['key1 fish',
+    The former will store a |str| in the *key* attribute of the
+    |Namespace|, whereas the latter will store a single-element
+    |list| of a |str|.  Let's say that our input was ``['key1 fish',
     'key2 fish']``.  Our result would be:
 
         .. code::
@@ -681,14 +696,14 @@ reason, parameters defined using the *type* option will be refered to as
 
 .. note::
 
-    Each of the parameters in the :obj:`list` follows
+    Each of the parameters in the |list| follows
     the rules discussed for a single type as descussed in subsection
     :ref:`single_type`.  
 
 .. hint::
 
     If you do not wish to define **any** *type* parameters, you can give
-    :obj:`None`.  This may be useful when using the :ref:`glob_type` or 
+    |None|.  This may be useful when using the :ref:`glob_type` or 
     :ref:`keyword_type` options.
 
 
@@ -699,7 +714,7 @@ case
 
 .. hint::
 
-    *case* defaults to :obj:`False`, so the following two lines are 
+    *case* defaults to |False|, so the following two lines are 
     equvalent:
 
         .. code::
@@ -728,7 +743,7 @@ data:
 
     /path/to/RAW/Data.txt
 
-Obviously, this only affects :obj:`str` types.  This has no affect on compiled
+Obviously, this only affects |str| types.  This has no affect on compiled
 regular expressions because case-sensitivity is determined at compile-time for
 regular expressions.
 
@@ -762,13 +777,13 @@ given, with the options being:
 
 :const:`?` - Zero or one parameters
 
-*glob* must be given as a :obj:`dict`; the key *len* specifies one of the above
+*glob* must be given as a |dict|; the key *len* specifies one of the above
 three variable length specifiers.  Two other important keys are *type*, which
 follows the same rules as discussed in subsection :ref:`single_type`, and
 *default*, which is the default value assigned if the glob is not included. 
 Like the *type* option, if the *type* key for *glob* is omitted, the default
-is :obj:`str`. The
-*glob* values are appended to the end of the :obj:`tuple` for the given key.
+is |str|. The
+*glob* values are appended to the end of the |tuple| for the given key.
 
 Thinking about our plotting program, we might prefer to not force the user to
 specify the size of the lines and points and default them to
@@ -804,7 +819,7 @@ The above code would output
 
 There is a fourth key to the *glob* option, and it is *join*.  Join causes all
 the globbed parameters to be joined together into a single space-seperated
-string.  The default value is :obj:`False`.  *join* is useful when reading 
+string.  The default value is |False|.  *join* is useful when reading 
 things like titles.  For example, to allow
 the user to specify a title for the plot, we would use the following code:
 
@@ -830,11 +845,11 @@ read.
 .. note::
 
     When the *glob* option is used, the parameters will always be stored as a
-    :obj:`tuple` with the *glob* parameters appended to the end of the
+    |tuple| with the *glob* parameters appended to the end of the
     positional parameters. There is one exception to this rule.  
-    If *type* equals :obj:`None` and *join* equals :obj:`True`, then the
+    If *type* equals |None| and *join* equals |True|, then the
     parameters will be returned as the joined string, similar to if *type*
-    equals :obj:`str` and *glob* is omitted.
+    equals |str| and *glob* is omitted.
 
 What if it was possible to read in raw data from multiple files? There are two
 ways we might choose to code this:
@@ -862,10 +877,15 @@ The above code would output
 
 OK, so what's the difference between ``type=str, glob={'len':'*'}`` and
 ``type=None, glob={'len':'+'}``?  In the above example, nothing.  However, if
-*join* were :obj:`True`, then method 1 above would return 
+*join* were |True|, then method 1 above would return 
 :const:`'file1.txt file2.txt file3.txt'`, whereas method 2 would return
 :const:`('file1.txt', 'file2.txt file3.txt')`.  This is an obscure use-case,
 but it may be important for you in the future.
+
+.. warning::
+
+    If you set a default value for *glob*, the default will
+    only be set if the keyname actually appears in the input file.  
 
 .. _keyword_type:
 
@@ -886,7 +906,119 @@ keywords
 
     The options *glob* and *keywords* are mutually exclusive.
 
+There are times when a line key should offer optional parameters with more
+flexability than can be offered by the *glob* option.  The *keywords* option
+provides this flexability.  Each parameter specified in the *keywords* option
+is accessed through some keyword name; for this reason, we will refer to these
+parameters as *named parameters*.  
 
+*keywords* must be given as a |dict| with nested |dict|.  Each named parameter
+in the *keywords* |dict| has a |dict| containing two possible keys: *type* and
+*default*.  The rules for *type* are the same as described in the
+:ref:`single_type` subsection, and *default* can be anything.  If not
+specified, the default values of *type* and *default* are |str| and
+:class:`SUPPRESS`, respectively.  The named parameters can appear in any order,
+as long as they come after the positional parameters.
+
+Going back to our plotting program, we might agree that the way we have set up
+the ``linestyle`` and ``pointstyle`` keys is not optimal.  What if the user
+wants to accept a default value for the color, but change the size? To get
+around this, we will use the *keywords* option:
+
+.. testcode::
+
+    reader = InputReader()
+    colors = ('green', 'red', 'blue', 'orange', 'black', 'violet')
+    reader.add_line_key('linestyle', type=('solid', 'dashed', 'dotted'),
+                        keywords={'color':{'type':colors,'default':'black'},
+                                  'size' :{'type':int,   'default':1}})
+    reader.add_line_key('pointstyle', type=('circles', 'squares', 'triangles'),
+                        keywords={'color':{'type':colors,'default':'black'},
+                                  'size' :{'type':int,   'default':1}})
+
+    inp = reader.read_input(['linestyle solid size=3', 
+                             'pointstyle circles color=green'])
+
+    print inp.linestyle
+    print inp.pointstyle[-1]['color'], inp.pointstyle[-1]['size']
+
+    # Error!
+    try:
+        inp = reader.read_input(['linestyle solid lobster=red'])
+    except ReaderError as e:
+        print str(e)
+    # Another error!
+    try:
+        inp = reader.read_input(['linestyle solid color red'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    ('solid', {'color': 'black', 'size': 3})
+    green 1
+    ...Unknown keyword: lobster
+    ...Error reading keyword argument color
+
+This code illustrates three important points about named parameters.  
+
+1) The parameters are returned as a|tuple|, with the positional parameters
+   first and the |dict| containing the named parameters appended to the end.  
+   This means that the named parameters will always be the last element of 
+   the |tuple|, so you may access them using the ``[-1]`` notation.
+
+    .. note::
+
+        When the *keywords* option is used, the parameters will always be stored
+        as a |tuple| with the *keywords* parameter |dict| appended to the end of
+        the positional parameters. There is one exception to this rule.  
+        If the optiojn *type* equals |None|, the parameters will be returned as
+        only the *keywords* parameter |dict|.
+
+2) The value of the parameter **must** be separated from the key by :const:`=`.
+   There are no exceptions.  If they are separated by a space or anything else,
+   an error will be raised.  **Be sure you make this clear to your users!**
+
+3) Unknown keys will raise a |ReaderError|.
+
+Let's take a look at what happens when no *default* is given.  All along, we
+have forgotten to specify a name for the file of our plot!  We will define this
+now.  The user will give a filename, then an optional image format and
+compression:
+
+.. testcode::
+
+    reader = InputReader()
+    formats = ('pdf', 'png', 'jpg', 'svg', 'bmp', 'eps')
+    compress = ('zip', 'tgz', 'tbz2')
+    reader.add_line_key('output', case=True, type=str, 
+                        keywords={'format':{'type':formats},
+                                  'compression':{'type':compress}})
+    
+    print reader.read_input(['output filename format=png compression=zip'])
+    print reader.read_input(['output filename format=png'])
+    print reader.read_input(['output filename compression=tgz'])
+    print reader.read_input(['output filename'])
+
+The above code would output
+
+.. testoutput::
+
+    Namespace(output=('filename', {'compression': 'zip', 'format': 'png'}))
+    Namespace(output=('filename', {'format': 'png'}))
+    Namespace(output=('filename', {'compression': 'tgz'}))
+    Namespace(output=('filename', {}))
+
+Since the default *default* is :class:`SUPPRESS`, named parameters not
+appearing in the input are omitted from the |dict|.  This means that if no
+named parameters are given, an empty |dict| is returned.
+
+.. warning::
+
+    If you set a default value for *keyword*, the default will
+    only be set if the keyname actually appears in the input file.  
 
 .. _block_key:
 
@@ -904,6 +1036,123 @@ keywords
     and therefore will be discussed together in the :ref:`common_options` 
     section.
 
+A block key is a way to group logically similar keys together.  It is also
+useful to separate some keys from the others.  Block keys have the form of::
+
+    block_start
+        key
+        anotherkey
+        etc...
+    end
+
+The indentation is optional.  
+
+Let's say that we wanted to add the capability of including a legend in our
+plotting program.  We decide to do this as a block key. We need to specify the
+location of the legend, the size of the legend, and if the legend should have a
+shadow.  We might code this as follows:
+
+.. testcode::
+
+    reader= InputReader()
+    # Notice that we return the legend block object
+    legend = reader.add_block_key('legend')
+    # We add keys to the legend block object just as we have done before
+    legend.add_boolean_key('shadow')
+    legend.add_line_key('location', type=('upper_left', 'upper_right',
+                                          'lower_left', 'lower_right'))
+    legend.add_line_key('size', type=int)
+
+    from textwrap import dedent
+    from StringIO import StringIO
+    user_input = StringIO()
+    user_input.write(dedent('''\
+                            legend
+                                shadow
+                                location upper_right
+                                size 3
+                            end
+                            '''))
+
+    inp = reader.read_input(user_input)
+    print inp
+    print inp.legend.location
+
+The above code would output
+
+.. testoutput::
+
+    Namespace(legend=Namespace(shadow=True, location='upper_right', size=3))
+    upper_right
+
+First, we should note that the block creates a |Namespace| held inside the
+``legend`` attribute of the main |Namespace|.  This makes it easy to access the
+keys within the block with the dot operator (shown for the ``location`` key).
+
+end
+'''
+
+By default, a block key is terminated by the word :const:`"end"` (the default
+to the *end* option).  However, it may make sense to use a different word.  A
+perfect example would be a block inside of another block.  The sub-block might
+use the word :const:`subend`.  Perhaps there are more than one thing to specify
+for the size parameter of the legend, and we need a sub-block for this:
+
+.. testcode::
+
+    reader = InputReader()
+    legend = reader.add_block_key('legend')
+    legend.add_boolean_key('shadow')
+    legend.add_line_key('location', type=('upper_left', 'upper_right',
+                                          'lower_left', 'lower_right'))
+    size = legend.add_block_key('size', end='subend')
+    size.add_line_key('box', type=int)
+    size.add_line_key('font', type=int)
+
+    from textwrap import dedent
+    from StringIO import StringIO
+    user_input = StringIO()
+    user_input.write(dedent('''\
+                            legend
+                                shadow
+                                location upper_right
+                                size
+                                    box 2
+                                    font 5
+                                subend
+                            end
+                            '''))
+
+    inp = reader.read_input(user_input)
+    print inp
+    print inp.legend.size.font
+
+The above code would output
+
+.. testoutput::
+
+    Namespace(legend=Namespace(shadow=True, location='upper_right', size=Namespace(box=2, font=5)))
+    5
+
+We have a |Namespace| nested in a |Namespace| nested in a |Namespace|!  There
+is no limit to the amout of nesting you can have, although your users may get
+irritated if it is arbitrarily complex.
+
+case
+''''
+
+The *case* option for a block key is identical to that of the *case* option for
+the |InputReader| class except that it only applies to the keys inside the
+block.
+
+ignoreunknown
+'''''''''''''
+
+The *ignoreunknown* option for a block key is identical to that of the 
+*ignoreunknown* option for
+the |InputReader| class except that it only applies to the keys inside the
+block.
+
 .. _regex_line:
 
 :meth:`~InputReader.add_regex_line`
@@ -919,6 +1168,71 @@ keywords
     :meth:`~InputReader.add_block_key`, and :meth:`~InputReader.add_regex_line`
     and therefore will be discussed together in the :ref:`common_options` 
     section.
+
+Sometimes it is necessary to accept user input that does not fit nicely into
+the categories discussed above.  For these situations the regex line is
+offered.  The regex line allows you to specify a regular expression that must
+match the input line.  For details on how regular expressions see the
+documentation for the :mod:`re` module.
+
+Let's say that we want the user to be able to draw polygons on the plot.  The
+user can specify a series of x,y points that define the vertices of the
+polygon.  We could create a polygon block, and each line in the block is a
+vertex:
+
+.. testcode::
+
+    reader = InputReader()
+    polygon = reader.add_block_key('polygon')
+    polygon.add_regex_line('xypoint', r'(-?\d+\.?\d*) (-?\d+\.?\d*)', repeat=True)
+    # Another way to define the above is with the following three lines.  They are completely equivalent.
+    # import re
+    # reg = re.compile(r'(-?\d+\.?\d*) (-?\d+\.?\d*)')
+    # polygon.add_regex_line('xypoint', reg, repeat=True)
+
+    from textwrap import dedent
+    from StringIO import StringIO
+    user_input = StringIO()
+    user_input.write(dedent('''\
+                            polygon
+                                0 0
+                                3.5 0
+                                3.3 3.5
+                                0 3.3
+                            end
+                            '''))
+
+    inp = reader.read_input(user_input)
+    for regex in inp.polygon.xypoint:
+        print regex.group(0), regex.group(1), regex.group(2)
+
+The above code would output
+
+.. testoutput::
+
+    0 0 0 0  
+    3.5 0 3.5 0  
+    3.3 3.5 3.3 3.5
+    0 3.3 0 3.3
+
+The *repeat* option will be discussed in subsection :ref:`repeat_common`; for
+now we will say that it allows a key to be repeated multiple times.
+
+Even though the *handle* ``xypoint`` does not appear in the input file, we must
+specify it so that we have a name to access in the |Namespace|.  
+
+Note that the regex line cannot do any type checking for you.  You will have to
+write your own post-processing to check that the types are correct and to parse
+the line so that the data is in a useable format. 
+
+case
+''''
+
+The *case* option for the regex line is identical to the *case* option for the
+line key, with the exception that *case* only applies to regular expressions
+given to :meth:`~InputReader.add_regex_line` as a string and not a compiled
+regular expression object.  This is because the regular expression object has
+case-sensitivity built in at compile time.
 
 .. _common_options:
 
@@ -936,29 +1250,54 @@ together here.
 dest
 ''''
 
-Of course, the above example is still not quite satisfactory, because our
-conversion function is still on one of four different variables.  It would be
-more convenient to have a single variable to place this group of boolean keys
-into. For this, we use the *dest* option.
+The *dest* option specifies that a key will appear under a different name in
+the |Namespace| than it does in the input.
 
-.. code::
+Let's think back to our unit conversion example with the boolean keys in the
+:ref:`action` section.  The result we came up with was not quite satisfactory
+because it required a lot of code to do relatively little work.   It would be
+more convenient to have a single variable to place a group of boolean keys
+into. We might code this as follows
 
-    from input_reader import InputReader
+.. testcode::
+
     reader = InputReader()
-    reader.add_boolean_key('meters', action=lambda x: x, dest='conversion')
-    reader.add_boolean_key('centimeters', action=lambda x: 0.01*x, dest='conversion')
-    reader.add_boolean_key('kilometers', action=lambda x: 1000*x, dest='conversion')
-    reader.add_boolean_key('milimeters', action=lambda x: 0.001*x, dest='conversion')
-    inp = reader.read_input('user_input.txt')
+    # The distance units
+    reader.add_boolean_key('meters', action=lambda x: 1.0 * x, dest='distconv')
+    reader.add_boolean_key('centimeters', action=lambda x: 100.0 * x, dest='distconv')
+    reader.add_boolean_key('kilometers', action=lambda x: 0.001 * x, dest='distconv')
+    reader.add_boolean_key('milimeters', action=lambda x: 1000.0 * x, dest='distconv')
+    # The time units
+    reader.add_boolean_key('seconds', action=lambda x: x / 1.0, dest='timeconv')
+    reader.add_boolean_key('minutes', action=lambda x: x / 60.0, dest='timeconv')
+    reader.add_boolean_key('hours', action=lambda x: x / 3600.0, dest='timeconv')
     
+    inp = reader.read_input(['centimeters', 'minutes'])
+
     # No matter what boolean key was used, the conversion function is under
-    # "conversion".  The original key names have been removed.
-    x = inp.conversion(input_data)
-    if 'meters' in inp:
+    # "distconv".  The original key names have been removed.
+    if 'centimeters' in inp:
         print "This will never print"
 
-A :exc:`ReaderError` would be raised if both ``meters`` and ``centimeters``
-had been defined in the input file.  As you will see later, it is often more
+    print inp.distconv(50), inp.timeconv(1800)
+    inp = reader.read_input(['kilometers', 'hours'])
+    print inp.distconv(50), inp.timeconv(1800)
+
+    # Error:
+    try:
+        inp = reader.read_input(['meters', 'milimeters', 'hours'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    5000.0 30.0
+    0.05 0.5
+    ...This key appears twice
+
+As you will see later, it is often more
 advantageous to use *dest* in conjunction with 
 :meth:`~InputReader.add_mutually_exclusive_group` because it provides more
 protection against bad user input for keys that are grouped together.
@@ -968,7 +1307,7 @@ protection against bad user input for keys that are grouped together.
 default
 '''''''
 
-This is the default value of the boolean key.  It defaults to :obj:`None`.
+This is the default value of a key.  It defaults to |None|.
 
 .. _depends_common:
 
@@ -977,31 +1316,64 @@ depends
 
 The *depends* option specifies that in order for this key to be valid, another
 key must also appear in the input.  For example, let's say that we add the
-boolean key ``miles`` to the above list.  In addition, we add ``nautical``, but
+boolean key ``miles`` to the unit conversion list.  In addition, we add 
+``nautical``, but
 this only makes sense in the context of miles.  Therefore, the key ``nautical``
 *depends* on the ``miles`` key.  This part of the code would be given as
 follows:
 
-.. code::
+.. testcode::
 
+    reader = InputReader()
     reader.add_boolean_key('miles')
     reader.add_boolean_key('nautical', depends='miles')
 
-    # This would be fine
+    # This is fine
     inp = reader.read_input(['miles', 'nautical'])
-    # This would result in a ReaderError because the dependee is missing!
-    inp = reader.read_input(['nautical'])
+    # Error!
+    try:
+        inp = reader.read_input(['nautical'])
+    except ReaderError as e:
+        print str(e) #
+
+The above code would output
+
+.. testoutput::
+
+    ...The key "nautical" requires that "miles" is also present, but it is not
 
 .. _required_common:
 
 required
 ''''''''
 
-This specifies that the given key is required to appear in the input file.  I
-personally cannot think of a good use case for this in the context of a boolean
-key (it makes sense for line and block keys as we will see later), but who am I
-to prevent you from doing so if you need it!  A :exc:`ReaderError` is raised
-if the key is missing from the input file.
+This specifies that the given key is required to appear in the input file.
+This is not likely to be necessary for a boolean key, but may be necessary for
+a line or block key.  For example, our ``rawdata`` line key accepts the file
+that contains the raw data to plot.  Our plotting program would not be able to
+do anything without this line, so we make it *required*:
+
+.. testcode::
+
+    reader = InputReader()
+    reader.add_line_key('rawdata', case=True, required=True)
+    reader.add_boolean_key('dummy')
+
+    # This works as expected
+    inp = reader.read_input(['dummy', 'rawdata filename.txt'])
+    # Error!
+    try:
+        inp = reader.read_input(['dummy'])
+    except ReaderError as e:
+        print str(e)
+
+.. testoutput::
+
+    ...The key "rawdata" is required but not found
+
+.. hint::
+
+    Don't bother defining a *default* if *required* equals |True|.
 
 .. _repeat_common:
 
@@ -1009,21 +1381,38 @@ repeat
 ''''''
 
 By default, a key is only allowed to appear once; if it appears twice a
-:exc:`ReaderError` is raised.  However, there are certain use cases when it
+|ReaderError| is raised.  However, there are certain use cases when it
 makes sense to have a key repeat.  If this is is the case, you can specify the
 *repeat* option to be true.  The values will be returned in a
-:class:`tuple`, so you will have to be wary of this when extracting the data
-from the :class:`Namespace`.
+|tuple|, so you will have to be wary of this when extracting the data
+from the |Namespace|.
 
-.. code::
+Instead of defining muliple ``rawdata`` files on one line as we did in the
+:ref:`glob_type` subsection, perhaps we would want to define multiple files on
+different lines:
 
-    reader.add_boolean_key('red')
-    reader.add_boolean_key('blue')
-    inp = read.read_input(['blue', 'red', 'blue'])
-    print inp.blue == (True, True) # True
-    print inp.red == True # True
+.. testcode::
 
-The order of the :obj:`tuple` returned when *repeat* is :obj:`True` is
+    reader = InputReader()
+    reader.add_line_key('rawdata', case=True, repeat=True, required=True)
+    inp = reader.read_input(['rawdata filename3.txt', 'rawdata filename6.txt', 'rawdata filename1.txt'])
+    print inp
+
+    reader = InputReader()
+    reader.add_line_key('rawdata', case=True, required=True)
+    try:
+        inp = reader.read_input(['rawdata filename3.txt', 'rawdata filename6.txt', 'rawdata filename1.txt'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    Namespace(rawdata=('filename3.txt', 'filename6.txt', 'filename1.txt'))
+    ...This key appears twice
+
+The order of the |tuple| returned when *repeat* is |True| is
 the same as the order the keys appear in the input file.
 
 .. _mutex_group:
@@ -1033,7 +1422,179 @@ the same as the order the keys appear in the input file.
 
 .. automethod:: InputReader.add_mutually_exclusive_group
 
+There are times when certain keys cannot appear with other keys in an input
+file.  This is especially often true of boolean keys.  The 
+:meth:`~InputReader.add_mutually_exclusive_group` method allows you to declare
+a group of keys that may not appear in the input file together.  Let's look
+back to our unit conversion example.  
+
+.. testcode::
+
+    reader = InputReader()
+    # The distance units
+    dunits = reader.add_mutually_exclusive_group()
+    dunits.add_boolean_key('milimeters')
+    dunits.add_boolean_key('centimeters')
+    dunits.add_boolean_key('meters')
+    dunits.add_boolean_key('kilometers')
+    # The time units
+    tunits = reader.add_mutually_exclusive_group()
+    tunits.add_boolean_key('seconds')
+    tunits.add_boolean_key('minutes')
+    tunits.add_boolean_key('hours')
+
+    # OK!
+    inp = reader.read_input(['meters', 'seconds'])
+    # Error!!!!
+    try:
+        reader.read_input(['meters', 'milimeters', 'seconds'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    ...Only one of centimeters, kilometers, meters, or milimeters may be included.
+
+
+dest
+''''
+
+We illustrated that we can use the *dest* option of the
+:meth:`~InputReader.add_boolean_key` method to send keys to a different
+namespace.  If your keys are part of a mutually exclusive group, you should let
+the group handle this for you.  This will be cleaner and give better error
+messages:
+
+.. testcode::
+
+    reader = InputReader()
+    # The distance units
+    dunits = reader.add_mutually_exclusive_group(dest='distconv')
+    dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
+    dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
+    dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
+    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    # The time units
+    tunits = reader.add_mutually_exclusive_group(dest='timeconv')
+    tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
+    tunits.add_boolean_key('minutes', action=lambda x: x / 60.0)
+    tunits.add_boolean_key('hours', action=lambda x: x / 3600.0)
+    
+    inp = reader.read_input(['centimeters', 'minutes'])
+
+    # No matter what boolean key was used, the conversion function is under
+    # "distconv".  The original key names have been removed.
+    if 'centimeters' in inp:
+        print "This will never print"
+
+    print inp.distconv(50), inp.timeconv(1800)
+    inp = reader.read_input(['kilometers', 'hours'])
+    print inp.distconv(50), inp.timeconv(1800)
+
+    # Error:
+    try:
+        inp = reader.read_input(['meters', 'milimeters', 'hours'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    5000.0 30.0
+    0.05 0.5
+    ...Only one of centimeters, milimeters, meters, or kilometers may be included.
+
+default
+'''''''
+
+You may notice that the aboce code cannot handle the situation of a missing
+distance coversion or time conversion:
+
+.. testcode::
+
+    inp = reader.read_input(['minutes'])
+    try:
+        print inp.distconv(50), inp.timeconv(1800)
+    except TypeError as e:
+        print str(e) # 'NoneType' object is not callable
+
+.. testoutput::
+    :hide:
+
+    ...'NoneType' object is not callable
+
+Obvously, we can work around this issue by having a default for the whole
+mutually exclusive group:
+
+.. testcode::
+
+    reader = InputReader()
+    # The distance units
+    dunits = reader.add_mutually_exclusive_group(dest='distconv', default=lambda x: 1.0 * x)
+    dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
+    dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
+    dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
+    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    # The time units
+    tunits = reader.add_mutually_exclusive_group(dest='timeconv', default=lambda x: x / 1.0)
+    tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
+    tunits.add_boolean_key('minutes', action=lambda x: x / 60.0)
+    tunits.add_boolean_key('hours', action=lambda x: x / 3600.0)
+    
+    inp = reader.read_input(['minutes'])
+    print inp.distconv(50), inp.timeconv(1800)
+
+The above code would output
+
+.. testoutput::
+
+    5000.0 1800.0
+
+required
+''''''''
+
+An alternative to supplying a *default* is to simply make one of the keys in
+the mutually exclusive group required:
+
+.. testcode::
+
+    reader = InputReader()
+    # The distance units
+    dunits = reader.add_mutually_exclusive_group(dest='distconv', required=True)
+    dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
+    dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
+    dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
+    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    # The time units
+    tunits = reader.add_mutually_exclusive_group(dest='timeconv', required=True)
+    tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
+    tunits.add_boolean_key('minutes', action=lambda x: x / 60.0)
+    tunits.add_boolean_key('hours', action=lambda x: x / 3600.0)
+    
+    try:
+        inp = reader.read_input(['minutes'])
+    except ReaderError as e:
+        print str(e)
+
+The above code would output
+
+.. testoutput::
+
+    ...One and only one of centimeters, milimeters, meters, or kilometers must be included.
+
+.. hint::
+
+    Don't bother defining a *default* if *required* equals |True|.
+
 .. _gotchas:
+
+Putting it all together
+-----------------------
+
+Yay!
 
 Gotchas
 -------
@@ -1041,15 +1602,14 @@ Gotchas
 case-sensitivity
 ''''''''''''''''
 
-If you have set *case* to :obj:`True` in either the :class:`InputReader`
-constructor or in a block key, the variables in the :class:`Namespace` must
+If you have set *case* to |True| in either the |InputReader|
+constructor or in a block key, the variables in the |Namespace| must
 be accessed with the same case that was given in the definition.  Conversely,
-if *case* is :obj:`False`, the variables will be accessed with a lower-cased
-version.  In the  *case* = :obj:`True` version:
+if *case* is |False|, the variables will be accessed with a lower-cased
+version.  In the  *case* = |True| version:
 
 .. code::
 
-    from input_reader import InputReader
     reader = InputReader(case=True)
     reader.add_boolean_key('RED')
     try:
@@ -1060,11 +1620,10 @@ version.  In the  *case* = :obj:`True` version:
     print 'red' in inp # False
     print 'RED' in inp # True
 
-In the  *case* = :obj:`False` version (default):
+In the  *case* = |False| version (default):
 
 .. code::
 
-    from input_reader import InputReader
     reader = InputReader()
     reader.add_boolean_key('RED')
     inp = reader.read_input(['red'])
@@ -1077,13 +1636,13 @@ In the  *case* = :obj:`False` version (default):
 Strings with spaces
 '''''''''''''''''''
 
-:class:`InputReader` does not let you use strings with spaces in them.  This
+|InputReader| does not let you use strings with spaces in them.  This
 is because it is impossible (read: very difficult to implement) to parse each
 line without splitting them on whitespace first.  If a key name or other given
-:obj:`str` had a space, it would be split and be difficult to detect,
+|str| had a space, it would be split and be difficult to detect,
 resulting in unforseen parsing errors.  For this reasonm,
-:class:`InputReader` will raise an error if it is attempted to give a
-:obj:`str` with spaces.
+|InputReader| will raise an error if it is attempted to give a
+|str| with spaces.
 
 .. code::
 
@@ -1106,3 +1665,4 @@ spaces will raise a :exc:`ValueError`.  Not only does this include regular
 expressions with an expicit space, but also with whitespace character
 (:const:`"\s"`) and the anything character (:const:`"."`) as these may
 potentially match spaces.  
+
