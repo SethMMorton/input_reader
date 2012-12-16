@@ -776,11 +776,6 @@ class _KeyLevel(object):
                             del namespace._defaults[name]
                         except KeyError:
                             pass
-                        #namespace.remove(name)
-                    # Delete these keys from the found lists
-                    klist = list(meg._keys)
-                    for key in klist:
-                        del meg._keys[key]
 
         # Loop over the non-grouped keys and check key requirements
         for key, val in self._keys.items():
@@ -909,6 +904,8 @@ class LineKey(_KeyLevel):
                 if not isinstance(key, str):
                     msg = ': keys in keywords must be of type str'
                     raise ValueError (self.name+msg)
+                else:
+                    self._validate_string(key)
                 if keywords[key] is None:
                     keywords[key] = {}
                 elif not isinstance(keywords[key], dict):
@@ -962,10 +959,10 @@ class LineKey(_KeyLevel):
 
         # If the # args is less than the positional
         elif len(args) < len(self._type):
-            n = len(self._type)
             if self._glob.get('len') == '+':
-                n += 1
-            msg = ': expected at least '+str(n)
+                msg = ': expected at least '+str(len(self._type)+1)
+            else:
+                msg = ': expected '+str(len(self._type))
             msg += ' arguments, got '+str(len(args))
             raise ReaderError (self.name+msg)
 
@@ -1146,6 +1143,7 @@ class LineKey(_KeyLevel):
                 if self._nolist:
                     val = val[0]
                 else:
+                    val.append({})
                     val = tuple(val)
             else:
                 val.append(kw)
