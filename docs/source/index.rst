@@ -20,6 +20,7 @@ Contents:
     SUPPRESS.rst
     ReaderError.rst
     helperfunctions.rst
+    subclassing.rst
     changelog.rst
 
 ******************

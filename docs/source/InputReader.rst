@@ -54,7 +54,7 @@
 .. |ReaderError| replace:: :exc:`ReaderError`
 
 The |InputReader| Class
-==============================
+=======================
 
 .. autoclass:: InputReader
 
@@ -79,7 +79,7 @@ If an unknown parameter is passed to |InputReader|, a
 parameter a :exc:`ValueError` will be raised. 
 
 |InputReader| options
-----------------------------
+---------------------
 
 There are four optional parameters to |InputReader|: *case*,
 *comment*, *ignoreunknown*, and *default*.  The defaults for these are
@@ -185,7 +185,7 @@ check that the key exists with ``if key in inp``.   To do this, use:
 .. _read_input:
 
 :meth:`~InputReader.read_input`
-----------------------------------
+-------------------------------
 
 .. automethod:: InputReader.read_input
 
@@ -269,7 +269,7 @@ modes of parsing are provided for easy testing of your key definitions.
 .. _boolean_key:
 
 :meth:`~InputReader.add_boolean_key`
----------------------------------------
+------------------------------------
 
 .. automethod:: InputReader.add_boolean_key
 
@@ -454,7 +454,7 @@ of the :ref:`common_options` section.
 .. _line_key:
 
 :meth:`~InputReader.add_line_key`
-------------------------------------
+---------------------------------
 
 .. automethod:: InputReader.add_line_key
 
@@ -1050,7 +1050,7 @@ named parameters are given, an empty |dict| is returned.
 .. _block_key:
 
 :meth:`~InputReader.add_block_key`
--------------------------------------
+----------------------------------
 
 .. automethod:: InputReader.add_block_key
 
@@ -1183,7 +1183,7 @@ block.
 .. _regex_line:
 
 :meth:`~InputReader.add_regex_line`
---------------------------------------
+-----------------------------------
 
 .. automethod:: InputReader.add_regex_line
 
@@ -1445,7 +1445,7 @@ the same as the order the keys appear in the input file.
 .. _mutex_group:
 
 :meth:`~InputReader.add_mutually_exclusive_group`
-----------------------------------------------------
+-------------------------------------------------
 
 .. automethod:: InputReader.add_mutually_exclusive_group
 
@@ -1727,6 +1727,13 @@ The above code would output
     None None
     40000.0
     2.0
+
+:meth:`~InputReader.post_process`
+---------------------------------
+
+.. automethod:: InputReader.post_process
+
+Please see :ref:`subclassing` for more details.
 
 Gotchas
 -------
