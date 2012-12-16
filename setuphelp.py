@@ -57,7 +57,7 @@ class PyTest(TestCommand):
 
 # Clean the directory
 class Clean(Command):
-    description = "custom clean command that forcefully removes dist/build directories"
+    description = "custom clean command that fully cleans directory tree"
     user_options = []
     def initialize_options(self):
         self.cwd = None
@@ -82,7 +82,7 @@ class Clean(Command):
         
         for d in dirs:
             try:
-                shutil.rmtree(d)
+                rmtree(d)
             except OSError:
                 pass
         
