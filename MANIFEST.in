@@ -9,4 +9,5 @@ include LICENSE
 include README.rst
 include MANIFEST.in
 include setup.py
+include setuphelp.py
 include setup.cfg
