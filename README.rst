@@ -81,8 +81,7 @@ To define the above requirements, we would use the following code:
     reader.add_boolean_key('organic')
 
     # The drink has an argument, and accepts a specific list of values
-    reader.add_line_key('drink', type=('water', 'milk', 'oj', 'beer', 'soda',
-'wine'))
+    reader.add_line_key('drink', type=('water', 'milk', 'oj', 'beer', 'soda', 'wine'))
 
     # We are allowed to specify breakfast, lunch or dinner, so we use
     # a mutually exclusive group.  We need one of these, so we call this
@@ -92,14 +91,11 @@ To define the above requirements, we would use the following code:
     # We define the breakfast block
     bfast = meal.add_block_key('breakfast')
     # Eggs, number of eggs then the style
-    bfast.add_line_key('eggs', type=[int, ('scrambled', 'poached')],
-required=True)
+    bfast.add_line_key('eggs', type=[int, ('scrambled', 'poached')], required=True)
     # Pancakes OR waffles.  Syrup and/or butter is optional
     wp = bfast.add_mutually_exclusive_group(required=True)
-    wp.add_line_key('waffles', type=None, glob={'len':'*', 'type':('syrup',
-'butter')})
-    wp.add_line_key('pancakes', type=None, glob={'len':'*', 'type':('syrup',
-'butter')})
+    wp.add_line_key('waffles', type=None, glob={'len':'*', 'type':('syrup', 'butter')})
+    wp.add_line_key('pancakes', type=None, glob={'len':'*', 'type':('syrup', 'butter')})
     # BACON!
     bfast.add_boolean_key('bacon')
 
