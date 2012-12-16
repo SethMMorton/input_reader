@@ -35,6 +35,10 @@ class Namespace(object):
     def __ne__(self, other):
         return not (self == other)
 
+    def __iter__(self):
+        for key in self.keys():
+            yield key
+
     def __contains__(self, key):
         return key in self._order
 
