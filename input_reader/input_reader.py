@@ -82,7 +82,20 @@ class InputReader(_KeyLevel):
 
         # Parse this key level, recursively reading lower levels
         i, namespace = self._parse_key_level(f, 0)
+
+        # If there is any post-processing to do, do it now
+        self.post_process(namespace)
+
         return namespace
+
+    def post_process(self, namespace):
+        '''\
+        Perform post-processing of the data collected from the input file.
+
+        This is a "virtual" method... does nothing and is intended to be
+        re-implemented in a subclass.
+        '''
+        pass
 
     def _read_in_file(self, filename):
         '''Store the filename as a list'''
