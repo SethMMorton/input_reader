@@ -68,12 +68,12 @@ def test_line_type_definitions():
     s = r.add_line_key('blue', type=[int])
     assert s._type == [int]
     t = r.add_line_key('green', type=(str, 14, 2.8, None))
-    assert t._type, [(str, 14, 2.8, None)]
+    assert t._type == [(str, 14, 2.8, None)]
     with raises(ValueError) as e:
         u = r.add_line_key('gray', type=None)
     assert 'type, glob and keywords cannot all be empty' in str(e.value)
     v = r.add_line_key('cyan', type=[(int, float), str])
-    assert v._type, [(int, float), str]
+    assert v._type == [(int, float), str]
     import re
     regex = re.compile(r'(\d+|\w*)')
     w = r.add_line_key('pink', type=regex)
@@ -104,15 +104,15 @@ def test_line_glob_definitions():
     # Test that glob checking is OK
     r = InputReader()
     a = r.add_line_key('red', glob={'len':'*'})
-    assert a._glob, {'len':'*', 'type':str, 'join':False}
+    assert a._glob == {'len':'*', 'type':str, 'join':False}
     b = r.add_line_key('blue', glob={'len':'?'})
-    assert b._glob, {'len':'?', 'type':str, 'join':False}
+    assert b._glob == {'len':'?', 'type':str, 'join':False}
     c = r.add_line_key('green', glob={'len':'+', 'join':True})
-    assert c._glob, {'len':'+', 'type':str, 'join':True}
+    assert c._glob == {'len':'+', 'type':str, 'join':True}
     e = r.add_line_key('pink', glob={'len':'?', 'type':int})
-    assert e._glob, {'len':'?', 'type':int, 'join':False}
+    assert e._glob == {'len':'?', 'type':int, 'join':False}
     f = r.add_line_key('gray', glob={'len':'*', 'type':(int,str)})
-    assert f._glob, {'len':'*', 'type':(int,str), 'join':False}
+    assert f._glob == {'len':'*', 'type':(int,str), 'join':False}
     # Test that glob checking is OK for bad input
     with raises(ValueError) as e:
         r.add_line_key('black', glob='wrong')
@@ -213,7 +213,7 @@ def test_line_reading_types():
 
     r.add_line_key('cyan', type=[str, (None, str), float])
     inp = r.read_input(['cyan cat dog 6'])
-    assert inp.cyan, ('cat', 'dog', 6)
+    assert inp.cyan == ('cat', 'dog', 6)
     with raises(ReaderError) as e:
         inp = r.read_input(['cyan cat dog 7 8'])
     assert search('expected .+, got \w+', str(e.value))
@@ -221,7 +221,7 @@ def test_line_reading_types():
         inp = r.read_input(['cyan cat none bird'])
     assert search('expected \w+, got \w+', str(e.value))
     inp = r.read_input(['cyan cat none 7.8'])
-    assert inp.cyan, ('cat', None, 7.8)
+    assert inp.cyan == ('cat', None, 7.8)
 
     import re
     r.add_line_key('pink', type=re.compile(r'neat\d+'))
@@ -316,9 +316,9 @@ def test_line_read_using_keywords():
     r.add_line_key('red', type=int, 
                           keywords={'robin':{}})
     inp = r.read_input(['red 5 robin=early'])
-    assert inp.red, (5, {'robin':'early'})
+    assert inp.red == (5, {'robin':'early'})
     inp = r.read_input(['red 5'])
-    assert inp.red, (5,)
+    assert inp.red == (5, {})
     with raises(ReaderError) as e:
         r.read_input(['red 5 robin=early light=special'])
     assert 'Unknown keyword' in str(e.value)

@@ -72,8 +72,8 @@ def test_boolean_read_actions(setup):
     r.add_boolean_key('blue', action=['something', 'odd'])
     # An action can be a function, too!
     r.add_boolean_key('red', 
-                           action=lambda x: "hello" if x else "goodbye")
+                      action=lambda x: "hello" if x else "goodbye")
     inp = r.read_input(s1)
-    assert inp.blue, ['something', 'odd']
+    assert inp.blue == ['something', 'odd']
     assert inp.red(True) == "hello"
     assert inp.red(0) == "goodbye"

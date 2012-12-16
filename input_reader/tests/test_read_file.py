@@ -4,6 +4,7 @@ from cStringIO import StringIO
 from textwrap import dedent
 from os import remove
 from re import search
+from tempfile import mkstemp
 
 def case_keys(reader, s):
     reader.add_boolean_key('RED')
@@ -22,7 +23,7 @@ def default_checks(inp):
     assert inp.blue
     assert inp.path == 'this/is/a/pathname.txt'
 
-TEMPNAME = 'tempinput'
+TEMPNAME = mkstemp()[1]
 
 @fixture
 def setup():
@@ -63,9 +64,8 @@ def setup():
 def test_read_file_properly(setup):
     reader, s, io, l, r, parse_string = setup
     # Write the input to file
-    f = open(TEMPNAME, 'w')
-    f.write(s)
-    f.close()
+    with open(TEMPNAME, 'w') as f:
+        f.write(s)
     inp = reader._read_in_file(TEMPNAME)
     assert inp == r
     remove(TEMPNAME)
