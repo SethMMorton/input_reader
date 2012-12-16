@@ -151,7 +151,7 @@ Seth M. Morton
 History
 -------
 
-12-3-2012 v. 0.9.0
+12-3-2012 v. 0.9.1
 ''''''''''''''''''
 
     - Added unit tests
