@@ -4,24 +4,7 @@
 from distribute_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
-
-# Read the _version.py file for the module version number
-import sys
-import re
-from subprocess import call
-import os
-from os import chdir, curdir
-from os.path import join, abspath
-VERSIONFILE = join('input_reader', '_version.py')
-with open(VERSIONFILE, "rt") as fl:
-    versionstring = fl.readline().strip()
-m = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", versionstring)
-if m:
-    VERSION = m.group(1)
-else:
-    s = "Unable to locate version string in {0}"
-    raise RuntimeError (s.format(VERSIONFILE))
+from setuphelp import current_version, PyTest, Updater, Clean
 
 DESCRIPTION = 'Define and read input files with an API inspired by argparse'
 try:
@@ -30,35 +13,8 @@ try:
 except IOError:
     LONG_DESCRIPTION = DESCRIPTION
 
-# Define how to use pytest to test the code
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-    def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.test_args)
-        if errno: # exit now on error
-            sys.exit(errno)
-        # Otherwise continue with doctests
-        # Recall current directory
-        original_dir = abspath(curdir)
-        # Go to docs directort
-        chdir('docs')
-        # Get makefile name
-        if os.name == 'nt':
-            make = 'make.bat'
-        else:
-            make = 'make'
-        # Call the process
-        errno = call([make, 'doctest'])
-        chdir(original_dir)
-        sys.exit(errno)
-
 setup(name='input_reader',
-      version=VERSION,
+      version=current_version(),
       author='Seth M. Morton',
       author_email='drtuba78@gmail.com',
       url='https://github.com/SethMMorton/input_reader',
@@ -67,8 +23,8 @@ setup(name='input_reader',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       use_2to3=True,
-      tests_require=['pytest'],
-      cmdclass={'test': PyTest},
+      tests_require=['pytest', 'sphinx'],
+      cmdclass={'test': PyTest, 'version_update':Updater, 'clean':Clean},
       classifiers=(
         'Development Status :: 4 - Beta',
         #'Development Status :: 5 - Production/Stable',
