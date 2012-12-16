@@ -34,12 +34,12 @@ Quite often it is necessary to do some further processing of the data that is
 read in before it can be used.  This can range from actual further editing of
 the data to simply rearranging the data to be more easily accessed.
 |InputReader| has a :meth:`~InputReader.post_process` method that is called
-immeadiatly before the |Namespace| is returned from
+immediately before the |Namespace| is returned from
 :meth:`~InputReader.read_input`.  In the base |InputReader| class it is
 implemented as a no-op (it does nothing), but you can subclass |InputReader|
 and use this function to further edit the data in the |Namespace|.  
 
-Here is the boilerplate to use to sublcass |InputReader|:
+Here is the boilerplate to use to subclass |InputReader|:
 
 .. code::
 
@@ -88,7 +88,7 @@ reading rules, then takes a look at what is in the namespace.
                     pass
                 for xy in namespace.polygon.xypoint:
                     xyp = XYPoint()
-                    # We don't have to protect agains ValueErrors here because
+                    # We don't have to protect against ValueErrors here because
                     # the regex only accepted floating point numbers
                     xyp.x = float(xy.group(1))
                     xyp.y = float(xy.group(2))
@@ -122,7 +122,7 @@ reading rules, then takes a look at what is in the namespace.
     dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
     dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    dunits.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
 
     # Time conversion booleans. Default is seconds.
     tunits = reader.add_mutually_exclusive_group(dest='timeconv', default=lambda x: x / 1.0)

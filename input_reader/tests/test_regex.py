@@ -60,7 +60,7 @@ def test_regex_repeat_in_definition():
     r.add_regex_line('red', r'test')
     with raises(ReaderError) as e:
         r.add_regex_line('red', r'tax')
-    regex = r'The key \w+ has been defined twice'
+    regex = r'The key "\w+" has been defined twice'
     assert search(regex, str(e.value))
 
 def test_regex_read():

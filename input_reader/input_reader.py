@@ -105,7 +105,7 @@ class InputReader(_KeyLevel):
         try:
             fl = [x.rstrip() for x in open(filename)]
         except (IOError, OSError) as e:
-            raise ReaderError ('Cannot read in file '+filename+':'+str(e))
+            raise ReaderError ('Cannot read in file "'+filename+'":'+str(e))
         except TypeError:
             # Assume a StringIO object was given
             try:

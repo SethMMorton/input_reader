@@ -62,7 +62,7 @@ The |InputReader| class allows the user to define the keys to be read in
 from the input file, and also reads the input file to parse the data.  
 
 In the simplest use case, you may simply instantiate |InputReader|
-with no aruments, as in
+with no arguments, as in
 
 .. code::
 
@@ -130,7 +130,7 @@ case
 When case sensitivity is turned off (the default), all lines in the input file
 are converted to lower case, and all keys are converted to lower case.
 In general, it is best to let input files be case-insensitive, but there may be
-a reason this is not desireable.  To turn on case-sensitivity, use
+a reason this is not desirable.  To turn on case-sensitivity, use
 
 .. testcode:: 
 
@@ -145,11 +145,11 @@ ignoreunknown
 '''''''''''''
 
 It is best not to assume your end-users will do everything correctly.  For
-example, it is common to accidentally misspell a keyword.  You would likey wish
+example, it is common to accidentally misspell a keyword.  You would likely wish
 to alert the user of this error instead of continuing with the calculation and
 giving bad results.  For this reason, the *ignoreunknown* key is defaulted to
 |False|.  Any key that is not known to |InputReader| causes
-a |ReaderError| to be raised.  If this is not desireable for your use-case,
+a |ReaderError| to be raised.  If this is not desirable for your use-case,
 you can disable this with:
 
 .. testcode:: 
@@ -165,16 +165,16 @@ If a key is defined, but does not appear in the input file,
 |InputReader| will assign a default value to it.  By default this is
 |None|.  This is useful because one can check that the key appeared
 in the input file with ``if inp.key is not None``.  However, it may be
-desireable to have a different default value, such as |False|,
+desirable to have a different default value, such as |False|,
 :obj:`0`, or :obj:`''`. To change the default value, use:
 
 .. testcode:: 
 
     reader = InputReader(default=False)
 
-Alternatively, you can request that keys not appearring in the input file be
-ommited from the |Namespace|.  This would raise a
-:exc:`AttributeError` when trying to access a non-existant key, or you can
+Alternatively, you can request that keys not appearing in the input file be
+omitted from the |Namespace|.  This would raise a
+:exc:`AttributeError` when trying to access a non-existent key, or you can
 check that the key exists with ``if key in inp``.   To do this, use:
 
 .. testcode:: 
@@ -281,7 +281,7 @@ make it false.
 Let's say that you are defining an input file for a plotting
 program where distance is plotted versus time.
 Let's say the unit choices for distance are meters, centimeters, kilometers, or
-milimeters, and the unit choices for time are seconds, minutes, and hours.
+millimeters, and the unit choices for time are seconds, minutes, and hours.
 We also want to know if we the distance scale (y-axis) should start at zero
 or at the smallest distance value to plot.  
 We might specify this set of boolean keys in  this way:
@@ -290,7 +290,7 @@ We might specify this set of boolean keys in  this way:
 
     reader = InputReader()
     # The distance units
-    reader.add_boolean_key('milimeters')
+    reader.add_boolean_key('millimeters')
     reader.add_boolean_key('centimeters')
     reader.add_boolean_key('meters')
     reader.add_boolean_key('kilometers')
@@ -310,8 +310,8 @@ We might specify this set of boolean keys in  this way:
             print "distance in centimeters"
         elif inp.kilometers:
             print "distance in kilometers"
-        elif inp.milimeters:
-            print "distance in milimeters"
+        elif inp.millimeters:
+            print "distance in millimeters"
         else:
             print "defaulting to distance in meters"
         # Time unit?
@@ -396,7 +396,7 @@ from the input unit to the plotted unit.
     reader.add_boolean_key('meters', action=lambda x: 1.0 * x)
     reader.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     reader.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    reader.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    reader.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
     # The time units
     reader.add_boolean_key('seconds', action=lambda x: x / 1.0)
     reader.add_boolean_key('minutes', action=lambda x: x / 60.0)
@@ -410,8 +410,8 @@ from the input unit to the plotted unit.
             print inp.centimeters(distance), 'centimeters'
         elif inp.kilometers:
             print inp.kilometers(distance), 'kilometers'
-        elif inp.milimeters:
-            print inp.milimeters(distance), 'milimeters'
+        elif inp.millimeters:
+            print inp.millimeters(distance), 'millimeters'
         else:
             print float(x), 'meters'
         # Time unit?
@@ -428,7 +428,7 @@ from the input unit to the plotted unit.
     # Supply 50 meters and 1800 seconds
     print_results(reader.read_input(['centimeters', 'minutes']), 50, 1800)
     print_results(reader.read_input(['kilometers', 'hours']), 50, 1800)
-    print_results(reader.read_input(['milimeters']), 50, 1800)
+    print_results(reader.read_input(['millimeters']), 50, 1800)
 
 The above code would output
 
@@ -440,7 +440,7 @@ The above code would output
     0.05 kilometers
     0.5 hours
     ----
-    50000.0 milimeters
+    50000.0 millimeters
     1800.0 seconds
     ----
 
@@ -459,7 +459,7 @@ of the :ref:`common_options` section.
 .. automethod:: InputReader.add_line_key
 
 The line key is likely do be the work horse of your input file.  It allows
-you to consisely specify a key and its parameters in a flexible way.  There are
+you to concisely specify a key and its parameters in a flexible way.  There are
 a lot of things to think about when it comes to line keys,  so we'll take it
 slowly.  
 
@@ -480,7 +480,7 @@ type
 .. hint::
 
     *type* defaults to |str|, so the following two lines are 
-    equvalent:
+    equivalent:
 
         .. code::
         
@@ -551,7 +551,7 @@ providing a |tuple| of choices:
     except ReaderError as e:
         print str(e)
     try:
-        inp = reader.read_input(['offset "100"'])
+        inp = reader.read_input(["offset '100'"])
     except ReaderError as e:
         print str(e)
 
@@ -568,9 +568,9 @@ The above code would output
 
 .. testoutput::
 
-    ...expected one of int, all, got 10.5
-    ...expected one of solid, dashed, dotted, got lobster
-    ...expected float, got "100"
+    ...expected one of "all" or int, got "10.5"
+    ...expected one of "dashed", "dotted" or "solid", got "lobster"
+    ...expected float, got "'100'"
     False True
     Namespace(numpoints='all', linestyle='dashed', offset=150.3)
 
@@ -640,7 +640,7 @@ The above code would output
 .. testoutput::
 
     silly5314whatisthisthing
-    ...expected regex(silly\d+\w*thing), got silly542.0notsogood
+    ...expected regex(silly\d+\w*thing), got "silly542.0notsogood"
 
 .. _multiple_types:
 
@@ -688,12 +688,12 @@ The above code would output
     ...expected 3 arguments, got 4
 
 The parameters are read in the order in which they were defined.  For this
-reason, parameters defined using the *type* option will be refered to as
+reason, parameters defined using the *type* option will be referred to as
 *positional parameters*.
 
 .. attention::
 
-    The |tuple| vs. |list| disctintion is very important for the
+    The |tuple| vs. |list| distinction is very important for the
     *type* option; a |tuple| is used to define parameter *choices*, and a
     |list| is used to define *multiple parameters*.  It is not legal to 
     have a |list| inside of a |list| for the *type* object. 
@@ -724,7 +724,7 @@ reason, parameters defined using the *type* option will be refered to as
 .. note::
 
     Each of the parameters in the |list| follows
-    the rules discussed for a single type as descussed in subsection
+    the rules discussed for a single type as discussed in subsection
     :ref:`single_type`.  
 
 .. hint::
@@ -742,7 +742,7 @@ case
 .. hint::
 
     *case* defaults to |False|, so the following two lines are 
-    equvalent:
+    equivalent:
 
         .. code::
         
@@ -782,7 +782,7 @@ glob
 .. hint::
 
     *glob* defaults to :const:`{}`, so the following two lines are 
-    equvalent:
+    equivalent:
 
         .. code::
         
@@ -845,7 +845,7 @@ The above code would output
     ...expected at most 3 arguments, got 4
 
 There is a fourth key to the *glob* option, and it is *join*.  Join causes all
-the globbed parameters to be joined together into a single space-seperated
+the globbed parameters to be joined together into a single space-separated
 string.  The default value is |False|.  *join* is useful when reading 
 things like titles.  For example, to allow
 the user to specify a title for the plot, we would use the following code:
@@ -922,7 +922,7 @@ keywords
 .. hint::
 
     *keywords* defaults to :const:`{}`, so the following two lines are 
-    equvalent:
+    equivalent:
 
         .. code::
         
@@ -934,8 +934,8 @@ keywords
     The options *glob* and *keywords* are mutually exclusive.
 
 There are times when a line key should offer optional parameters with more
-flexability than can be offered by the *glob* option.  The *keywords* option
-provides this flexability.  Each parameter specified in the *keywords* option
+flexibility than can be offered by the *glob* option.  The *keywords* option
+provides this flexibility.  Each parameter specified in the *keywords* option
 is accessed through some keyword name; for this reason, we will refer to these
 parameters as *named parameters*.  
 
@@ -986,8 +986,8 @@ The above code would output
 
     ('solid', {'color': 'black', 'size': 3})
     green 1
-    ...Unknown keyword: lobster
-    ...Error reading keyword argument color
+    ...Unknown keyword: "lobster"
+    ...Error reading keyword argument "color"
 
 This code illustrates three important points about named parameters.  
 
@@ -1162,7 +1162,7 @@ The above code would output
     5
 
 We have a |Namespace| nested in a |Namespace| nested in a |Namespace|!  There
-is no limit to the amout of nesting you can have, although your users may get
+is no limit to the amount of nesting you can have, although your users may get
 irritated if it is arbitrarily complex.
 
 case
@@ -1250,7 +1250,7 @@ specify it so that we have a name to access in the |Namespace|.
 
 Note that the regex line cannot do any type checking for you.  You will have to
 write your own post-processing to check that the types are correct and to parse
-the line so that the data is in a useable format. 
+the line so that the data is in a usable format. 
 
 case
 ''''
@@ -1322,7 +1322,7 @@ The above code would output
 
     5000.0 30.0
     0.05 0.5
-    ...This key appears twice
+    ...The key "..." appears twice
 
 As you will see later, it is often more
 advantageous to use *dest* in conjunction with 
@@ -1414,7 +1414,7 @@ makes sense to have a key repeat.  If this is is the case, you can specify the
 |tuple|, so you will have to be wary of this when extracting the data
 from the |Namespace|.
 
-Instead of defining muliple ``rawdata`` files on one line as we did in the
+Instead of defining multiple ``rawdata`` files on one line as we did in the
 :ref:`glob_type` subsection, perhaps we would want to define multiple files on
 different lines:
 
@@ -1437,7 +1437,7 @@ The above code would output
 .. testoutput::
 
     Namespace(rawdata=('filename3.txt', 'filename6.txt', 'filename1.txt'))
-    ...This key appears twice
+    ...The key "..." appears twice
 
 The order of the |tuple| returned when *repeat* is |True| is
 the same as the order the keys appear in the input file.
@@ -1482,7 +1482,7 @@ The above code would output
 
 .. testoutput::
 
-    ...Only one of centimeters, kilometers, meters, or milimeters may be included.
+    ...Only one of 'centimeters', 'kilometers', 'meters', or 'milimeters' may be included.
 
 
 dest
@@ -1502,7 +1502,7 @@ messages:
     dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
     dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    dunits.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
     # The time units
     tunits = reader.add_mutually_exclusive_group(dest='timeconv')
     tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
@@ -1522,7 +1522,7 @@ messages:
 
     # Error:
     try:
-        inp = reader.read_input(['meters', 'milimeters', 'hours'])
+        inp = reader.read_input(['meters', 'millimeters', 'hours'])
     except ReaderError as e:
         print str(e)
 
@@ -1532,7 +1532,7 @@ The above code would output
 
     5000.0 30.0
     0.05 0.5
-    ...Only one of centimeters, milimeters, meters, or kilometers may be included.
+    ...Only one of 'centimeters', 'kilometers', 'meters', or 'millimeters' may be included.
 
 default
 '''''''
@@ -1564,7 +1564,7 @@ mutually exclusive group:
     dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
     dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    dunits.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
     # The time units
     tunits = reader.add_mutually_exclusive_group(dest='timeconv', default=lambda x: x / 1.0)
     tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
@@ -1594,7 +1594,7 @@ the mutually exclusive group required:
     dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
     dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    dunits.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
     # The time units
     tunits = reader.add_mutually_exclusive_group(dest='timeconv', required=True)
     tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
@@ -1610,7 +1610,7 @@ The above code would output
 
 .. testoutput::
 
-    ...One and only one of centimeters, milimeters, meters, or kilometers must be included.
+    ...One and only one of 'centimeters', 'kilometers', 'meters', or 'millimeters' must be included.
 
 .. hint::
 
@@ -1634,7 +1634,7 @@ reader definition for the plotting program:
     dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
     dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
     dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
-    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+    dunits.add_boolean_key('millimeters', action=lambda x: 1000.0 * x)
 
     # Time conversion booleans. Default is seconds.
     tunits = reader.add_mutually_exclusive_group(dest='timeconv', default=lambda x: x / 1.0)
@@ -1779,7 +1779,7 @@ Strings with spaces
 is because it is impossible (read: very difficult to implement) to parse each
 line without splitting them on whitespace first.  If a key name or other given
 |str| had a space, it would be split and be difficult to detect,
-resulting in unforseen parsing errors.  For this reasonm,
+resulting in unforeseen parsing errors.  For this reason,
 |InputReader| will raise an error if it is attempted to give a
 |str| with spaces.
 
@@ -1801,7 +1801,7 @@ Regular expressions with spaces
 
 For the same reasons as above, regular expression objects that might allow
 spaces will raise a :exc:`ValueError`.  Not only does this include regular
-expressions with an expicit space, but also with whitespace character
+expressions with an explicit space, but also with whitespace character
 (:const:`"\s"`) and the anything character (:const:`"."`) as these may
 potentially match spaces.  
 

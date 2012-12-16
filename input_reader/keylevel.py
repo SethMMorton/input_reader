@@ -86,7 +86,7 @@ class _KeyLevel(object):
             raise ValueError (repr(keyname)+': : keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
-            raise ReaderError ('The key '+keyname+' has been defined twice')
+            raise ReaderError ('The key "'+keyname+'" has been defined twice')
         # Lower keyname if not case sensitive
         if not self._case:
             keyname = keyname.lower()
@@ -253,7 +253,7 @@ class _KeyLevel(object):
             raise ValueError (repr(keyname)+': keyname must be str')
         # Cannot repeat keys
         if keyname in self._keys:
-            raise ReaderError ('The key '+keyname+' has been defined twice')
+            raise ReaderError ('The key "'+keyname+'" has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -355,7 +355,7 @@ class _KeyLevel(object):
             raise ValueError (keyname+': end must be str, given '+repr(end))
         # Cannot repeat keys
         if keyname in self._keys:
-            raise ReaderError ('The key '+keyname+' has been defined twice')
+            raise ReaderError ('The key "'+keyname+'" has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -461,7 +461,7 @@ class _KeyLevel(object):
             raise ValueError (repr(handle)+': handle must be str')
         # Cannot repeat keys
         if handle in self._keys:
-            raise ReaderError ('The key '+handle+' has been defined twice')
+            raise ReaderError ('The key "'+handle+'" has been defined twice')
         # Use default case if no case is given here
         if case is None:
             case = self._case
@@ -602,7 +602,7 @@ class _KeyLevel(object):
         else:
             # If the keyname has already been found it is an error,
             if name in namespace:
-                raise ReaderError (self.name+': This key appears twice')
+                raise ReaderError (self.name+': The key "'+name+'" appears twice')
             # If the key has not been found, simply return
             else:
                 return i, name, val
@@ -722,7 +722,7 @@ class _KeyLevel(object):
                 return i+1
 
         # If nothing was found, raise an error
-        raise ReaderError (self.name+': Unrecognized key: '+f[i])
+        raise ReaderError (self.name+': Unrecognized key: "'+f[i]+'"')
 
     def _post(self, namespace):
         '''Post-process the keys.'''
@@ -741,9 +741,10 @@ class _KeyLevel(object):
             if nkeys == 0:
                 # Alert the user if a required key group was not found
                 if meg._required:
-                    keys = meg._keys.keys()
-                    msg = ': One and only one of '+', '.join(keys[:-1])
-                    msg += ', or '+keys[-1]+' must be included.'
+                    keys = sorted(meg._keys.keys())
+                    msg = ': One and only one of '
+                    msg += ', '.join([repr(x) for x in keys[:-1]])
+                    msg += ', or '+repr(keys[-1])+' must be included.'
                     raise ReaderError (self.name+msg)
                 # Set the dest to the default if not suppressing
                 elif meg._dest:
@@ -755,9 +756,10 @@ class _KeyLevel(object):
                         namespace.remove(key)
             # If more than one key was given raise an error
             elif nkeys > 1:
-                keys = meg._keys.keys()
-                msg = ': Only one of '+', '.join(keys[:-1])+', or '
-                msg += keys[-1]+' may be included.'
+                keys = sorted(meg._keys.keys())
+                msg = ': Only one of '
+                msg += ', '.join([repr(x) for x in keys[:-1]])
+                msg += ', or '+repr(keys[-1])+' may be included.'
                 raise ReaderError (self.name+msg)
             # Otherwise this meg is good to go
             else:
@@ -916,7 +918,7 @@ class LineKey(_KeyLevel):
                 if 'type' not in keywords[key]:
                     keywords[key]['type'] = str
                 if set(keywords[key].keys()) != set(['default', 'type']):
-                    msg = ': Unknown key in keyword "'+key+'"'
+                    msg = ': Unknown key in keyword: "'+key+'"'
                     raise TypeError (self.name+msg)
                 # Check the type of the keyword
                 if isinstance(keywords[key]['type'], list):
@@ -1018,11 +1020,12 @@ class LineKey(_KeyLevel):
 
         def make_readable(val):
             '''Returns a a string version of the input value.'''
-            if (isinstance(val, str) or isinstance(val, int) or
-                isinstance(val, float)):
+            if isinstance(val, int) or  isinstance(val, float):
                 return str(val)
+            elif isinstance(val, str):
+                return '"'+str(val)+'"'
             elif val is None:
-                return 'None'
+                return '"None"'
             else:
                 try:
                     return 'regex({0})'.format(val.pattern)
@@ -1039,16 +1042,17 @@ class LineKey(_KeyLevel):
                     except ValueError:
                         continue
                 else:
-                    msg = self.name+': expected one of {0}, got {1}'
+                    msg = self.name+': expected one of {0}, got "{1}"'
                     t = []
-                    for x in typ:
+                    for x in sorted(typ):
                         t.append(make_readable(x))
-                    raise ReaderError (msg.format(', '.join(t), val))
+                    t = ', '.join(t[:-1])+' or '+t[-1]
+                    raise ReaderError (msg.format(t, val))
             else:
                 try:
                     return validate(val, typ, case)
                 except ValueError:
-                    msg = self.name+': expected {0}, got {1}'
+                    msg = self.name+': expected {0}, got "{1}"'
                     raise ReaderError (msg.format(make_readable(typ), val))
 
         # Read in the arguments, making sure they match the types and choices
@@ -1115,13 +1119,13 @@ class LineKey(_KeyLevel):
                 try:
                     key, value = kvpair.split('=')            
                 except ValueError:
-                    msg = ': Error reading keyword argument '+kvpair
+                    msg = ': Error reading keyword argument "'+kvpair+'"'
                     raise ReaderError (self.name+msg)
                 # Make sure the keyword is good
                 if not self._case:
                     key = key.lower()
                 if key not in self._keywords:
-                    raise ReaderError (self.name+': Unknown keyword: '+key)
+                    raise ReaderError (self.name+': Unknown keyword: "'+key+'"')
                 # Assign this keyword
                 try:
                     t = self._keywords[key]['type']

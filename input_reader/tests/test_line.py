@@ -50,7 +50,7 @@ def test_line_repeat_in_definition():
     r.add_line_key('red')
     with raises(ReaderError) as e:
         r.add_line_key('red')
-    assert search(r'The key \w+ has been defined twice', str(e.value))
+    assert search(r'The key "\w+" has been defined twice', str(e.value))
 
 def test_line_case_definition():
     r = InputReader()
@@ -191,14 +191,14 @@ def test_line_reading_types():
     assert inp.blue == 23
     with raises(ReaderError) as e:
         inp = r.read_input(['blue bird'])
-    assert search(r'expected \w+, got \w+', str(e.value))
+    assert search(r'expected \w+, got "\w+"', str(e.value))
 
     r.add_line_key('red', type=(0, 1, 2, 3))
     inp = r.read_input(['red 3'])
     assert inp.red == 3
     with raises(ReaderError) as e:
         inp = r.read_input(['red 4'])
-    assert search(r'expected .+, got \w+', str(e.value))
+    assert search(r'expected one of .+, got "\w+"', str(e.value))
 
     r.add_line_key('green', type=(float, None))
     inp = r.read_input(['green 3'])
@@ -209,7 +209,7 @@ def test_line_reading_types():
     assert inp.green is None
     with raises(ReaderError) as e:
         inp = r.read_input(['green bird'])
-    assert search(r'expected .+, got \w+', str(e.value))
+    assert search(r'expected one of .+, got "\w+"', str(e.value))
 
     r.add_line_key('cyan', type=[str, (None, str), float])
     inp = r.read_input(['cyan cat dog 6'])
@@ -219,7 +219,7 @@ def test_line_reading_types():
     assert search('expected .+, got \w+', str(e.value))
     with raises(ReaderError) as e:
         inp = r.read_input(['cyan cat none bird'])
-    assert search('expected \w+, got \w+', str(e.value))
+    assert search('expected \w+, got "\w+"', str(e.value))
     inp = r.read_input(['cyan cat none 7.8'])
     assert inp.cyan == ('cat', None, 7.8)
 

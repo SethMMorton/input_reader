@@ -131,7 +131,7 @@ def test_read_keywords_cannot_repeat(setup):
     r.add_boolean_key('red', repeat=False)
     with raises(ReaderError) as e:
         inp = r.read_input(s2)
-    assert 'This key appears twice' in str(e.value)
+    assert 'appears twice' in str(e.value)
 
 def test_read_keywords_can_repeat(setup):
     # A keyword appears twice that can repeat... OK
@@ -159,7 +159,7 @@ def test_read_destination_is_same_and_done_incorrectly(setup):
     # They are both sent to other dest, repeat is needed
     with raises(ReaderError) as e:
         inp = r.read_input(s1)
-    assert 'This key appears twice' in str(e.value)
+    assert 'appears twice' in str(e.value)
 
 def test_read_destination_is_same_and_done_correctly(setup):
     # Try the above with repeat=True
