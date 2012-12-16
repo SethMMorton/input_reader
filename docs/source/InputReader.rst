@@ -13,6 +13,33 @@
     reader.add_boolean_key('blue')
     reader.add_boolean_key('green')
 
+.. testsetup:: fullexample
+
+    from StringIO import StringIO
+    from textwrap import dedent
+
+    user_input = StringIO()
+    user_input.write(dedent('''\
+        # Plot in centimeters
+        centimeters
+        # ... and in hours
+        hours
+
+        # Read from two data files
+        rawdata /path/to/DATA.txt # absolute path
+        rawdata ../raw.txt        # relative path
+
+        # Output filename and format
+        output myplot format=png compression=zip
+
+        # Line and point styles
+        linestyle dashed
+        # Point style... make them big, and green!
+        pointstyle circles color=green size=8
+
+        # Note there is no legend or polygon in this input
+        '''))
+
 .. |False| replace:: :obj:`False`
 .. |True| replace:: :obj:`True`
 .. |None| replace:: :obj:`None`
@@ -1551,7 +1578,7 @@ The above code would output
 
 .. testoutput::
 
-    5000.0 1800.0
+    50.0 30.0
 
 required
 ''''''''
@@ -1594,7 +1621,112 @@ The above code would output
 Putting it all together
 -----------------------
 
-Yay!
+Let's now take the best of the above examples to make a full working input
+reader definition for the plotting program:
+
+.. testcode:: fullexample
+
+    from input_reader import InputReader, ReaderError
+    reader = InputReader()
+
+    # Distance conversion booleans.  Default is meters.
+    dunits = reader.add_mutually_exclusive_group(dest='distconv', default=lambda x: 1.0 * x)
+    dunits.add_boolean_key('meters', action=lambda x: 1.0 * x)
+    dunits.add_boolean_key('centimeters', action=lambda x: 100.0 * x)
+    dunits.add_boolean_key('kilometers', action=lambda x: 0.001 * x)
+    dunits.add_boolean_key('milimeters', action=lambda x: 1000.0 * x)
+
+    # Time conversion booleans. Default is seconds.
+    tunits = reader.add_mutually_exclusive_group(dest='timeconv', default=lambda x: x / 1.0)
+    tunits.add_boolean_key('seconds', action=lambda x: x / 1.0)
+    tunits.add_boolean_key('minutes', action=lambda x: x / 60.0)
+    tunits.add_boolean_key('hours', action=lambda x: x / 3600.0)
+
+    # The raw data file(s)
+    reader.add_line_key('rawdata', case=True, repeat=True, required=True)
+
+    # Output file
+    formats = ('pdf', 'png', 'jpg', 'svg', 'bmp', 'eps')
+    compress = ('zip', 'tgz', 'tbz2', None)
+    reader.add_line_key('output', case=True, type=str, required=True,
+                        keywords={'format':{'type':formats, 'default':'pdf'},
+                                  'compression':{'type':compress, 'default':None}})
+
+    # Line and point styles
+    colors = ('green', 'red', 'blue', 'orange', 'black', 'violet')
+    reader.add_line_key('linestyle', type=('solid', 'dashed', 'dotted'),
+                        keywords={'color':{'type':colors,'default':'black'},
+                                  'size' :{'type':int,   'default':1}})
+    reader.add_line_key('pointstyle', type=('circles', 'squares', 'triangles'),
+                        keywords={'color':{'type':colors,'default':'black'},
+                                  'size' :{'type':int,   'default':1}})
+
+    # Optional legend on the plot
+    legend = reader.add_block_key('legend')
+    legend.add_boolean_key('shadow')
+    legend.add_line_key('location', type=('upper_left', 'upper_right',
+                                          'lower_left', 'lower_right'))
+    size = legend.add_block_key('size', end='subend')
+    size.add_line_key('box', type=int)
+    size.add_line_key('font', type=int)
+
+    # Optional polygon(s) to draw on the plot
+    polygon = reader.add_block_key('polygon', repeat=True)
+    polygon.add_regex_line('xypoint', r'(-?\d+\.?\d*) (-?\d+\.?\d*)', repeat=True)
+
+Let's say that we give the following input to the input reader::
+
+    # Plot in centimeters
+    centimeters
+    # ... and in hours
+    hours
+
+    # Read from two data files
+    rawdata /path/to/DATA.txt # absolute path
+    rawdata ../raw.txt        # relative path
+
+    # Output filename and format
+    output myplot format=png compression=zip
+
+    # Line and point styles
+    linestyle dashed
+    # Point style... make them big, and green!
+    pointstyle circles color=green size=8
+
+    # Note there is no legend or polygon in this input
+
+This input file is passed to the input reader and the results are as follows:
+
+.. testcode:: fullexample
+
+    # You should always wrap the read_input code in a try block 
+    # to catch reader errors
+    try:
+        inp = reader.read_input(user_input)
+    except ReaderError as e:
+        import sys
+        sys.exit(str(e))
+
+    # Let's take a look at the Namespace
+    print inp.rawdata
+    print inp.output
+    print inp.linestyle
+    print inp.pointstyle
+    print inp.legend, inp.polygon
+    print inp.distconv(400)
+    print inp.timeconv(7200)
+
+The above code would output
+
+.. testoutput:: fullexample
+
+    ('/path/to/DATA.txt', '../raw.txt')
+    ('myplot', {'compression': 'zip', 'format': 'png'})
+    ('dashed', {'color': 'black', 'size': 1})
+    ('circles', {'color': 'green', 'size': 8})
+    None None
+    40000.0
+    2.0
 
 Gotchas
 -------
@@ -1620,7 +1752,7 @@ version.  In the  *case* = |True| version:
     print 'red' in inp # False
     print 'RED' in inp # True
 
-In the  *case* = |False| version (default):
+In the *case* = |False| version (default):
 
 .. code::
 
