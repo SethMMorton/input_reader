@@ -1,6 +1,5 @@
 include input_reader/*
 include docs/source/*
-include docs/solar/*
 include docs/Makefile
 include docs/make.bat
 include input_reader/tests/*
