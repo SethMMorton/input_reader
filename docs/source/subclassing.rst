@@ -27,7 +27,7 @@
 
 .. _subclassing:
 
-Sublcassing |InputReader|
+Subclassing |InputReader|
 =========================
 
 Quite often it is necessary to do some further processing of the data that is

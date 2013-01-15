@@ -139,25 +139,12 @@ class Updater(Command):
         with open('README.rst') as rme:
             readme = [x.rstrip() for x in rme]
         
-        # Read in the conf.py
-        conffile = os.path.join('docs', 'source', 'conf.py')
-        with open(conffile) as c:
-            conf = [x.rstrip() for x in c]
-
         # Change the changelog to add the new change
         changelog = changelog[:3] + log + changelog[3:]
 
         # Change the README to do the same
         n = readme.index('History') + 3
         readme = readme[:n] + log + readme[n:]
-
-        # Replace the version number in the conf file
-        for n in xrange(len(conf)):
-            if conf[n].startswith('release = '):
-                conf[n] = "release = '{0}'".format(newver)
-            if conf[n].startswith('version = '):
-                ver = '.'.join(newver.split('.')[0:2])
-                conf[n] = "version = '{0}'".format(ver)
 
         # Write the new version to the _version file
         with open(os.path.join('input_reader', '_version.py'), 'w') as v:
@@ -170,6 +157,3 @@ class Updater(Command):
         with open('README.rst', 'w') as rme:
             for line in readme:
                 print(line, file=rme)
-        with open(conffile, 'w') as c:
-            for line in conf:
-                print(line, file=c)
