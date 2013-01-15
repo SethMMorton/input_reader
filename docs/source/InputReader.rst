@@ -1735,6 +1735,12 @@ The above code would output
 
 Please see :ref:`subclassing` for more details.
 
+:attr:`~InputReader.input_file`
+-------------------------------
+
+This is an attribute of |InputReader| that 
+holds the input file given to the reader with comments removed.
+
 Gotchas
 -------
 

@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+01-14-2013 v. 1.0.2
+'''''''''''''''''''
+
+    - Added input_file attribute to InputReader class
+    - Fixed typo in documentation
+    - Updated version updating code
+
 12-22-2012 v. 1.0.1
 '''''''''''''''''''
 
