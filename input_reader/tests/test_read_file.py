@@ -29,7 +29,7 @@ TEMPNAME = mkstemp()[1]
 def setup():
     reader = InputReader()
     # Make a string of the input
-    s = dedent('''\
+    s = dedent("""\
              # Here is an input file
              # It has some comments
 
@@ -43,7 +43,7 @@ def setup():
              cheese
                  brie
                  cheddar
-             end''')
+             end""")
     # Make a StringIO version of the same input
     io = StringIO()
     io.write(s)
@@ -53,11 +53,11 @@ def setup():
     # Here is what the read in input should look like
     r = ['', '', '', '', 'spam', '', '', 'eggs 5', '', '',
           'cheese', 'brie', 'cheddar', 'end']
-    ps = dedent('''\
+    ps = dedent("""\
              PATH This/Is/A/pathName.txt // A comment
 
              BLUE
-             RED''')
+             RED""")
     ps = ps.split('\n')
     return reader, s, io, l, r, ps
 
@@ -86,6 +86,12 @@ def test_read_list_properly(setup):
     reader, s, io, l, r, parse_string = setup
     inp = reader._read_in_file(l)
     assert inp == r
+
+def test_read_float_fails_properly(setup):
+    reader, s, io, l, r, parse_string = setup
+    with raises(ValueError) as e:
+        inp = reader._read_in_file([3.4, 4.5])
+    assert 'Unknown object passed' in str(e.value)
 
 def test_comments_are_handled_correctly(setup):
     parse_string = setup[-1]

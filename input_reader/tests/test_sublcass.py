@@ -6,7 +6,7 @@ class MyInputReader(InputReader):
     def __init__(self):
         super(MyInputReader, self).__init__()
     def post_process(self, namespace):
-        ''' Process the regular expression in a way that is easier to use'''
+        """ Process the regular expression in a way that is easier to use"""
 
         allowedcolors = ('red', 'green', 'blue', 'yellow', 'violet')
         numbers = []

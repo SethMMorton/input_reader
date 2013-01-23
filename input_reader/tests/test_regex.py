@@ -10,6 +10,11 @@ def test_regex_missing_handle():
     with raises(TypeError):
         r.add_regex_line('red')
 
+def test_regex_bad_bool():
+    r = InputReader()
+    with raises(ValueError):
+        r.add_regex_line('red', r'funny\d+dog', case=60)
+
 def test_regex_correct_call():
     r = InputReader()
     a = r.add_regex_line('red', r'funny\d+dog')

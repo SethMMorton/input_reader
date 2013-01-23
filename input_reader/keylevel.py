@@ -3,10 +3,10 @@ import re
 from helpers import Namespace, SUPPRESS, ReaderError
 
 class _KeyLevel(object):
-    '''An abstract base class that knows how to add keys to itself'''
+    """An abstract base class that knows how to add keys to itself"""
 
     def __init__(self, case=False):
-        '''Initiallizes the key holders in this class'''
+        """Initiallizes the key holders in this class"""
         # Are the keys case-sensitive by default?
         self._case = case
         if not isinstance(case, bool):
@@ -20,7 +20,7 @@ class _KeyLevel(object):
         self._meg = []
 
     def add_boolean_key(self, keyname, action=True, **kwargs):
-        '''Add a boolean key to the input searcher.
+        """Add a boolean key to the input searcher.
 
         :argument keyname:
             The name of the boolean-type key to search for.
@@ -80,7 +80,7 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:obj:`False`.
         :type repeat: bool
-        '''
+        """
         # : keyname must be str
         if not isinstance(keyname, str):
             raise ValueError (repr(keyname)+': : keyname must be str')
@@ -99,7 +99,7 @@ class _KeyLevel(object):
 
     def add_line_key(self, keyname, type=str, glob={}, keywords={},
                      case=None, **kwargs):
-        '''Add a line key to the input searcher.
+        """Add a line key to the input searcher.
 
         :argument keyname:
             The name of the key to search for.
@@ -247,7 +247,7 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:obj:`False`.
         :type repeat: bool
-        '''
+        """
         # : keyname must be str
         if not isinstance(keyname, str):
             raise ValueError (repr(keyname)+': keyname must be str')
@@ -270,7 +270,7 @@ class _KeyLevel(object):
 
     def add_block_key(self, keyname, end='end', case=None,
                       ignoreunknown=None, **kwargs):
-        '''Add a block key to the input searcher.
+        """Add a block key to the input searcher.
 
         :argument keyname:
             The name of the key to search for.
@@ -346,7 +346,7 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:obj:`False`.
         :type repeat: bool
-        '''
+        """
         # keyname must be str
         if not isinstance(keyname, str):
             raise ValueError (repr(keyname)+': keyname must be str')
@@ -380,7 +380,7 @@ class _KeyLevel(object):
         return self._keys[keyname]
 
     def add_regex_line(self, handle, regex, case=None, **kwargs):
-        '''Add a regular expression line to the input searcher.
+        """Add a regular expression line to the input searcher.
         This searches the entire line based on the given regex.
 
         NOTE: You may either pass a string that will be converted to
@@ -455,7 +455,7 @@ class _KeyLevel(object):
             which it was read in.
             The default is :py:obj:`False`.
         :type repeat: bool
-        '''
+        """
         # handle must be str
         if not isinstance(handle, str):
             raise ValueError (repr(handle)+': handle must be str')
@@ -469,7 +469,7 @@ class _KeyLevel(object):
             raise ValueError (handle+': case must be bool, given '+repr(case))
         # Use global default if none was given
         if 'default' not in kwargs:
-            kwargs['default'] = self._default
+            default = self._default
         # Lower handle name if not case sensitive
         if not case:
             handle = handle.lower()
@@ -486,7 +486,7 @@ class _KeyLevel(object):
 
     def add_mutually_exclusive_group(self, dest=None, default=None,
                                      required=False):
-        '''Defines a mutually exclusive group.
+        """Defines a mutually exclusive group.
 
         :argument dest:
             Defines an alternate name for the key to be stored in rather
@@ -515,7 +515,7 @@ class _KeyLevel(object):
             in the program flagging errors for keys in this group when there
             in fact is no error.
         :type required: bool
-        '''
+        """
         if default is None:
             default = self._default
         if dest is not None and not isinstance(dest, str):
@@ -530,7 +530,7 @@ class _KeyLevel(object):
         return self._meg[-1]
 
     def _add_kwargs(self, **kwargs):
-        '''Generic keyword arguments common to many methods'''
+        """Generic keyword arguments common to many methods"""
 
         # If this class defines a default default attribute, use that instead
         self._default = getattr(self, 'default', None)
@@ -565,7 +565,7 @@ class _KeyLevel(object):
             raise TypeError (self.name+msg)
 
     def _validate_string(self, string):
-        '''Make sure a string has no spaces'''
+        """Make sure a string has no spaces"""
         if hasattr(string, 'pattern'):
             for s in (r'\s', r'.'):
                 if s in string.pattern:
@@ -581,8 +581,8 @@ class _KeyLevel(object):
                 raise ValueError (self.name+msg)
 
     def _return_val(self, i, val, namespace):
-        '''Returns the result properly, depending on the key type
-        and how the user wants it.'''
+        """Returns the result properly, depending on the key type
+        and how the user wants it."""
 
         # Substitute the keyname for dest if required
         name = self._dest if self._dest is not None else self.name
@@ -608,11 +608,11 @@ class _KeyLevel(object):
                 return i, name, val
 
     def _defaults_and_unfind(self):
-        '''
+        """
         Return the defaults for the keys as a dictionary.
         Also unfind all keys in case this is the second time
         we are reading a file with this class.
-        '''
+        """
         defaults = {}
         for key, val in self._keys.items():
             if val._default is not SUPPRESS:
@@ -626,9 +626,9 @@ class _KeyLevel(object):
         return defaults
 
     def _parse_key_level(self, f, i):
-        '''Parse the current key level, recursively
+        """Parse the current key level, recursively
          parsing sublevels if necessary
-        '''
+        """
 
         # Populate the namespace with the defaults
         namespace = Namespace(**self._defaults_and_unfind())
@@ -642,7 +642,7 @@ class _KeyLevel(object):
         return i, namespace
 
     def _find_keys_in_input(self, f, i, namespace):
-        '''Find all the keys in the input block.'''
+        """Find all the keys in the input block."""
 
         notend = True
         while i < len(f) and notend:
@@ -678,10 +678,10 @@ class _KeyLevel(object):
         return i, namespace
 
     def _find_key(self, f, i, namespace):
-        '''Attempt to find a key in this line.
+        """Attempt to find a key in this line.
         Returns the new current line number.
         Raises a ReaderError if the key in this line is unrecognized.
-        '''
+        """
 
         first = f[i].split()[0]
         if not self._case:
@@ -725,7 +725,7 @@ class _KeyLevel(object):
         raise ReaderError (self.name+': Unrecognized key: "'+f[i]+'"')
 
     def _post(self, namespace):
-        '''Post-process the keys.'''
+        """Post-process the keys."""
 
         # Process the mutually exclusive groups separately
         for meg in self._meg:
@@ -810,10 +810,10 @@ class _KeyLevel(object):
         namespace.finalize()
 
 class LineKey(_KeyLevel):
-    '''A class to store data on a line key'''
+    """A class to store data on a line key"""
 
     def __init__(self, keyname, type, glob, keywords, case, **kwargs):
-        '''Defines a line key.'''
+        """Defines a line key."""
         _KeyLevel.__init__(self, case=case)
         # Fill in the values
         self.name = keyname
@@ -940,8 +940,8 @@ class LineKey(_KeyLevel):
             raise ValueError (self.name+msg)
 
     def _parse(self, f, i, namespace):
-        '''Parses the current line for the key.  Returns the line that
-        we read from and the value'''
+        """Parses the current line for the key.  Returns the line that
+        we read from and the value"""
 
         # Separate the arguments from the key
         if self._case:
@@ -986,9 +986,9 @@ class LineKey(_KeyLevel):
                     raise ReaderError (self.name+msg)
 
         def validate(val, typ, case):
-            '''Checks that the given value is valid by checking
+            """Checks that the given value is valid by checking
             its type. Raises ValueError if unsuccessful.
-            '''
+            """
             # Check case if necessary
             if not case:
                 try:
@@ -1019,7 +1019,7 @@ class LineKey(_KeyLevel):
                     raise ValueError
 
         def make_readable(val):
-            '''Returns a a string version of the input value.'''
+            """Returns a a string version of the input value."""
             if isinstance(val, int) or  isinstance(val, float):
                 return str(val)
             elif isinstance(val, str):
@@ -1033,8 +1033,8 @@ class LineKey(_KeyLevel):
                     return str(val).split()[1].strip("'><")
 
         def check_type(val, typ, case):
-            '''Checks the type of a value, accounting for
-            various forms of type'''
+            """Checks the type of a value, accounting for
+            various forms of type"""
             if isinstance(typ, tuple):
                 for tp in typ:
                     try:
@@ -1164,10 +1164,10 @@ class LineKey(_KeyLevel):
         return self._return_val(i, val, namespace)
 
 class BooleanKey(_KeyLevel):
-    '''A class to store data on a boolean key'''
+    """A class to store data on a boolean key"""
 
     def __init__(self, keyname, action, **kwargs):
-        '''Defines a boolean key.'''
+        """Defines a boolean key."""
         _KeyLevel.__init__(self)
         # Fill in the non-generic values
         self.name     = keyname
@@ -1180,8 +1180,8 @@ class BooleanKey(_KeyLevel):
             self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
-        '''Parses the current line for the key.  Returns the line that
-        we read from and the value'''
+        """Parses the current line for the key.  Returns the line that
+        we read from and the value"""
         n = len(f[i].split())
         if n == 1:
             return self._return_val(i, self._action, namespace)
@@ -1190,10 +1190,10 @@ class BooleanKey(_KeyLevel):
                                'arguments, this is illegal')
 
 class Regex(_KeyLevel):
-    '''A class to store data from a regex'''
+    """A class to store data from a regex"""
 
     def __init__(self, handle, regex, **kwargs):
-        '''Defines a regex searcher.'''
+        """Defines a regex searcher."""
         _KeyLevel.__init__(self)
         # Fill in the non-generic values
         self.name    = handle
@@ -1206,19 +1206,19 @@ class Regex(_KeyLevel):
             self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
-        '''Parses the current line for the regex.  Returns the match objext
-        for the line.'''
+        """Parses the current line for the regex.  Returns the match objext
+        for the line."""
 
         # Grab the match object for this line
         val = self._regex.match(f[i])
         return self._return_val(i, val, namespace)
 
 class BlockKey(_KeyLevel):
-    '''A class to store data in a block key'''
+    """A class to store data in a block key"""
 
     def __init__(self, keyname, end, case, ignoreunknown, **kwargs):
         _KeyLevel.__init__(self, case=case)
-        '''Defines a block key.'''
+        """Defines a block key."""
         # Fill in the values
         self.name = keyname
         if self._case:
@@ -1235,8 +1235,8 @@ class BlockKey(_KeyLevel):
         self._validate_string(self._end)
 
     def _parse(self, f, i, namespace):
-        '''Parses the current line for the key.  Returns the line that
-        we read from and the value'''
+        """Parses the current line for the key.  Returns the line that
+        we read from and the value"""
 
         # Parse this block
         n = len(f[i].split())
@@ -1248,10 +1248,10 @@ class BlockKey(_KeyLevel):
                                'arguments, this is illegal')
 
 class MutExGroup(_KeyLevel):
-    '''A class to hold a mutually exclusive group'''
+    """A class to hold a mutually exclusive group"""
 
     def __init__(self, case, dest, default, required, _ignoreunknown):
-        '''Initiallizes the mutually exclusive group.'''
+        """Initiallizes the mutually exclusive group."""
         _KeyLevel.__init__(self, case=case)
         self._default  = default
         self._dest = dest

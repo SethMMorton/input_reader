@@ -1,10 +1,10 @@
-'''This is a collection of subroutines that are used at the start of
+"""This is a collection of subroutines that are used at the start of
 execution of a program, typically when processing files or command-
 line arguements.
-'''
+"""
 
 def abs_file_path(filename, env=False):
-    '''\
+    """\
     This function takes a *filename* and returns the absolute path.
 
     The reason this was written is that :py:func:`os.path.abspath`
@@ -23,7 +23,7 @@ def abs_file_path(filename, env=False):
         where the path is.  The default is False.
     :type env: bool, optional
     :rtype: :py:obj:`str`
-    '''
+    """
     from os.path import abspath, expanduser, expandvars
     absfile = abspath(expandvars(expanduser(filename)))
 
@@ -40,7 +40,7 @@ def abs_file_path(filename, env=False):
 
 
 def file_safety_check(filename):
-    '''\
+    """\
     Function to check a file and raise an :py:exc:`IOError`
     if it is not "safe."  "Safe" meaning that the file exists and
     it is readable.
@@ -51,6 +51,6 @@ def file_safety_check(filename):
     :rtype: None
     :exception:
         :py:exc:`IOError` : Raised when a file is not safe
-    '''
+    """
     with open(filename) as f:
         pass

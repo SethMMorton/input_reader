@@ -13,6 +13,14 @@ def test_block_missing_keyname():
     with raises(TypeError):
         r.add_block_key(case=False)
 
+def test_unterminated_block():
+    r = InputReader(ignoreunknown=True)
+    a = r.add_block_key('red')
+    a.add_boolean_key('rose')
+    with raises(ReaderError) as e:
+        r.read_input(['red', 'rose'])
+    assert search('Unterminated block', str(e.value))
+
 def test_block_correct_call():
     r = InputReader()
     a = r.add_block_key('red')

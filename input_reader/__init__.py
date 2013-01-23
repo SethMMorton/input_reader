@@ -12,7 +12,7 @@ __all__ = [
           ]
 
 def range_check(low, high, expand=False, asint=False):
-    '''\
+    """\
     :py:func:`range_check` will verify that that given range has a
     *low* lower than the *high*.  If both numbers are integers, it
     will return a list of the expanded range unless *expand* is
@@ -42,7 +42,7 @@ def range_check(low, high, expand=False, asint=False):
         * :py:exc:`ValueError`: *low* > *high*.
         * :py:exc:`ValueError`: *low* or *high* cannot be converted to a
           :py:obj:`float`.
-    '''
+    """
     # Convert to float first.  A ValueError is raised if not possible
     low = float(low)
     high = float(high)

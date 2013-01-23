@@ -33,3 +33,7 @@ pip-log.txt
 
 #VIM
 *.swp
+
+# Other
+.idea
+coverage

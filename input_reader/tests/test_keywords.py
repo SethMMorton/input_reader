@@ -6,15 +6,15 @@ from textwrap import dedent
 @fixture
 def setup():
     r = InputReader()
-    s1 = dedent('''\
+    s1 = dedent("""\
                 blue
                 red
-                ''').split('\n')
-    s2 = dedent('''\
+                """).split('\n')
+    s2 = dedent("""\
                 blue
                 red
                 blue
-                ''').split('\n')
+                """).split('\n')
     return r, s1, s2
 
 def test_suppress_at_class_level():

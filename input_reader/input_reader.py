@@ -5,7 +5,7 @@ from helpers import ReaderError, SUPPRESS, Namespace
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 
 class InputReader(_KeyLevel):
-    '''\
+    """\
     :py:class:`InputReader` is a class that is designed to read in
     an input file and return the information contained based on rules
     supplied to the class using a syntax similar to what is used in 
@@ -31,11 +31,11 @@ class InputReader(_KeyLevel):
     :keyword default:
         The default default that will be given when a
         key is created without a default.  Optional
-    '''
+    """
 
     def __init__(self, comment=['#'], case=False, ignoreunknown=False,
                  default=None):
-        '''Initiallize the :py:class:`InputReader` class.'''
+        """Initiallize the :py:class:`InputReader` class."""
         _KeyLevel.__init__(self, case=case)
 
         # Name (main is default)
@@ -64,7 +64,7 @@ class InputReader(_KeyLevel):
         self._default = default
 
     def read_input(self, filename):
-        '''\
+        """\
         Reads in the input from a given file using the supplied rules.
 
         :argument filename:
@@ -75,9 +75,9 @@ class InputReader(_KeyLevel):
         :exception:
             :py:exc:`ReaderError`: Any known errors will be raised with
             this custom exception.
-        '''
+        """
 
-        # Read in the file, removeing comments and extra whitespace/newlines
+        # Read in the file, removing comments and extra whitespace/newlines
         f = self._read_in_file(filename)
 
         # Parse this key level, recursively reading lower levels
@@ -90,16 +90,16 @@ class InputReader(_KeyLevel):
         return namespace
 
     def post_process(self, namespace):
-        '''\
+        """\
         Perform post-processing of the data collected from the input file.
 
         This is a "virtual" method... does nothing and is intended to be
         re-implemented in a subclass.
-        '''
+        """
         pass
 
     def _read_in_file(self, filename):
-        '''Store the filename as a list'''
+        """Store the filename as a list"""
 
         f = []
         # Assume a filename was given

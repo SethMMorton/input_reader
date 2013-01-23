@@ -29,7 +29,7 @@ def test_line_correct_call():
     assert 'Cannot define both glob and keywords' in str(e.value)
     with raises(ValueError) as e:
         r.add_line_key('pink', type=None, 
-                                 glob=None, keywords=None)
+                               glob=None, keywords=None)
     assert 'type, glob and keywords cannot all be empty' in str(e.value)
 
 def test_line_name_definition():

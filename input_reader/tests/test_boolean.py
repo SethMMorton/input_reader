@@ -5,14 +5,14 @@ from textwrap import dedent
 
 @fixture
 def setup():
-    s1 = dedent('''\
+    s1 = dedent("""\
               blue
               red # Comment
-              ''').split('\n')
-    s2 = dedent('''\
+              """).split('\n')
+    s2 = dedent("""\
               blue
               red color # This is illegal
-              ''').split('\n')
+              """).split('\n')
     return s1, s2, InputReader()
 
 def test_boolean_missing_keyname(setup):
