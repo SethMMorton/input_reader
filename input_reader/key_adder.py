@@ -718,8 +718,7 @@ class MutExGroup(_KeyAdder):
         self._default  = default
         self._dest = dest
         # Check strings
-        if self._dest is not None:
-            self._validate_string(self._dest)
+        self._validate_string(self._dest)
         self._required = required
         self._ignoreunknown = _ignoreunknown
 
@@ -741,8 +740,7 @@ class BlockKey(_KeyAdder):
         self._add_kwargs(**kwargs)
         # Check strings
         self._validate_string(self.name)
-        if self._dest is not None:
-            self._validate_string(self._dest)
+        self._validate_string(self._dest)
         self._validate_string(self._end)
 
     def _parse(self, f, i, namespace):

@@ -16,7 +16,9 @@ class _KeyLevel(object):
 
     def _validate_string(self, string):
         """Make sure a string has no spaces"""
-        if hasattr(string, 'pattern'):
+        if string is None:
+            return
+        elif hasattr(string, 'pattern'):
             for s in (r'\s', r'.'):
                 if s in string.pattern:
                     msg = ': Regex should not allow the possibility of spaces'
@@ -106,8 +108,7 @@ class BooleanKey(_KeyLevel):
         self._add_kwargs(**kwargs)
         # Check strings
         self._validate_string(self.name)
-        if self._dest is not None:
-            self._validate_string(self._dest)
+        self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
         """Parses the current line for the key.  Returns the line that
@@ -133,8 +134,7 @@ class Regex(_KeyLevel):
         self._add_kwargs(**kwargs)
         # Check strings
         self._validate_string(self.name)
-        if self._dest is not None:
-            self._validate_string(self._dest)
+        self._validate_string(self._dest)
 
     def _parse(self, f, i, namespace):
         """Parses the current line for the regex.  Returns the match objext
@@ -157,8 +157,7 @@ class LineKey(_KeyLevel):
         self._add_kwargs(**kwargs)
         # Check strings
         self._validate_string(self.name)
-        if self._dest is not None:
-            self._validate_string(self._dest)
+        self._validate_string(self._dest)
         # Cannot have both glob and keywords defined
         if glob and keywords:
             msg = ': Cannot define both glob and keywords'
