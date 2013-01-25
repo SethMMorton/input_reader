@@ -50,7 +50,7 @@ def test_line_repeat_in_definition():
     r.add_line_key('red')
     with raises(ReaderError) as e:
         r.add_line_key('red')
-    assert search(r'The key "\w+" has been defined twice', str(e.value))
+    assert search(r'The keyname "\w+" has been defined twice', str(e.value))
 
 def test_line_case_definition():
     r = InputReader()

@@ -14,7 +14,7 @@ class MyInputReader(InputReader):
         for r in namespace.sample:
             # Check validity of numbers
             num = float(r.group(1))
-            if not (num < 1000 and num > -1000):
+            if not (1000 > num > -1000):
                 raise ReaderError ('sample: given number range must be '
                                    '-1000 < num < 1000, given '+str(num))
             numbers.append(num)

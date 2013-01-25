@@ -53,7 +53,7 @@ def test_boolean_repeat_in_definition(setup):
     r.add_boolean_key('red')
     with raises(ReaderError) as e:
         r.add_boolean_key('red')
-    regex = r'The key "\w+" has been defined twice'
+    regex = r'The keyname "\w+" has been defined twice'
     assert search(regex, str(e.value))
 
 def test_boolean_read_arguments(setup):
