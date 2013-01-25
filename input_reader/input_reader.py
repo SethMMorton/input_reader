@@ -1,10 +1,10 @@
 from __future__ import division, print_function
-from keylevel import _KeyLevel
-from helpers import ReaderError, SUPPRESS, Namespace
+from key_adder import _KeyAdder
+from helpers import ReaderError, SUPPRESS
 
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 
-class InputReader(_KeyLevel):
+class InputReader(_KeyAdder):
     """\
     :py:class:`InputReader` is a class that is designed to read in
     an input file and return the information contained based on rules
@@ -36,7 +36,7 @@ class InputReader(_KeyLevel):
     def __init__(self, comment=['#'], case=False, ignoreunknown=False,
                  default=None):
         """Initiallize the :py:class:`InputReader` class."""
-        _KeyLevel.__init__(self, case=case)
+        super(InputReader, self).__init__(case=case)
 
         # Name (main is default)
         self.name = 'main'
