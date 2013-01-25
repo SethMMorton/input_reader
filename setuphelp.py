@@ -43,8 +43,8 @@ class PyTest(TestCommand):
     def run_doctests(self):
         # Recall current directory
         original_dir = os.path.abspath(os.curdir)
-        # Go to docs directort
-        os.chdir('docs')
+        # Go to docs directory
+        os.chdir(os.path.join(os.path.dirname(__file__), 'docs'))
         # Get makefile name
         if sys.platform == 'win32':
             make = 'make.bat'
