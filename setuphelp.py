@@ -31,11 +31,12 @@ class PyTest(TestCommand):
         self.test_args = []
         self.test_suite = True
     def run_tests(self):
-        errno = self.run_pytest()
-        if errno:
-            sys.exit(errno)
-        else:
-            sys.exit(self.run_doctests())
+        sys.exit(self.run_pytest())
+        #errno = self.run_pytest()
+        #if errno:
+        #    sys.exit(errno)
+        #else:
+        #    sys.exit(self.run_doctests())
     def run_pytest(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
@@ -44,7 +45,7 @@ class PyTest(TestCommand):
         # Recall current directory
         original_dir = os.path.abspath(os.curdir)
         # Go to docs directory
-        os.chdir(os.path.join(os.path.dirname(__file__), 'docs'))
+        os.chdir('docs')
         # Get makefile name
         if sys.platform == 'win32':
             make = 'make.bat'

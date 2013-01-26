@@ -23,7 +23,7 @@ setup(name='input_reader',
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       use_2to3=True,
-      tests_require=['pytest', 'sphinx'],
+      tests_require=['pytest'],
       cmdclass={'test': PyTest, 'version_update':Updater, 'distclean':Clean},
       classifiers=(
         'Development Status :: 4 - Beta',
