@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+01-25-2013 v. 1.1.0
+'''''''''''''''''''
+
+    - Increased code coverage of tests to ~98%
+    - Refactored code to reduce copy/paste and be open for future improvements
+
 01-14-2013 v. 1.0.2
 '''''''''''''''''''
 
