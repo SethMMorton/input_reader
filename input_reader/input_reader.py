@@ -8,7 +8,7 @@ class InputReader(_KeyAdder):
     """\
     :py:class:`InputReader` is a class that is designed to read in
     an input file and return the information contained based on rules
-    supplied to the class using a syntax similar to what is used in 
+    supplied to the class using a syntax similar to what is used in
     the :py:mod:`argparse` module in the Python standard library.
 
     :py:class:`InputReader` accepts blocks-type, line-type and
