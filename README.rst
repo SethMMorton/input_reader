@@ -152,6 +152,11 @@ Seth M. Morton
 History
 -------
 
+04-13-2013 v. 1.1.1
+'''''''''''''''''''
+
+    - Added the filename attribute to the InputReader class
+
 01-25-2013 v. 1.1.0
 '''''''''''''''''''
 

@@ -84,7 +84,8 @@ class InputReader(_KeyAdder):
         i, namespace = self._parse_key_level(f, 0)
 
         # If there is any post-processing to do, do it now
-        self.input_file = f # In case the post-processing wants to keep the input
+        self.input_file = f  # In case the post-processing wants to keep the input
+        self.filename = filename
         self.post_process(namespace)
 
         return namespace

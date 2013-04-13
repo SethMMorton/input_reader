@@ -1741,6 +1741,11 @@ Please see :ref:`subclassing` for more details.
 This is an attribute of |InputReader| that 
 holds the input file given to the reader with comments removed.
 
+:attr:`~InputReader.filename`
+-------------------------------
+
+The name of the file passed to |InputReader|.
+
 Gotchas
 -------
 
