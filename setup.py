@@ -1,8 +1,5 @@
 #! /usr/bin/env python
 
-#from ez_setup import use_setuptools
-from distribute_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
 from setuphelp import current_version, PyTest, Updater, Clean
 

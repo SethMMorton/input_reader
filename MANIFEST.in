@@ -3,7 +3,6 @@ include docs/source/*
 include docs/Makefile
 include docs/make.bat
 include input_reader/tests/*
-include distribute_setup.py
 include LICENSE
 include README.rst
 include MANIFEST.in
