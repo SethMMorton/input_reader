@@ -21,7 +21,6 @@ setup(name='input_reader',
       package_data={'input_reader': [join('include', 'input_reader.h')]},
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
-      use_2to3=True,
       tests_require=['pytest'],
       cmdclass={'test': PyTest, 'version_update': Updater, 'distclean': Clean},
       classifiers=(

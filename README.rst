@@ -152,6 +152,15 @@ Seth M. Morton
 History
 -------
 
+01-16-2014 v. 1.2.0
+'''''''''''''''''''
+
+    - Added input_reader.h to provide easy C interface to this python module
+    - Added include_path attribute to input_reader module for C compilations
+    - Removed distribute_setup.py (cause install problems for some)
+    - Unit tests pass for both Python 2.7 and Python 3.x
+    - Updated documentation
+
 04-13-2013 v. 1.1.1
 '''''''''''''''''''
 

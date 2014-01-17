@@ -114,7 +114,7 @@ except ImportError:
     pass
 else:
     breathe_projects = {
-      "input_reader":"c_include/xml/",
+      "input_reader":os.path.join(os.path.dirname(__file__), "..", "c_include", "xml"),
     }
     extensions += [ "breathe" ]
 
