@@ -1,6 +1,6 @@
 from __future__ import division, print_function
-from key_adder import _KeyAdder
-from helpers import ReaderError, SUPPRESS
+from .key_adder import _KeyAdder
+from .helpers import ReaderError, SUPPRESS
 
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 

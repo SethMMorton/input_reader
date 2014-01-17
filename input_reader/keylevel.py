@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-from helpers import  ReaderError, SUPPRESS
+from .helpers import  ReaderError, SUPPRESS
 
 class _KeyLevel(object):
     """An abstract base class that provides functionality essential
@@ -473,9 +473,7 @@ class LineKey(_KeyLevel):
                     continue
             else:
                 msg = self.name+': expected one of {0}, got "{1}"'
-                t = []
-                for x in sorted(typ):
-                    t.append(self._make_value_readable(x))
+                t = sorted([self._make_value_readable(x) for x in typ])
                 t = ', '.join(t[:-1])+' or '+t[-1]
                 raise ReaderError (msg.format(t, val))
         else:

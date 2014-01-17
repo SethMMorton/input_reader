@@ -20,11 +20,11 @@ def test_namespace_lists():
     ns1.add('small', False)
     ns1.add('medium', True)
     ns1.add('huge', False)
-    assert ns1.keys() == ('big', 'small', 'medium', 'huge')
+    assert tuple(ns1.keys()) == ('big', 'small', 'medium', 'huge')
     ns1.remove('small')
-    assert ns1.keys() == ('big', 'medium', 'huge')
-    assert ns1.values() == (True, True, False)
-    assert ns1.items() == (('big', True), ('medium', True), ('huge', False))
+    assert tuple(ns1.keys()) == ('big', 'medium', 'huge')
+    assert tuple(ns1.values()) == (True, True, False)
+    assert tuple(ns1.items()) == (('big', True), ('medium', True), ('huge', False))
 
 def test_namespace_get():
     ns1 = Namespace()
