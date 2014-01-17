@@ -74,7 +74,7 @@ class Clean(Command):
         for root, dirnames, filenames in os.walk('.'):
             for filename in ffilter(filenames, '*.py[co]'):
                 files.append(os.path.join(root, filename))
-            for dirname in ffilter(dirnames, '__pycache__'):
+            for dirname in ffilter(dirnames, '__pycache__')+ffilter(dirnames, 'xml'):
                 dirs.append(os.path.join(root, dirname))
         
         for f in files:
