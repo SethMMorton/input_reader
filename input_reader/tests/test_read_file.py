@@ -1,6 +1,9 @@
 from input_reader import InputReader, ReaderError, SUPPRESS
 from pytest import raises, fixture
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 from textwrap import dedent
 from os import remove
 from re import search

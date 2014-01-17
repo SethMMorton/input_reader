@@ -1,7 +1,8 @@
-from input_reader import InputReader
-from helpers import ReaderError, SUPPRESS, Namespace
-from files import file_safety_check, abs_file_path
-from _version import __version__
+from .input_reader import InputReader
+from .helpers import ReaderError, SUPPRESS, Namespace
+from .files import file_safety_check, abs_file_path
+from os.path import dirname, join
+from ._version import __version__
 
 __all__ = [
            'InputReader',
@@ -10,7 +11,10 @@ __all__ = [
            'abs_file_path',
            'file_safety_check',
            'range_check',
+           'include_path',
           ]
+
+include_path = join(dirname(__file__), 'include')
 
 def range_check(low, high, expand=False, asint=False):
     """\

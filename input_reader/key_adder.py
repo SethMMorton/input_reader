@@ -1,6 +1,6 @@
 import re
-from keylevel import _KeyLevel, LineKey, Regex, BooleanKey
-from helpers import ReaderError, SUPPRESS, Namespace
+from .keylevel import _KeyLevel, LineKey, Regex, BooleanKey
+from .helpers import ReaderError, SUPPRESS, Namespace
 
 class _KeyAdder(_KeyLevel):
     """An abstract base class that knows how to add keys to itself

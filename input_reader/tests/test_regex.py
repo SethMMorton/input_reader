@@ -2,6 +2,7 @@ from input_reader import InputReader, ReaderError, SUPPRESS
 from pytest import raises, fixture
 from re import search
 import re
+import sys
 
 def test_regex_missing_handle():
     r = InputReader()
@@ -32,7 +33,10 @@ def test_regex_case_definition():
     a = r.add_regex_line('red', r'funny\d+DOG')
     assert a.name == 'red'
     assert a._regex.pattern == r'funny\d+DOG'
-    assert a._regex.flags == re.IGNORECASE
+    if sys.version_info.major == 3:
+        assert a._regex.flags == (re.IGNORECASE | re.UNICODE)
+    else:
+        assert a._regex.flags == re.IGNORECASE
     regex = re.compile(r'funny\d+dog', re.IGNORECASE)
     b = r.add_regex_line('blue', regex)
     assert b.name == 'blue'
@@ -40,7 +44,10 @@ def test_regex_case_definition():
     c = r.add_regex_line('green', r'funny\d+DOG', case=True)
     assert c.name == 'green'
     assert c._regex.pattern == r'funny\d+DOG'
-    assert c._regex.flags != re.IGNORECASE
+    if sys.version_info.major == 3:
+        assert c._regex.flags == re.UNICODE
+    else:
+        assert c._regex.flags == 0
     regex = re.compile(r'funny\d+dog', re.IGNORECASE)
     # Case is ignored if a regex flag is given
     d = r.add_regex_line('gray', regex, case=True)

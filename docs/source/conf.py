@@ -107,6 +107,16 @@ highlight_language = 'python'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# breathe interface for doxygen
+try:
+    import breathe
+except ImportError:
+    pass
+else:
+    breathe_projects = {
+      "input_reader":os.path.join(os.path.dirname(__file__), "..", "c_include", "xml"),
+    }
+    extensions += [ "breathe" ]
 
 # -- Options for HTML output
 # ---------------------------------------------------

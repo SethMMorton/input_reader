@@ -24,6 +24,7 @@ def current_version():
         s = "Unable to locate version string in {0}"
         raise RuntimeError (s.format(VERSIONFILE))
 
+
 # Define how to use pytest to test the code
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -56,6 +57,7 @@ class PyTest(TestCommand):
         os.chdir(original_dir)
         return errno
 
+
 # Clean the directory
 class Clean(Command):
     description = "custom clean command that fully cleans directory tree"
@@ -72,7 +74,7 @@ class Clean(Command):
         for root, dirnames, filenames in os.walk('.'):
             for filename in ffilter(filenames, '*.py[co]'):
                 files.append(os.path.join(root, filename))
-            for dirname in ffilter(dirnames, '__pycache__'):
+            for dirname in ffilter(dirnames, '__pycache__')+ffilter(dirnames, 'xml'):
                 dirs.append(os.path.join(root, dirname))
         
         for f in files:
@@ -96,6 +98,7 @@ class Clean(Command):
             make = 'make'
         call([make, 'clean'])
         os.chdir(cwd)
+
 
 # Class to update the version
 class Updater(Command):
