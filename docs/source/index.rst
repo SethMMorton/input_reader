@@ -21,6 +21,7 @@ Contents:
     ReaderError.rst
     helperfunctions.rst
     subclassing.rst
+    c_api.rst
     changelog.rst
 
 ******************
