@@ -2,6 +2,7 @@
 
 from setuptools import setup, find_packages
 from setuphelp import current_version, PyTest, Updater, Clean
+from os.path import join
 
 DESCRIPTION = 'Define and read input files with an API inspired by argparse'
 try:
@@ -17,14 +18,14 @@ setup(name='input_reader',
       url='https://github.com/SethMMorton/input_reader',
       license='MIT',
       packages=find_packages(),
+      package_data={'input_reader': [join('include', 'input_reader.h')]},
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       use_2to3=True,
       tests_require=['pytest'],
-      cmdclass={'test': PyTest, 'version_update':Updater, 'distclean':Clean},
+      cmdclass={'test': PyTest, 'version_update': Updater, 'distclean': Clean},
       classifiers=(
-        'Development Status :: 4 - Beta',
-        #'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Operating System :: OS Independent',

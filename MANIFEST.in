@@ -1,8 +1,10 @@
 include input_reader/*
 include docs/source/*
+include docs/c_include/*
 include docs/Makefile
 include docs/make.bat
 include input_reader/tests/*
+include input_reader/include/input_reader.h
 include LICENSE
 include README.rst
 include MANIFEST.in

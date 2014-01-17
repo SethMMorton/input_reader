@@ -24,6 +24,7 @@ def current_version():
         s = "Unable to locate version string in {0}"
         raise RuntimeError (s.format(VERSIONFILE))
 
+
 # Define how to use pytest to test the code
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -55,6 +56,7 @@ class PyTest(TestCommand):
         errno = call([make, 'doctest'])
         os.chdir(original_dir)
         return errno
+
 
 # Clean the directory
 class Clean(Command):
@@ -96,6 +98,7 @@ class Clean(Command):
             make = 'make'
         call([make, 'clean'])
         os.chdir(cwd)
+
 
 # Class to update the version
 class Updater(Command):
