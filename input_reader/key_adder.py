@@ -1,6 +1,9 @@
-import re
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from .keylevel import _KeyLevel, LineKey, Regex, BooleanKey
 from .helpers import ReaderError, SUPPRESS, Namespace
+from .py23compat import py23_str, py23_items, py23_values
+import re
 
 class _KeyAdder(_KeyLevel):
     """An abstract base class that knows how to add keys to itself
@@ -23,7 +26,7 @@ class _KeyAdder(_KeyLevel):
     def _check_keyname(self, keyname, strid):
         """Run the given keyname through a few checks"""
         # Check that the keyname is valid
-        if not isinstance(keyname, str):
+        if not isinstance(keyname, py23_str):
             raise ValueError('{0}: {1} must be str'.format(repr(keyname), strid))
         # Check that the keyname is not defined twice
         if keyname in self._keys:
@@ -351,7 +354,7 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, keyname)
 
         # end must be str
-        if not isinstance(end, str):
+        if not isinstance(end, py23_str):
             raise ValueError (keyname+': end must be str, given '+repr(end))
 
         # Use parents's ignoreunknown if not given
@@ -450,7 +453,7 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, handle)
 
         # Compile the regex if a string.
-        if isinstance(regex , str):
+        if isinstance(regex , py23_str):
             if case:
                 regex = re.compile(regex)
             else:
@@ -493,7 +496,7 @@ class _KeyAdder(_KeyLevel):
         """
         if default is None:
             default = self._default
-        if dest is not None and not isinstance(dest, str):
+        if dest is not None and not isinstance(dest, py23_str):
             raise ValueError ('dest must be a str, given '+repr(dest))
         if not isinstance(required, bool):
             raise ValueError ('required value must be a bool, '
@@ -513,12 +516,12 @@ class _KeyAdder(_KeyLevel):
         we are reading a file with this class.
         """
         defaults = {}
-        for key, val in self._keys.items():
+        for key, val in py23_items(self._keys)():
             if val._default is not SUPPRESS:
                 name = val._dest if val._dest is not None else val.name
                 defaults[name] = val._default
         for meg in self._meg:
-            for key, val in meg._keys.items():
+            for key, val in py23_items(meg._keys)():
                 if val._default is not SUPPRESS:
                     name = val._dest if val._dest is not None else val.name
                     defaults[name] = val._default
@@ -586,7 +589,7 @@ class _KeyAdder(_KeyLevel):
         if not self._case:
             first = first.lower()
         # Find in the usual places
-        for key, val in self._keys.items():
+        for key, val in py23_items(self._keys)():
             try:
                 if not val._regex.match(f[i]):
                     continue
@@ -600,7 +603,7 @@ class _KeyAdder(_KeyLevel):
 
         # Look in the mutually exclusive groups if not in usual places
         for meg in self._meg:
-            for key, val in meg._keys.items():
+            for key, val in py23_items(meg._keys)():
                 try:
                     if not val._regex.match(f[i]):
                         continue
@@ -631,7 +634,7 @@ class _KeyAdder(_KeyLevel):
             nkeys = 0
             # Loop over each key in this group and count the
             # number in the namespace
-            for key, val in meg._keys.items():
+            for key, val in py23_items(meg._keys)():
                 name = val._dest if val._dest is not None else val.name
                 if name in namespace:
                     nkeys += 1
@@ -640,7 +643,7 @@ class _KeyAdder(_KeyLevel):
             if nkeys == 0:
                 # Alert the user if a required key group was not found
                 if meg._required:
-                    keys = sorted(meg._keys.keys())
+                    keys = sorted(meg._keys)
                     msg = ': One and only one of '
                     msg += ', '.join([repr(x) for x in keys[:-1]])
                     msg += ', or '+repr(keys[-1])+' must be included.'
@@ -655,7 +658,7 @@ class _KeyAdder(_KeyLevel):
                         namespace.remove(key)
             # If more than one key was given raise an error
             elif nkeys > 1:
-                keys = sorted(meg._keys.keys())
+                keys = sorted(meg._keys)
                 msg = ': Only one of '
                 msg += ', '.join([repr(x) for x in keys[:-1]])
                 msg += ', or '+repr(keys[-1])+' may be included.'
@@ -670,7 +673,7 @@ class _KeyAdder(_KeyLevel):
                     indx = namespace._order.index(thekey[0])
                     namespace._order[indx] = meg._dest
                     # Delete the keys in the group from the namespace defaults
-                    for val in meg._keys.values():
+                    for val in py23_values(meg._keys)():
                         name = val._dest if val._dest is not None else val.name
                         namespace.remove(name)
                         try:
@@ -679,7 +682,7 @@ class _KeyAdder(_KeyLevel):
                             pass
 
         # Loop over the non-grouped keys and check key requirements
-        for key, val in self._keys.items():
+        for key, val in py23_items(self._keys)():
             name = val._dest if val._dest is not None else val.name
             # Identify missing required keys and raise error if not found
             if val._required and name not in namespace:
@@ -688,10 +691,10 @@ class _KeyAdder(_KeyLevel):
 
         # Loop over the keys that were found and see if there are any
         # dependencies that were not filled.
-        for key in namespace.keys():
+        for key in namespace:
             # Check if this key has any dependencies,
             # and if so, they are given as well.
-            for val in self._keys.values():
+            for val in py23_values(self._keys)():
                 name = val._dest if val._dest is not None else val.name
                 if key == name:
                     depends = getattr(val, '_depends', None)

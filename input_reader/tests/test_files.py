@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from input_reader import abs_file_path, file_safety_check, range_check
 from pytest import raises
 from os.path import join, abspath

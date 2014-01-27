@@ -1,6 +1,8 @@
-from __future__ import division, print_function
+# -*- coding: utf-8 -*-
+from __future__ import division, print_function, unicode_literals
 from .key_adder import _KeyAdder
 from .helpers import ReaderError, SUPPRESS
+from .py23compat import py23_str
 
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 
@@ -42,12 +44,12 @@ class InputReader(_KeyAdder):
         self.name = 'main'
 
         # What constitutes a comment?
-        if isinstance(comment, str):
+        if isinstance(comment, py23_str):
             comment = [comment]
         self._comment = comment
         try:
             for x in self._comment:
-                if not isinstance(x, str):
+                if not isinstance(x, py23_str):
                     raise ValueError ('comment value must be a str, '
                                       'given '+repr(x))
         except TypeError:

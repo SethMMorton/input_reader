@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+01-26-2014 v. 1.2.1
+'''''''''''''''''''
+
+    - All calls are completely python2/3 compatible
+    - Python2 uses unicode literals
+    - Files use unicode encoding
+
 01-16-2014 v. 1.2.0
 '''''''''''''''''''
 

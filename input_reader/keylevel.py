@@ -1,5 +1,7 @@
-from __future__ import division, print_function
+# -*- coding: utf-8 -*-
+from __future__ import division, print_function, unicode_literals
 from .helpers import  ReaderError, SUPPRESS
+from .py23compat import py23_str
 
 class _KeyLevel(object):
     """An abstract base class that provides functionality essential
@@ -83,7 +85,7 @@ class _KeyLevel(object):
         self._dest = getattr(self, 'dest', None)
         if self._dest is None:
             self._dest = kwargs.pop('dest', None)
-        if self._dest is not None and not isinstance(self._dest, str):
+        if self._dest is not None and not isinstance(self._dest, py23_str):
             raise ValueError ('dest value '+repr(self._dest)+' must be a str')
 
         # Depends
@@ -91,7 +93,7 @@ class _KeyLevel(object):
 
         # Make sure nothing extra was given
         if kwargs:
-            msg = ': Unknown arguments given: '+','.join(kwargs.keys())
+            msg = ': Unknown arguments given: '+','.join(kwargs)
             raise TypeError (self.name+msg)
 
 
@@ -216,7 +218,7 @@ class LineKey(_KeyLevel):
             if not isinstance(keywords, dict):
                 raise ValueError (self.name+': keywords must be a dict')
             for key in keywords:
-                if not isinstance(key, str):
+                if not isinstance(key, py23_str):
                     msg = ': keys in keywords must be of type str'
                     raise ValueError (self.name+msg)
                 else:
@@ -336,7 +338,7 @@ class LineKey(_KeyLevel):
             # Tag onto the end of val and prep val
             if not val:
                 if self._nolist:
-                    if isinstance(glob, str):
+                    if isinstance(glob, py23_str):
                         val = glob
                     else:
                         try:
@@ -418,7 +420,7 @@ class LineKey(_KeyLevel):
                     raise ValueError (self.name+msg)
                 else:
                     self._check_types_in_list(t)
-            elif not (isinstance(t, str) or isinstance(t, int) or
+            elif not (isinstance(t, py23_str) or isinstance(t, int) or
                       isinstance(t, float) or t is None or
                       hasattr(t, 'pattern') or t is str or t is int or
                       t is float):
@@ -426,7 +428,7 @@ class LineKey(_KeyLevel):
                        'int, or an instance of str, float, '
                        'int or regex')
                 raise ValueError (self.name+msg)
-            if isinstance(t, str) or hasattr(t, 'pattern'):
+            if isinstance(t, py23_str) or hasattr(t, 'pattern'):
                 self._validate_string(t)
 
     def _validate_given_value(self, val, typ, case):
@@ -449,7 +451,7 @@ class LineKey(_KeyLevel):
             else:
                 raise ValueError
         # Explicit choices
-        elif (isinstance(typ, str) or isinstance(typ, int) or
+        elif (isinstance(typ, py23_str) or isinstance(typ, int) or
               isinstance(typ, float)):
             if type(typ)(val) == typ:
                 return type(typ)(val)
@@ -487,7 +489,7 @@ class LineKey(_KeyLevel):
         """Returns a a string version of the input value."""
         if isinstance(val, int) or  isinstance(val, float):
             return str(val)
-        elif isinstance(val, str):
+        elif isinstance(val, py23_str):
             return '"'+str(val)+'"'
         elif val is None:
             return '"None"'

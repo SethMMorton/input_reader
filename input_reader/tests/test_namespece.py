@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from input_reader import Namespace
 
 def test_namespace_basic():

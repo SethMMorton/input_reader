@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 '''Class to update the version in this package and update the changelog'''
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 from setuptools.command.test import test as TestCommand
 from setuptools import Command
 from pkg_resources import parse_version
@@ -16,13 +17,16 @@ def current_version():
     # Read the _version.py file for the module version number
     VERSIONFILE = os.path.join('input_reader', '_version.py')
     with open(VERSIONFILE, "rt") as fl:
-        versionstring = fl.readline().strip()
-    m = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", versionstring)
+        versionstring = [x.strip() for x in fl]
+    for line in versionstring:
+        m = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", line, re.UNICODE)
+        if m:
+            break
     if m:
         return m.group(1)
     else:
         s = "Unable to locate version string in {0}"
-        raise RuntimeError (s.format(VERSIONFILE))
+        raise RuntimeError(s.format(VERSIONFILE))
 
 
 # Define how to use pytest to test the code
