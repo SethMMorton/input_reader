@@ -23,6 +23,17 @@ else:
     import itertools
     py23_zip = itertools.izip
 
+# Get items as iterator
+if sys.version[0] == '3':
+    py23_items = lambda x : getattr(x, 'items')
+else:
+    py23_items = lambda x : getattr(x, 'iteritems')
+
+# Get values as iterator
+if sys.version[0] == '3':
+    py23_values = lambda x : getattr(x, 'values')
+else:
+    py23_values = lambda x : getattr(x, 'itervalues')
 
 # This function is intended to decorate other functions that will modify
 # either a string directly, or a function's docstring.

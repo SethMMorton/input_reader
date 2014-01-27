@@ -93,7 +93,7 @@ class _KeyLevel(object):
 
         # Make sure nothing extra was given
         if kwargs:
-            msg = ': Unknown arguments given: '+','.join(kwargs.keys())
+            msg = ': Unknown arguments given: '+','.join(kwargs)
             raise TypeError (self.name+msg)
 
 
