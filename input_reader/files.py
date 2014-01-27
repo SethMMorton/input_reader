@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 """This is a collection of subroutines that are used at the start of
 execution of a program, typically when processing files or command-
 line arguements.
 """
+from __future__ import unicode_literals
 
 def abs_file_path(filename, env=False):
     """\

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from input_reader import InputReader, ReaderError, SUPPRESS
 from pytest import raises, fixture
 from re import search

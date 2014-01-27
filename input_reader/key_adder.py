@@ -1,6 +1,9 @@
-import re
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from .keylevel import _KeyLevel, LineKey, Regex, BooleanKey
 from .helpers import ReaderError, SUPPRESS, Namespace
+from .py23compat import py23_str
+import re
 
 class _KeyAdder(_KeyLevel):
     """An abstract base class that knows how to add keys to itself
@@ -23,7 +26,7 @@ class _KeyAdder(_KeyLevel):
     def _check_keyname(self, keyname, strid):
         """Run the given keyname through a few checks"""
         # Check that the keyname is valid
-        if not isinstance(keyname, str):
+        if not isinstance(keyname, py23_str):
             raise ValueError('{0}: {1} must be str'.format(repr(keyname), strid))
         # Check that the keyname is not defined twice
         if keyname in self._keys:
@@ -351,7 +354,7 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, keyname)
 
         # end must be str
-        if not isinstance(end, str):
+        if not isinstance(end, py23_str):
             raise ValueError (keyname+': end must be str, given '+repr(end))
 
         # Use parents's ignoreunknown if not given
@@ -450,7 +453,7 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, handle)
 
         # Compile the regex if a string.
-        if isinstance(regex , str):
+        if isinstance(regex , py23_str):
             if case:
                 regex = re.compile(regex)
             else:
@@ -493,7 +496,7 @@ class _KeyAdder(_KeyLevel):
         """
         if default is None:
             default = self._default
-        if dest is not None and not isinstance(dest, str):
+        if dest is not None and not isinstance(dest, py23_str):
             raise ValueError ('dest must be a str, given '+repr(dest))
         if not isinstance(required, bool):
             raise ValueError ('required value must be a bool, '

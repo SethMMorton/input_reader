@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from .input_reader import InputReader
 from .helpers import ReaderError, SUPPRESS, Namespace
 from .files import file_safety_check, abs_file_path
