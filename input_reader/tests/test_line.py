@@ -26,7 +26,7 @@ def test_line_correct_call():
     assert not a._case
     with raises(TypeError) as e:
         r.add_line_key('blue', glob={'len':'*'},
-                                         keywords={'bird':{}})
+                               keywords={'bird':{}})
     assert 'Cannot define both glob and keywords' in str(e.value)
     with raises(ValueError) as e:
         r.add_line_key('pink', type=None, 
@@ -48,7 +48,7 @@ def test_line_name_definition():
 def test_line_repeat_in_definition():
     # You cannot repeat keys
     r = InputReader()
-    r.add_line_key('red')
+    r.add_line_key(str('red'))
     with raises(ReaderError) as e:
         r.add_line_key('red')
     assert search(r'The keyname "\w+" has been defined twice', str(e.value))
@@ -68,8 +68,8 @@ def test_line_type_definitions():
     assert a._type == [str]
     s = r.add_line_key('blue', type=[int])
     assert s._type == [int]
-    t = r.add_line_key('green', type=(str, 14, 2.8, None))
-    assert t._type == [(str, 14, 2.8, None)]
+    t = r.add_line_key('green', type=(14, 2.8, None, 'hey', str('hello'), str))
+    assert t._type == [(14, 2.8, None, 'hey', 'hello', str)]
     with raises(ValueError) as e:
         u = r.add_line_key('gray', type=None)
     assert 'type, glob and keywords cannot all be empty' in str(e.value)
@@ -80,7 +80,7 @@ def test_line_type_definitions():
     w = r.add_line_key('pink', type=regex)
     assert w._type == [regex]
     # Make sure incorrect types are not OK
-    regex = re.compile(r'hi\s+bye')
+    regex = re.compile(str(r'hi\s+bye'))
     with raises(ValueError) as e:
         r.add_line_key('black', type=regex)
     assert 'Regex should not allow the possibility of spaces' in str(e.value)
@@ -88,6 +88,15 @@ def test_line_type_definitions():
     with raises(ValueError) as e:
         r.add_line_key('black', type=regex)
     assert 'Regex should not allow the possibility of spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_line_key('black', type="")
+    assert 'String cannot be of zero length' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_line_key('black', type='hey there')
+    assert 'String cannot contain spaces' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_line_key('black', type=str('hey there'))
+    assert 'String cannot contain spaces' in str(e.value)
     with raises(ValueError) as e:
         r.add_line_key('black', type=set([str, int]))
     assert 'type must be one of' in str(e.value)
@@ -106,14 +115,14 @@ def test_line_glob_definitions():
     r = InputReader()
     a = r.add_line_key('red', glob={'len':'*'})
     assert a._glob == {'len':'*', 'type':str, 'join':False}
-    b = r.add_line_key('blue', glob={'len':'?'})
+    b = r.add_line_key('blue', glob={str('len'):str('?')})
     assert b._glob == {'len':'?', 'type':str, 'join':False}
     c = r.add_line_key('green', glob={'len':'+', 'join':True})
     assert c._glob == {'len':'+', 'type':str, 'join':True}
     e = r.add_line_key('pink', glob={'len':'?', 'type':int})
     assert e._glob == {'len':'?', 'type':int, 'join':False}
-    f = r.add_line_key('gray', glob={'len':'*', 'type':(int,str)})
-    assert f._glob == {'len':'*', 'type':(int,str), 'join':False}
+    f = r.add_line_key('gray', glob={'len':'*', 'type':(int,"hey",str("hi"),str)})
+    assert f._glob == {'len':'*', 'type':(int,"hey","hi",str), 'join':False}
     # Test that glob checking is OK for bad input
     with raises(ValueError) as e:
         r.add_line_key('black', glob='wrong')
@@ -145,11 +154,12 @@ def test_line_keyword_definitions():
     r = InputReader()
     a = r.add_line_key('red', keywords={'rose':{}})
     assert a._keywords == {'rose':{'default':SUPPRESS,'type':str}}
-    b = r.add_line_key('blue', keywords={'rose':None})
+    # Make sure str works, not just unicode (python2.x)
+    b = r.add_line_key('blue', keywords={str('rose'):None})
     assert b._keywords == {'rose':{'default':SUPPRESS,'type':str}}
     c = r.add_line_key('pink', keywords={
-                                    'elephant':{'default':'drunk'},
-                                    'cadillac':{'default':'bruce'}})
+                                    'elephant':{str('default'):'drunk'},
+                                    'cadillac':{'default':str('bruce')}})
     assert c._keywords == \
                      {'elephant':{'default':'drunk','type':str},
                       'cadillac':{'default':'bruce','type':str}}
@@ -223,6 +233,22 @@ def test_line_reading_types():
     assert search('expected \w+, got "\w+"', str(e.value))
     inp = r.read_input(['cyan cat none 7.8'])
     assert inp.cyan == ('cat', None, 7.8)
+
+    r.add_line_key('black', type=('hey', str('hi'), 4, 2.8))
+    inp = r.read_input(['black 4'])
+    assert inp.black == 4
+    inp = r.read_input(['black 2.8'])
+    assert inp.black == 2.8
+    inp = r.read_input(['black hey'])
+    assert inp.black == 'hey'
+    inp = r.read_input(['black hi'])
+    assert inp.black == 'hi'
+    with raises(ReaderError) as e:
+        inp = r.read_input(['black whoops'])
+    assert search('expected one of [a-zA-Z0-9, ".]+, got "\w+"', str(e.value))
+    with raises(ReaderError) as e:
+        inp = r.read_input(['black 2'])
+    assert search('expected one of [a-zA-Z0-9, ".]+, got "\d+"', str(e.value))
 
     import re
     r.add_line_key('pink', type=re.compile(r'neat\d+'))

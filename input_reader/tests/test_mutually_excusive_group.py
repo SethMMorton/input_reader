@@ -35,6 +35,13 @@ def test_mutex_custom_options():
         meg = r.add_mutually_exclusive_group(required='True')
     assert 'required value must be a bool, given' in str(e.value)
 
+def test_mutex_custom_options_str():
+    r = InputReader()
+    meg = r.add_mutually_exclusive_group(dest=str('rainbow'),
+                                         default=str('cloudy'))
+    assert meg._dest == 'rainbow'
+    assert meg._default == 'cloudy'
+
 def test_read_mutex():
     r = InputReader()
     meg = r.add_mutually_exclusive_group()

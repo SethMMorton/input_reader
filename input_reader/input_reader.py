@@ -2,7 +2,7 @@
 from __future__ import division, print_function, unicode_literals
 from .key_adder import _KeyAdder
 from .helpers import ReaderError, SUPPRESS
-from .py23compat import py23_str
+from .py23compat import py23_basestring
 
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 
@@ -44,12 +44,12 @@ class InputReader(_KeyAdder):
         self.name = 'main'
 
         # What constitutes a comment?
-        if isinstance(comment, py23_str):
+        if isinstance(comment, py23_basestring):
             comment = [comment]
         self._comment = comment
         try:
             for x in self._comment:
-                if not isinstance(x, py23_str):
+                if not isinstance(x, py23_basestring):
                     raise ValueError ('comment value must be a str, '
                                       'given '+repr(x))
         except TypeError:
@@ -109,7 +109,7 @@ class InputReader(_KeyAdder):
         try:
             fl = [x.rstrip() for x in open(filename)]
         except (IOError, OSError) as e:
-            raise ReaderError ('Cannot read in file "'+filename+'":'+str(e))
+            raise ReaderError('Cannot read in file "'+filename+'":'+str(e))
         except TypeError:
             # Assume a StringIO object was given
             try:

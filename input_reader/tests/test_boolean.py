@@ -10,10 +10,10 @@ def setup():
               blue
               red # Comment
               """).split('\n')
-    s2 = dedent("""\
-              blue
-              red color # This is illegal
-              """).split('\n')
+    s2 = dedent(str("""\
+                    blue
+                    red color # This is illegal
+                    """)).split('\n')
     return s1, s2, InputReader()
 
 def test_boolean_missing_keyname(setup):
@@ -33,7 +33,7 @@ def test_boolean_correct_call(setup):
     assert not b._action
     def fun(x):
         return x*x
-    c = r.add_boolean_key('green', action=fun)
+    c = r.add_boolean_key(str('green'), action=fun)
     assert c._action is fun
 
 def test_boolean_name_definition(setup):
@@ -47,6 +47,9 @@ def test_boolean_name_definition(setup):
     with raises(ValueError) as e:
         r.add_boolean_key('')
     assert 'String cannot be of zero length' in str(e.value)
+    with raises(ValueError) as e:
+        r.add_boolean_key(str('hello goodbye'))
+    assert 'String cannot contain spaces' in str(e.value)
 
 def test_boolean_repeat_in_definition(setup):
     # You cannot repeat keys
@@ -68,7 +71,6 @@ def test_boolean_read_arguments(setup):
     assert search(regex, str(e.value))
 
 def test_boolean_read_actions(setup):
-    # Actions can be lists, not just bool, str, int or floats
     s1, s2, r = setup
     r.add_boolean_key('blue', action=['something', 'odd'])
     # An action can be a function, too!

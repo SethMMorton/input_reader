@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 from .helpers import  ReaderError, SUPPRESS
-from .py23compat import py23_str
+from .py23compat import py23_str, py23_basestring
 
 class _KeyLevel(object):
     """An abstract base class that provides functionality essential
@@ -13,7 +13,7 @@ class _KeyLevel(object):
         # Are the keys case-sensitive by default?
         self._case = case
         if not isinstance(case, bool):
-            raise ValueError ('case must be bool, '
+            raise ValueError('case must be bool, '
                               'given '+repr(self._case))
 
     def _validate_string(self, string):
@@ -25,14 +25,14 @@ class _KeyLevel(object):
                 if s in string.pattern:
                     msg = ': Regex should not allow the possibility of spaces'
                     msg += ', given "'+string.pattern+'"'
-                    raise ValueError (self.name+msg)
+                    raise ValueError(self.name+msg)
         else:
             if len(string.split()) == 0:
                 msg = ': String cannot be of zero length'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
             elif len(string.split()) > 1:
                 msg = ': String cannot contain spaces, given "'+string+'"'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
 
     def _return_val(self, i, val, namespace):
         """Returns the result properly, depending on the key type
@@ -56,7 +56,7 @@ class _KeyLevel(object):
         else:
             # If the keyname has already been found it is an error,
             if name in namespace:
-                raise ReaderError (self.name+': The key "'+name+'" appears twice')
+                raise ReaderError(self.name+': The key "'+name+'" appears twice')
             # If the key has not been found, simply return
             else:
                 return i, name, val
@@ -72,21 +72,21 @@ class _KeyLevel(object):
         # Repeat
         self._repeat = kwargs.pop('repeat', False)
         if not isinstance(self._repeat, bool):
-            raise ValueError ('repeat value must be a bool, '
+            raise ValueError('repeat value must be a bool, '
                               'given '+repr(self._repeat))
 
         # Required
         self._required = kwargs.pop('required', False)
         if not isinstance(self._required, bool):
-            raise ValueError ('required value must be a bool, '
+            raise ValueError('required value must be a bool, '
                               'given '+repr(self._required))
 
         # If this class defines a default dest attribute, use that instead
         self._dest = getattr(self, 'dest', None)
         if self._dest is None:
             self._dest = kwargs.pop('dest', None)
-        if self._dest is not None and not isinstance(self._dest, py23_str):
-            raise ValueError ('dest value '+repr(self._dest)+' must be a str')
+        if self._dest is not None and not isinstance(self._dest, py23_basestring):
+            raise ValueError('dest value '+repr(self._dest)+' must be a str')
 
         # Depends
         self._depends = kwargs.pop('depends', None)
@@ -94,7 +94,7 @@ class _KeyLevel(object):
         # Make sure nothing extra was given
         if kwargs:
             msg = ': Unknown arguments given: '+','.join(kwargs)
-            raise TypeError (self.name+msg)
+            raise TypeError(self.name+msg)
 
 
 class BooleanKey(_KeyLevel):
@@ -119,7 +119,7 @@ class BooleanKey(_KeyLevel):
         if n == 1:
             return self._return_val(i, self._action, namespace)
         else:
-            raise ReaderError ('The boolean "'+self.name+'" was given '
+            raise ReaderError('The boolean "'+self.name+'" was given '
                                'arguments, this is illegal')
 
 
@@ -163,7 +163,7 @@ class LineKey(_KeyLevel):
         # Cannot have both glob and keywords defined
         if glob and keywords:
             msg = ': Cannot define both glob and keywords'
-            raise TypeError (self.name+msg)
+            raise TypeError(self.name+msg)
         # Validate type
         # type given as a list
         if isinstance(type, list):
@@ -182,28 +182,28 @@ class LineKey(_KeyLevel):
         # Validate glob
         if glob:
             if not isinstance(glob, dict):
-                raise ValueError (self.name+': glob must be a dict')
+                raise ValueError(self.name+': glob must be a dict')
             if 'len' not in glob:
-                raise ValueError (self.name+': "len" required for glob')
+                raise ValueError(self.name+': "len" required for glob')
             elif glob['len'] not in ('*', '+', '?'):
                 msg = ': "len" must be one of "*", "+", or "?" in glob'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
             if 'type' not in glob:
                 glob['type'] = str
             if isinstance(glob['type'], list):
                 msg = ': list not allowed in type for glob or keywords'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
             self._check_types_in_list([glob['type']])
             if 'join' not in glob:
                 glob['join'] = False
             if glob['join'] and glob['len'] == '?':
                 msg = ': "join=True" makes no sense for "len=?"'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
             if set(glob.keys()) != set(['len', 'type', 'join']):
                 if set(glob.keys()) != set(['len', 'type', 'join', 'default']):
-                    raise TypeError (self.name+': Unknown key in glob')
+                    raise TypeError(self.name+': Unknown key in glob')
             if not isinstance(glob['join'], bool):
-                raise ValueError (self.name+': "join" must be a bool in glob')
+                raise ValueError(self.name+': "join" must be a bool in glob')
             # Make the result is only a string when there is no positionals
             if not self._type and (glob['join'] or glob['len'] == '?'):
                 self._nolist = True
@@ -216,29 +216,29 @@ class LineKey(_KeyLevel):
         # Validate keywords
         if keywords:
             if not isinstance(keywords, dict):
-                raise ValueError (self.name+': keywords must be a dict')
+                raise ValueError(self.name+': keywords must be a dict')
             for key in keywords:
-                if not isinstance(key, py23_str):
+                if not isinstance(key, py23_basestring):
                     msg = ': keys in keywords must be of type str'
-                    raise ValueError (self.name+msg)
+                    raise ValueError(self.name+msg)
                 else:
                     self._validate_string(key)
                 if keywords[key] is None:
                     keywords[key] = {}
                 elif not isinstance(keywords[key], dict):
                     msg = ': Options for keyword "'+key+'" must be a dict'
-                    raise ValueError (self.name+msg)
+                    raise ValueError(self.name+msg)
                 if 'default' not in keywords[key]:
                     keywords[key]['default'] = SUPPRESS
                 if 'type' not in keywords[key]:
                     keywords[key]['type'] = str
                 if set(keywords[key].keys()) != set(['default', 'type']):
                     msg = ': Unknown key in keyword: "'+key+'"'
-                    raise TypeError (self.name+msg)
+                    raise TypeError(self.name+msg)
                 # Check the type of the keyword
                 if isinstance(keywords[key]['type'], list):
                     msg = ': list not allowed in type for glob or keywords'
-                    raise ValueError (self.name+msg)
+                    raise ValueError(self.name+msg)
                 else:
                     self._check_types_in_list([keywords[key]['type']])
             self._keywords = keywords
@@ -252,7 +252,7 @@ class LineKey(_KeyLevel):
         # Type, glob and keywords can't be empty
         if not (self._type or self._glob or self._keywords):
             msg = ': type, glob and keywords cannot all be empty'
-            raise ValueError (self.name+msg)
+            raise ValueError(self.name+msg)
 
     def _parse(self, f, i, namespace):
         """Parses the current line for the key.  Returns the line that
@@ -271,7 +271,7 @@ class LineKey(_KeyLevel):
             elif self._glob.get('len') == '+':
                 msg = ': expected at least '+str(len(self._type)+1)
                 msg += ' arguments, got '+str(len(args))
-                raise ReaderError (self.name+msg)
+                raise ReaderError(self.name+msg)
             # Checking keywords will be done later
 
         # If the # args is less than the positional
@@ -281,7 +281,7 @@ class LineKey(_KeyLevel):
             else:
                 msg = ': expected '+str(len(self._type))
             msg += ' arguments, got '+str(len(args))
-            raise ReaderError (self.name+msg)
+            raise ReaderError(self.name+msg)
 
         # If there are too many arguments
         elif len(args) > len(self._type):
@@ -298,7 +298,7 @@ class LineKey(_KeyLevel):
                     msg =': expected '+str(n)
                 if len(args) != n:
                     msg += ' arguments, got '+str(len(args))
-                    raise ReaderError (self.name+msg)
+                    raise ReaderError(self.name+msg)
 
         # Read in the arguments, making sure they match the types and choices
         val = []
@@ -328,7 +328,7 @@ class LineKey(_KeyLevel):
                 else:
                     # Change all the globbed values to strings
                     for j, v in enumerate(glob):
-                        glob[j] = str(v)
+                        glob[j] = py23_str(v)
                     glob = ' '.join(glob)
             elif not glob:
                 try:
@@ -338,7 +338,7 @@ class LineKey(_KeyLevel):
             # Tag onto the end of val and prep val
             if not val:
                 if self._nolist:
-                    if isinstance(glob, py23_str):
+                    if isinstance(glob, py23_basestring):
                         val = glob
                     else:
                         try:
@@ -365,12 +365,12 @@ class LineKey(_KeyLevel):
                     key, value = kvpair.split('=')
                 except ValueError:
                     msg = ': Error reading keyword argument "'+kvpair+'"'
-                    raise ReaderError (self.name+msg)
+                    raise ReaderError(self.name+msg)
                 # Make sure the keyword is good
                 if not self._case:
                     key = key.lower()
                 if key not in self._keywords:
-                    raise ReaderError (self.name+': Unknown keyword: "'+key+'"')
+                    raise ReaderError(self.name+': Unknown keyword: "'+key+'"')
                 # Assign this keyword
                 try:
                     t = self._keywords[key]['type']
@@ -413,22 +413,22 @@ class LineKey(_KeyLevel):
         for t in typ:
             if isinstance(t, list):
                 msg = ': Embedded lists not allowed in type'
-                raise ValueError (self.name+msg)
+                raise ValueError(self.name+msg)
             elif isinstance(t, tuple):
                 if len(t) == 0:
                     msg = ': Empty tuple in type'
-                    raise ValueError (self.name+msg)
+                    raise ValueError(self.name+msg)
                 else:
                     self._check_types_in_list(t)
-            elif not (isinstance(t, py23_str) or isinstance(t, int) or
+            elif not (isinstance(t, py23_basestring) or isinstance(t, int) or
                       isinstance(t, float) or t is None or
                       hasattr(t, 'pattern') or t is str or t is int or
                       t is float):
                 msg = (': type must be one of None, str, float '
                        'int, or an instance of str, float, '
                        'int or regex')
-                raise ValueError (self.name+msg)
-            if isinstance(t, py23_str) or hasattr(t, 'pattern'):
+                raise ValueError(self.name+msg)
+            if isinstance(t, py23_basestring) or hasattr(t, 'pattern'):
                 self._validate_string(t)
 
     def _validate_given_value(self, val, typ, case):
@@ -441,17 +441,17 @@ class LineKey(_KeyLevel):
                 typ = type.lower()
             except AttributeError:
                 pass
-                # One of the core datatypes
+        # One of the core datatypes
         if typ is float or typ is int or typ is str:
             return typ(val)
-        # Excplicit None
+        # Explicit None
         elif typ is None:
             if val.lower() == 'none':
                 return None
             else:
                 raise ValueError
         # Explicit choices
-        elif (isinstance(typ, py23_str) or isinstance(typ, int) or
+        elif (isinstance(typ, py23_basestring) or isinstance(typ, int) or
               isinstance(typ, float)):
             if type(typ)(val) == typ:
                 return type(typ)(val)
@@ -477,19 +477,19 @@ class LineKey(_KeyLevel):
                 msg = self.name+': expected one of {0}, got "{1}"'
                 t = sorted([self._make_value_readable(x) for x in typ])
                 t = ', '.join(t[:-1])+' or '+t[-1]
-                raise ReaderError (msg.format(t, val))
+                raise ReaderError(msg.format(t, val))
         else:
             try:
                 return self._validate_given_value(val, typ, case)
             except ValueError:
                 msg = self.name+': expected {0}, got "{1}"'
-                raise ReaderError (msg.format(self._make_value_readable(typ), val))
+                raise ReaderError(msg.format(self._make_value_readable(typ), val))
 
     def _make_value_readable(self, val):
         """Returns a a string version of the input value."""
         if isinstance(val, int) or  isinstance(val, float):
             return str(val)
-        elif isinstance(val, py23_str):
+        elif isinstance(val, py23_basestring):
             return '"'+str(val)+'"'
         elif val is None:
             return '"None"'

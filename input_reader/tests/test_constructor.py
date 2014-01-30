@@ -32,6 +32,19 @@ def test_set_constructor():
     assert ir._ignoreunknown
     assert not ir._default
 
+def test_set_constructor_str():
+    # This is in reaction to a bug where non-unicode values
+    # would fail on python2.x due to a bad isinstance call
+    ir = InputReader(comment=str('//'), 
+                     case=True, 
+                     ignoreunknown=True,
+                     default=False)
+    assert ir.name == 'main'
+    assert ir._comment == ['//']
+    assert ir._case
+    assert ir._ignoreunknown
+    assert not ir._default
+
 def test_incorrect_constructor_options():
     # 'wrong' keyword does not exist
     with raises(TypeError):
