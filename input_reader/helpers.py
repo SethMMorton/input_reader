@@ -3,11 +3,11 @@ from __future__ import division, print_function, unicode_literals
 import sys
 
 class Namespace(object):
-    """A simple class to hold the keys and aruments found from the
+    """A simple class to hold the keys and arguments found from the
     input file.  This is a copy-and-paste job from the argparse module
     with some minor additions.
 
-    You can populate the :py:class:`Namespace` at initiallization with
+    You can populate the :py:class:`Namespace` at initialization with
     a series of key-value pairs.  These are considered the defaults.
     """
 
@@ -19,8 +19,8 @@ class Namespace(object):
         type_name = type(self).__name__
         arg_strings = []
         for name, value in self._get_kwargs():
-            arg_strings.append('%s=%r' % (name, value))
-        return '%s(%s)' % (type_name, ', '.join(arg_strings))
+            arg_strings.append('{0}={1!r}'.format(name, value))
+        return '{0}({1})'.format(type_name, ', '.join(arg_strings))
 
     def _get_kwargs(self):
         try:

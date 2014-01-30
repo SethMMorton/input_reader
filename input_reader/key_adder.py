@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from .keylevel import _KeyLevel, LineKey, Regex, BooleanKey
 from .helpers import ReaderError, SUPPRESS, Namespace
-from .py23compat import py23_str, py23_items, py23_values
+from .py23compat import py23_items, py23_values, py23_basestring
 import re
 
 class _KeyAdder(_KeyLevel):
@@ -26,7 +26,7 @@ class _KeyAdder(_KeyLevel):
     def _check_keyname(self, keyname, strid):
         """Run the given keyname through a few checks"""
         # Check that the keyname is valid
-        if not isinstance(keyname, py23_str):
+        if not isinstance(keyname, py23_basestring):
             raise ValueError('{0}: {1} must be str'.format(repr(keyname), strid))
         # Check that the keyname is not defined twice
         if keyname in self._keys:
@@ -354,8 +354,8 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, keyname)
 
         # end must be str
-        if not isinstance(end, py23_str):
-            raise ValueError (keyname+': end must be str, given '+repr(end))
+        if not isinstance(end, py23_basestring):
+            raise ValueError(keyname+': end must be str, given '+repr(end))
 
         # Use parents's ignoreunknown if not given
         if ignoreunknown is None:
@@ -363,7 +363,7 @@ class _KeyAdder(_KeyLevel):
 
         # ignoreunknown must be bool
         if not isinstance(ignoreunknown, bool):
-            raise ValueError (keyname+': ignoreunknown must be bool, '
+            raise ValueError(keyname+': ignoreunknown must be bool, '
                                         'given '+repr(ignoreunknown))
         # Store this key
         self._keys[keyname] = BlockKey(keyname, end, case, ignoreunknown, **kwargs)
@@ -453,7 +453,7 @@ class _KeyAdder(_KeyLevel):
         case = self._check_case(case, handle)
 
         # Compile the regex if a string.
-        if isinstance(regex , py23_str):
+        if isinstance(regex , py23_basestring):
             if case:
                 regex = re.compile(regex)
             else:
@@ -496,11 +496,11 @@ class _KeyAdder(_KeyLevel):
         """
         if default is None:
             default = self._default
-        if dest is not None and not isinstance(dest, py23_str):
-            raise ValueError ('dest must be a str, given '+repr(dest))
+        if dest is not None and not isinstance(dest, py23_basestring):
+            raise ValueError('dest must be a str, given '+repr(dest))
         if not isinstance(required, bool):
-            raise ValueError ('required value must be a bool, '
-                              'given '+repr(required))
+            raise ValueError('required value must be a bool, '
+                             'given '+repr(required))
 
         # Add this group to the list, then return it
         self._meg.append(MutExGroup(self._case, dest, default, required,

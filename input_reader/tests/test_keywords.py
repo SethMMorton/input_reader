@@ -75,6 +75,20 @@ def test_custom_values(setup):
     assert b._depends == 'something'
     assert b._repeat
 
+def test_custom_values_str(setup):
+    r, s1, s2 = setup
+    b = r.add_boolean_key('red', True,
+                                 required=True,
+                                 default=str('BANANA'),
+                                 dest=str('fruit'),
+                                 depends=str('something'),
+                                 repeat=True)
+    assert b._required
+    assert b._default == 'BANANA'
+    assert b._dest == 'fruit'
+    assert b._depends == 'something'
+    assert b._repeat
+
 def test_incorrect_options(setup):
     # The keyword 'wrong' doesn't exist
     r, s1, s2 = setup
