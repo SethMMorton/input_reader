@@ -1,8 +1,8 @@
 Changelog
 ---------
 
-01-29-2014 v. 1.2.2
-'''''''''''''''''''
+01-29-2014 v. 1.2.1a
+''''''''''''''''''''
 
     - Fixed bug where strings were compared to unicode instead of basestring in python2.x
 
