@@ -152,6 +152,11 @@ Seth M. Morton
 History
 -------
 
+01-29-2014 v. 1.2.2
+'''''''''''''''''''
+
+    - Fixed bug where strings were compared to unicode instead of basestring in python2.x
+
 01-26-2014 v. 1.2.1
 '''''''''''''''''''
 

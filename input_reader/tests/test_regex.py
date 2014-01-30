@@ -29,6 +29,16 @@ def test_regex_correct_call():
     assert b._regex == regex
     assert not b._case
 
+def test_regex_correct_call_Str():
+    r = InputReader()
+    a = r.add_regex_line(str('red'), str(r'funny\d+dog'))
+    assert a.name == 'red'
+    assert a._regex.pattern == r'funny\d+dog'
+    regex = re.compile(str(r'funny\d+dog'))
+    b = r.add_regex_line(str('blue'), regex)
+    assert b.name == 'blue'
+    assert b._regex == regex
+
 def test_regex_case_definition():
     r = InputReader()
     a = r.add_regex_line('red', r'funny\d+DOG')

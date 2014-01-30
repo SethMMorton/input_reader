@@ -24,11 +24,16 @@ def test_unterminated_block():
 
 def test_block_correct_call():
     r = InputReader()
-    a = r.add_block_key('red')
+    a = r.add_block_key(str('red'))
     assert a.name == 'red'
     assert a._end == 'end'
     assert not a._case
     assert not a._ignoreunknown
+
+def test_block_correct_call_str():
+    r = InputReader()
+    a = r.add_block_key(str('red'))
+    assert a.name == 'red'
 
 def test_block_name_definition():
     r = InputReader()
@@ -54,6 +59,8 @@ def test_block_end_definition():
     r = InputReader()
     a = r.add_block_key('red', end='subend')
     assert a._end == 'subend'
+    a = r.add_block_key('green', end=str('subending'))
+    assert a._end == 'subending'
     with raises(ValueError) as e:
         r.add_block_key('blue', end=23)
     assert 'end must be str' in  str(e.value)
