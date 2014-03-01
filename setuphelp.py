@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 '''Class to update the version in this package and update the changelog'''
 from __future__ import print_function, unicode_literals
+
+import re
+import os
+import sys
+
 from setuptools.command.test import test as TestCommand
 from setuptools import Command
 from pkg_resources import parse_version
@@ -9,9 +14,9 @@ from datetime import datetime
 from glob import glob
 from shutil import rmtree
 from fnmatch import filter as ffilter
-import re
-import os
-import sys
+
+from input_reader.py23compat import py23_input
+
 
 def current_version():
     # Read the _version.py file for the module version number
@@ -35,17 +40,15 @@ class PyTest(TestCommand):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
         sys.exit(self.run_pytest())
-        #errno = self.run_pytest()
-        #if errno:
-        #    sys.exit(errno)
-        #else:
-        #    sys.exit(self.run_doctests())
+
     def run_pytest(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
         return pytest.main(self.test_args)
+
     def run_doctests(self):
         # Recall current directory
         original_dir = os.path.abspath(os.curdir)
@@ -66,12 +69,14 @@ class PyTest(TestCommand):
 class Clean(Command):
     description = "custom clean command that fully cleans directory tree"
     user_options = []
+
     def initialize_options(self):
         self.cwd = None
+
     def finalize_options(self):
         self.cwd = os.getcwd()
+
     def run(self):
-        
         # Excess files to be removed
         files = []
         dirs = glob("*.egg-info") + ['build', 'dist']
@@ -108,15 +113,18 @@ class Clean(Command):
 class Updater(Command):
     description = "custom command that guides you through updating to the next version"
     user_options = []
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
+
     def run(self):
         # Get the current version number
         curver = current_version()
         print('The current version number is {0}'.format(curver))
-        newver = raw_input('What do you want the new version to be? ')
+        newver = py23_input('What do you want the new version to be? ')
         # Make sure the proposed version is greater than the old
         if parse_version(curver) > parse_version(newver):
             sys.exit('The new version must be greater than the current version.')
@@ -126,7 +134,7 @@ class Updater(Command):
         log = []
         line = ''
         while line != "<eof>":
-            line = raw_input(' - ')
+            line = py23_input(' - ')
             log.append('    - '+line)
         log[-1] = '' # Change <eof> to ''
 
@@ -162,6 +170,7 @@ class Updater(Command):
         with open(changelogfile, 'w') as clf:
             for line in changelog:
                 print(line, file=clf)
+
         with open('README.rst', 'w') as rme:
             for line in readme:
                 print(line, file=rme)

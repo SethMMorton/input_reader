@@ -152,6 +152,12 @@ Seth M. Morton
 History
 -------
 
+03-01-2014 v. 1.2.2
+'''''''''''''''''''
+
+    - Cleaned up import blocks
+    - Added spaces between defs/classes (cosmetic)
+
 01-29-2014 v. 1.2.1a
 ''''''''''''''''''''
 
