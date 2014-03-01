@@ -5,6 +5,10 @@ line arguements.
 """
 from __future__ import unicode_literals
 
+from os.path import abspath, expanduser, expandvars, join
+from os import environ
+
+
 def abs_file_path(filename, env=False):
     """\
     This function takes a *filename* and returns the absolute path.
@@ -26,13 +30,10 @@ def abs_file_path(filename, env=False):
     :type env: bool, optional
     :rtype: :py:obj:`str`
     """
-    from os.path import abspath, expanduser, expandvars
     absfile = abspath(expandvars(expanduser(filename)))
 
     # Now replace front with $HOME if requested
     if env:
-        from os import environ
-        from os.path import join
         if environ['HOME'] in absfile:
             i = len(environ['HOME']) + 1
             # Assemble absolute path, using the $HOME variable

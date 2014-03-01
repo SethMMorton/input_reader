@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 '''Class to update the version in this package and update the changelog'''
 from __future__ import print_function, unicode_literals
+
+import re
+import os
+import sys
+
 from setuptools.command.test import test as TestCommand
 from setuptools import Command
 from pkg_resources import parse_version
@@ -9,9 +14,6 @@ from datetime import datetime
 from glob import glob
 from shutil import rmtree
 from fnmatch import filter as ffilter
-import re
-import os
-import sys
 
 def current_version():
     # Read the _version.py file for the module version number
