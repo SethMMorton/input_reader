@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+from os.path import join
 
 from setuptools import setup, find_packages
+
 from setuphelp import current_version, PyTest, Updater, Clean
-from os.path import join
 
 DESCRIPTION = 'Define and read input files with an API inspired by argparse'
 try:

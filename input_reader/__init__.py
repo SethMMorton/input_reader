@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from os.path import dirname, join
+
 from .input_reader import InputReader
 from .helpers import ReaderError, SUPPRESS, Namespace
 from .files import file_safety_check, abs_file_path
-from os.path import dirname, join
 from ._version import __version__
 
 __all__ = [
@@ -17,6 +19,7 @@ __all__ = [
           ]
 
 include_path = join(dirname(__file__), 'include')
+
 
 def range_check(low, high, expand=False, asint=False):
     """\

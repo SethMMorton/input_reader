@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import functools
 import sys
 
@@ -15,6 +16,9 @@ py23_range = range if sys.version[0] == '3' else xrange
 
 # Uniform base string type
 py23_basestring = str if sys.version[0] == '3' else basestring
+
+# Proper input function
+py23_input = input if sys.version[0] == '3' else raw_input
 
 # zip as an iterator
 if sys.version[0] == '3':
@@ -34,6 +38,7 @@ if sys.version[0] == '3':
     py23_values = lambda x : getattr(x, 'values')
 else:
     py23_values = lambda x : getattr(x, 'itervalues')
+
 
 # This function is intended to decorate other functions that will modify
 # either a string directly, or a function's docstring.
