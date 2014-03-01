@@ -7,6 +7,7 @@ from .keylevel import _KeyLevel, LineKey, Regex, BooleanKey
 from .helpers import ReaderError, SUPPRESS, Namespace
 from .py23compat import py23_items, py23_values, py23_basestring
 
+
 class _KeyAdder(_KeyLevel):
     """An abstract base class that knows how to add keys to itself
     and check the keys read within it."""

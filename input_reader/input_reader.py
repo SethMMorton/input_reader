@@ -7,6 +7,7 @@ from .py23compat import py23_basestring
 
 __all__ = ['InputReader', 'ReaderError', 'SUPPRESS']
 
+
 class InputReader(_KeyAdder):
     """\
     :py:class:`InputReader` is a class that is designed to read in

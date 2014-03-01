@@ -4,6 +4,7 @@ from __future__ import division, print_function, unicode_literals
 from .helpers import  ReaderError, SUPPRESS
 from .py23compat import py23_str, py23_basestring
 
+
 class _KeyLevel(object):
     """An abstract base class that provides functionality essential
     for a key"""

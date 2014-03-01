@@ -146,14 +146,17 @@ class Namespace(object):
             else:
                 self.add(key, val)
 
+
 class ReaderError(Exception):
     """\
     An exception for the :py:class:`InputReader` class.
     """
     def __init__(self, msg):
         self.msg = msg
+        
     def __str__(self):
         return self.msg
+
 
 class SUPPRESS(object):
     """

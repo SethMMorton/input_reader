@@ -20,6 +20,7 @@ __all__ = [
 
 include_path = join(dirname(__file__), 'include')
 
+
 def range_check(low, high, expand=False, asint=False):
     """\
     :py:func:`range_check` will verify that that given range has a

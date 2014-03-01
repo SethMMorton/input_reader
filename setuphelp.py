@@ -15,6 +15,7 @@ from glob import glob
 from shutil import rmtree
 from fnmatch import filter as ffilter
 
+
 def current_version():
     # Read the _version.py file for the module version number
     VERSIONFILE = os.path.join('input_reader', '_version.py')
@@ -37,17 +38,15 @@ class PyTest(TestCommand):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
         sys.exit(self.run_pytest())
-        #errno = self.run_pytest()
-        #if errno:
-        #    sys.exit(errno)
-        #else:
-        #    sys.exit(self.run_doctests())
+
     def run_pytest(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
         return pytest.main(self.test_args)
+
     def run_doctests(self):
         # Recall current directory
         original_dir = os.path.abspath(os.curdir)
@@ -68,12 +67,14 @@ class PyTest(TestCommand):
 class Clean(Command):
     description = "custom clean command that fully cleans directory tree"
     user_options = []
+
     def initialize_options(self):
         self.cwd = None
+
     def finalize_options(self):
         self.cwd = os.getcwd()
+
     def run(self):
-        
         # Excess files to be removed
         files = []
         dirs = glob("*.egg-info") + ['build', 'dist']
@@ -110,10 +111,13 @@ class Clean(Command):
 class Updater(Command):
     description = "custom command that guides you through updating to the next version"
     user_options = []
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
+
     def run(self):
         # Get the current version number
         curver = current_version()

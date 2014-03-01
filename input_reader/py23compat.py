@@ -36,6 +36,7 @@ if sys.version[0] == '3':
 else:
     py23_values = lambda x : getattr(x, 'itervalues')
 
+
 # This function is intended to decorate other functions that will modify
 # either a string directly, or a function's docstring.
 def _modify_str_or_docstring(str_change_func):
