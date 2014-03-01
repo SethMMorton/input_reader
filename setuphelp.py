@@ -15,6 +15,8 @@ from glob import glob
 from shutil import rmtree
 from fnmatch import filter as ffilter
 
+from input_reader.py23compat import py23_input
+
 
 def current_version():
     # Read the _version.py file for the module version number
@@ -122,7 +124,7 @@ class Updater(Command):
         # Get the current version number
         curver = current_version()
         print('The current version number is {0}'.format(curver))
-        newver = raw_input('What do you want the new version to be? ')
+        newver = py23_input('What do you want the new version to be? ')
         # Make sure the proposed version is greater than the old
         if parse_version(curver) > parse_version(newver):
             sys.exit('The new version must be greater than the current version.')
@@ -132,7 +134,7 @@ class Updater(Command):
         log = []
         line = ''
         while line != "<eof>":
-            line = raw_input(' - ')
+            line = py23_input(' - ')
             log.append('    - '+line)
         log[-1] = '' # Change <eof> to ''
 
@@ -168,6 +170,7 @@ class Updater(Command):
         with open(changelogfile, 'w') as clf:
             for line in changelog:
                 print(line, file=clf)
+
         with open('README.rst', 'w') as rme:
             for line in readme:
                 print(line, file=rme)
