@@ -44,7 +44,7 @@ def test_regex_case_definition():
     a = r.add_regex_line('red', r'funny\d+DOG')
     assert a.name == 'red'
     assert a._regex.pattern == r'funny\d+DOG'
-    if sys.version_info.major == 3:
+    if sys.version_info[0] == 3:
         assert a._regex.flags == (re.IGNORECASE | re.UNICODE)
     else:
         assert a._regex.flags == re.IGNORECASE
@@ -55,7 +55,7 @@ def test_regex_case_definition():
     c = r.add_regex_line('green', r'funny\d+DOG', case=True)
     assert c.name == 'green'
     assert c._regex.pattern == r'funny\d+DOG'
-    if sys.version_info.major == 3:
+    if sys.version_info[0] == 3:
         assert c._regex.flags == re.UNICODE
     else:
         assert c._regex.flags == 0

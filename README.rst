@@ -1,6 +1,9 @@
 input_reader
 ============
 
+.. image:: https://travis-ci.org/SethMMorton/input_reader.svg?branch=develop
+    :target: https://travis-ci.org/SethMMorton/input_reader
+
 A python module to facilitate reading input files
 -------------------------------------------------
 
