@@ -10,4 +10,4 @@ install:
 - pip install pytest-cov
 - pip install wheel
 script:
-- python -m pytest --cov-report term-missing --cov natsort
+- python -m pytest --cov-report term-missing --cov input_reader
